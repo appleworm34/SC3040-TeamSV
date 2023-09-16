@@ -1,9 +1,30 @@
+"use client";
 import Image from 'next/image'
+import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
+import Landing from "@/pages/landing/Landing";
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
-    <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-      Hello
-    </p>
+    <>
+      <Router>
+        <div>
+          <header>
+            <Navbar />
+          </header>
+
+          <section>
+            <Routes>
+              <Route path="/" element={<Landing />}></Route>
+            </Routes>
+          </section>
+
+          <footer>
+            <Footer />
+          </footer>
+        </div>
+      </Router>
+    </>
   )
 }
