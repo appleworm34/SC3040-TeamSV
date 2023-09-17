@@ -5,23 +5,24 @@ import {
   Typography,
   TextField,
   Button,
-  Link, // Import the Link component
+  Link,
 } from '@mui/material';
-import './Login.css'; // Import the CSS file
+import './Login.css';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Add your login logic here
-    // For example, you can send a request to your server to validate credentials
+    //////////////////////////////////////////////////////
+    // send request to server here to validate credentials
+    //////////////////////////////////////////////////////
     console.log('Username:', username);
     console.log('Password:', password);
   };
 
   const handleForgotPassword = () => {
-    // Add logic to handle the "Forgot Password" action
+    // not crucial feature
     console.log('Forgot Password clicked');
   };
 
