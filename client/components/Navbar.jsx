@@ -6,7 +6,7 @@ import MuiDrawer from './MuiDrawer';
 
 
 function Navbar() {
-    const linksArr = ["home", 'forum']
+    const linksArr = ["login","home", 'forum']
     const [value, setValue] = useState()
     const navigate = useNavigate()
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)")

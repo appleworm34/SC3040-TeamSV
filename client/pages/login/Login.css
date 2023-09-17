@@ -1,0 +1,65 @@
+/* Style for the login page container */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: linear-gradient(to bottom, #4caf50, #2196F3); /* Background gradient */
+  }
+  
+  /* Style for the login form */
+  .login-form {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style for form labels */
+  .login-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  /* Style for form input fields */
+  .login-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  /* Style for the login button */
+  .login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  /* Style for the login button on hover */
+  .login-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Additional styling for links or other elements */
+  .link {
+    text-decoration: underline;
+    color: #007bff;
+    cursor: pointer;
+  }
+  
+  .link:hover {
+    color: #0056b3;
+  }
+  
