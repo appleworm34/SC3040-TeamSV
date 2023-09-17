@@ -5,6 +5,7 @@ import {
   Typography,
   TextField,
   Button,
+  Link, // Import the Link component
 } from '@mui/material';
 import './Login.css'; // Import the CSS file
 
@@ -17,6 +18,11 @@ function Login() {
     // For example, you can send a request to your server to validate credentials
     console.log('Username:', username);
     console.log('Password:', password);
+  };
+
+  const handleForgotPassword = () => {
+    // Add logic to handle the "Forgot Password" action
+    console.log('Forgot Password clicked');
   };
 
   return (
@@ -53,6 +59,12 @@ function Login() {
         >
           Login
         </Button>
+        {/* "Forgot Password" link */}
+        <Typography variant="body2" align="center" style={{ marginTop: '10px' }}>
+          <Link onClick={handleForgotPassword} style={{ cursor: 'pointer' }}>
+            Forgot Password?
+          </Link>
+        </Typography>
       </Paper>
     </div>
   );
