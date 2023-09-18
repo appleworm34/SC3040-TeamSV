@@ -22,8 +22,8 @@ const UserSchema = new mongoose.Schema(
       required: true
     },
     modulesTaken: {
-      type: Array,
-      required: true
+      type: [String],
+      required: true,
     }
   }, {timestamps: true}
 )

@@ -1,7 +1,6 @@
 {
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./*"]
-    }
-  }
+    "compilerOptions": {
+        "baseUrl": "src"
+    },
+    "include": ["src", "styles/theme.js"]
 }
