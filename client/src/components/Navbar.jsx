@@ -55,30 +55,88 @@ function Navbar() {
 
                 {/* DESKTOP NAV n Mobile NAV*/}
                 {isNonMobileScreens ? (
-                <Tabs TabIndicatorProps={{style: {backgroundColor: "white"}}} value={value} onChange={(e, val) => setValue(val)} sx={{ml: "auto", textDecoration: "none"}}>
-                    {linksArr.map((link) => (
-                        link === "logout" ? <Tab 
-                            onClick = {() => {
-                                dispatch(setLogout())
-                                setValue(1)
-                            }}
-                            sx={{textDecoration : "none", ":hover": {
-                                textDecoration: "underline", 
-                                textUnderlineOffset: "18px"
-                            }}}key={link} label={link} />
-                        :
-                        <Tab 
-                            LinkComponent={Link}
-                            to={`${link === "home" ? "/" : link}`}
-                            sx={{textDecoration : "none", ":hover": {
-                                textDecoration: "underline", 
-                                textUnderlineOffset: "18px"
-                            }}}key={link} label={link} />
-                        ))}
-                        </Tabs>) :         
-                    <MuiDrawer />
-                }
-                    
+                <Tabs TabIndicatorProps={{ style: { backgroundColor: "white" } }} value={value} onChange={(e, val) => setValue(val)} sx={{ ml: "auto", textDecoration: "none" }}>
+                    {isLoggedIn ? (
+                    <>
+                        <Tab
+                        key="welcome"
+                        label={`Welcome, ${name}`}
+                        sx={{
+                            textDecoration: "none",
+                            ":hover": {
+                            textDecoration: "underline",
+                            textUnderlineOffset: "18px"
+                            },
+                            color: "#007bff"
+                        }}
+                        />
+                        <Tab
+                        key="logout"
+                        onClick={() => {
+                            dispatch(setLogout());
+                            setValue(1);
+                        }}
+                        sx={{
+                            textDecoration: "none",
+                            ":hover": {
+                            textDecoration: "underline",
+                            textUnderlineOffset: "18px"
+                            },
+                            color: "black"
+                        }}
+                        label="Logout"
+                        />
+                        <Tab
+                        key="index"
+                        LinkComponent={Link}
+                        to="/"
+                        sx={{
+                            textDecoration: "none",
+                            ":hover": {
+                            textDecoration: "underline",
+                            textUnderlineOffset: "18px"
+                            },
+                            color: "black"
+                        }}
+                        label="Home"
+                        />
+                        <Tab
+                        key="forum"
+                        LinkComponent={Link}
+                        to="/forum"
+                        sx={{
+                            textDecoration: "none",
+                            ":hover": {
+                            textDecoration: "underline",
+                            textUnderlineOffset: "18px"
+                            },
+                            color: "black" 
+                        }}
+                        label="Forum"
+                        />
+                    </>
+                    ) : (
+                    linksArr.map((link) => (
+                        <Tab
+                        key={link}
+                        LinkComponent={Link}
+                        to={`${link === "home" ? "/" : link}`}
+                        sx={{
+                            textDecoration: "none",
+                            ":hover": {
+                            textDecoration: "underline",
+                            textUnderlineOffset: "18px"
+                            },
+                            color: "#black"
+                        }}
+                        label={link === "login" ? "Login" : link}
+                        />
+                    ))
+                    )}
+                </Tabs>
+                ) : (
+                <MuiDrawer />
+                )} 
             </Toolbar>
         </AppBar>
     )
