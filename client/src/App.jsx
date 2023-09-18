@@ -1,20 +1,22 @@
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useMemo } from "react";
-import { createTheme } from "@mui/material/styles";
-import { themeSettings } from "./theme";
-import { useSelector } from "react-redux";
+import { CssBaseline } from "@mui/material";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout"
+import IndexPage from "./pages/IndexPage/IndexPage"
+import LoginPage from "./pages/LoginPage/LoginPage"
+import ForumPage from "./pages/ForumPage/ForumPage"
 
-/**
- * Main application component.
- * @component
- */
 export default function App() {
   return (
-    <div>
-      <h1>
-        hello
-      </h1>
-    </div>
+    <BrowserRouter>
+        <CssBaseline>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<IndexPage />}/>
+              <Route path="/login" element={<LoginPage />}/>
+              <Route path="/forum" element={<ForumPage />}/>
+            </Route>
+          </Routes>
+        </CssBaseline>
+    </BrowserRouter>
   );
 }

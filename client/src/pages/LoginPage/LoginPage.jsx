@@ -7,7 +7,7 @@ import {
   Button,
   Link,
 } from '@mui/material';
-import './Login.css';
+import './LoginPage.css';
 
 function Login() {
   const [username, setUsername] = useState('');

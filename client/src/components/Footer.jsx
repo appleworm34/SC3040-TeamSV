@@ -8,12 +8,12 @@ import {
     Container,
   } from "@mui/material";
   import { Box } from "@mui/system";
-  import { Colors } from "@/app/styles/theme";
+  import { Colors } from "../../styles/theme";
   import FacebookIcon from "@mui/icons-material/Facebook";
   import TwitterIcon from "@mui/icons-material/Twitter";
   import InstagramIcon from "@mui/icons-material/Instagram";
   import SendIcon from "@mui/icons-material/Send";
-  import { SubscribeTf, FooterTitle } from "@/app/styles/footer";
+  import { SubscribeTf, FooterTitle } from "../../styles/footer";
   
   
   export default function Footer() {
