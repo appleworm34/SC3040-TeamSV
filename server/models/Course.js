@@ -6,31 +6,35 @@ const indexSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    type: {
-      type: String,
-      required: true
-    },
-    group: {
-      type: String,
-      required: true
-    },
-    day: {
-      type: String,
-      required: true
-    },
-    time: {
-      type: String,
-      required: true
-    },
-    venue: {
-      type: String,
-      required: true
-    },
-    remarks: {
-      type: String,
-      required: true,
-      default: ""
-    },
+    lessons: [
+      {
+        type: {
+          type: String,
+          required: true
+        },
+        group: {
+          type: String,
+          required: true
+        },
+        day: {
+          type: String,
+          required: true
+        },
+        time: {
+          type: String,
+          required: true
+        },
+        venue: {
+          type: String,
+          required: true
+        },
+        remarks: {
+          type: String,
+          required: true,
+          default: ""
+        },
+      }
+    ]
   }
 )
 
