@@ -9,6 +9,8 @@ import path from "path"
 import { fileURLToPath } from "url"
 // import routes 
 import authRoutes from "./routes/auth.js"
+import courseRoutes from "./routes/course.js"
+import userRoutes from "./routes/user.js"
 
 /* CONFIGS */
 
@@ -30,6 +32,8 @@ app.use(cors())
 /* ROUTES */
 
 app.use("/auth", authRoutes)
+app.use("/user", userRoutes)
+app.use("/course", courseRoutes)
 
 /* MONGOOSE SETUP */
 

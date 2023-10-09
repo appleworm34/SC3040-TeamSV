@@ -30,7 +30,7 @@ const indexSchema = new mongoose.Schema(
         },
         remarks: {
           type: String,
-          required: true,
+          required: false,
           default: ""
         },
       }
@@ -50,10 +50,14 @@ const courseSchema = new mongoose.Schema(
       required: true
     },
     numOfAU: {
-      type: Number,
+      type: String,
       required: true
     },
     indexInfo: [indexSchema],
+    isBDE: {
+      type: Boolean,
+      required: true
+    }
   }
 )
 

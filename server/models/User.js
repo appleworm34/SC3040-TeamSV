@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema(
     modulesTaken: {
       type: [String],
       required: true,
+    },
+    modulesAdded : {
+      type: [String],
+      required: true
     }
   }, {timestamps: true}
 )
