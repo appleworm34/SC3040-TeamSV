@@ -122,6 +122,7 @@ for idx, course in enumerate(courseInfo):
 # print(courseInfo)
 
 ### create json file to store details of modules
+
 # file_name = "csc-2023-sem1-y1-courses.json"
 
 # with open(file_name, "w") as json_file:
@@ -130,6 +131,7 @@ for idx, course in enumerate(courseInfo):
 # print(f"Data saved to {file_name}")
 
 ### add to DB
+
 # client = pymongo.MongoClient("") #insert MONGO_URL from .env
 # file_path = "./courses/csc-2023-sem1-y1-courses.json"
 # db = client.test

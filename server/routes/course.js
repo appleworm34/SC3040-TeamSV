@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.get("/:id", getCourse)
 
-router.get("all", getAllCourses)
+router.get("/", getAllCourses)
 
 router.post("/submit", submitCourse)
 
