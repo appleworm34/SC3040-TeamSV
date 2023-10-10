@@ -10,14 +10,23 @@ export const getCourse = async (req, res) => {
   }
 }
 
+export const getAllCourses = async (req, res) => {
+  try {
+    const courses = await Course.find();
+    res.status(200).json(courses)
+  } catch (err) {
+    res.status(404).json({ message: err.message })
+  }
+}
+
 export const submitCourse = async (req, res) => {
   try {
-    const { code, name, numOfAU, indexInfo, isBDE } = req.body;
+    const { courseCode, courseName, courseNumOfAU, indexInfo, isBDE } = req.body;
 
     const newCourse = new Course({
-        code,
-        name,
-        numOfAU,
+        courseCode,
+        courseName,
+        courseNumOfAU,
         indexInfo,
         isBDE
     });

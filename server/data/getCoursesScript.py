@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 import json
+import pymongo
+from pymongo import MongoClient, InsertOne
 
 url = 'https://wish.wis.ntu.edu.sg/webexe/owa/AUS_SCHEDULE.main_display1'
 acadsem = '2023;1' # Acad Yr 2023, Sem 1
@@ -37,7 +39,7 @@ for idx, table in enumerate(tables):
     course = {
         'courseCode' : cols[0],
         'courseName' : cols[1],
-        'couseNumOfAU' : cols[2],
+        'courseNumOfAU' : cols[2],
         'indexes' : [],
     }
     
@@ -83,11 +85,29 @@ for idx, table in enumerate(tables):
       
     courseInfo.append(course)
 
-print(courseInfo[0])
+# print(courseInfo[0])
 
+### create json file to store details of modules
 # file_name = "csc-2023-sem1-y1-courses.json"
 
 # with open(file_name, "w") as json_file:
 #   json.dump(courseInfo, json_file)
 
 # print(f"Data saved to {file_name}")
+
+### add to DB
+# client = pymongo.MongoClient("") #insert MONGO_URL from .env
+# file_path = "./courses/csc-2023-sem1-y1-courses.json"
+# db = client.test
+# collection = db.courses
+# requesting = []
+
+# with open(file_path) as f:
+#   for course_list in f:
+#     myDict = json.loads(course_list)
+#     for i in myDict:
+#       requesting.append(InsertOne(i))
+
+# # print(requesting)
+# result = collection.bulk_write(requesting)
+# client.close()

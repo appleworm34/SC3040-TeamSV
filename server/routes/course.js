@@ -1,9 +1,11 @@
 import express from "express"
-import { getCourse, submitCourse } from "../controllers/course.js"
+import { getCourse, getAllCourses, submitCourse } from "../controllers/course.js"
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/:id", getCourse);
+router.get("/:id", getCourse)
+
+router.get("all", getAllCourses)
 
 router.post("/submit", submitCourse)
 
