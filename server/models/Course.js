@@ -54,6 +54,10 @@ const courseSchema = new mongoose.Schema(
     indexes: [indexSchema],
     isBDE: {
       type: Boolean,
+    },
+    desc: {
+      type: String,
+      default: ""
     }
   }
 )

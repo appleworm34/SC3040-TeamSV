@@ -5,6 +5,8 @@ import pymongo
 from pymongo import MongoClient, InsertOne
 
 url = 'https://wish.wis.ntu.edu.sg/webexe/owa/AUS_SCHEDULE.main_display1'
+isBDE = False
+
 acadsem = '2023;1' # Acad Yr 2023, Sem 1
 r_course_yr = 'CSC;;1;F' # Computer Science, Year 1
 
@@ -23,7 +25,6 @@ collections1 = requests.get(
 )
 soup = BeautifulSoup(collections1.text, features='html.parser')
 
-# print(soup)
 tables = soup.find_all('table')
 
 courseInfo = []
@@ -86,6 +87,39 @@ for idx, table in enumerate(tables):
     courseInfo.append(course)
 
 # print(courseInfo[0])
+
+desc_url = 'https://wis.ntu.edu.sg/webexe/owa/AUS_SUBJ_CONT.main_display1'
+
+desc_acadsem = '2023_1'
+
+desc_params = {
+  'acadsem': acadsem,
+  'r_course_yr': r_course_yr,
+  'r_subj_code': 'Enter Keywords or Course Code',
+  'boption': 'CLoad',
+  'acad': '2023',
+  'semester': '1',
+  'acadsem': acadsem,
+}
+
+collections2 = requests.get(
+  desc_url,
+  params=desc_params
+)
+
+soup1 = BeautifulSoup(collections2.text, features='html.parser')
+
+# print(soup1)
+
+target_td = soup1.find_all('td', {'colspan': '3', 'width': '650'})
+target_td = [t.text.strip() for t in target_td]
+# print(target_td)
+
+for idx, course in enumerate(courseInfo):
+  course['isBDE'] = isBDE
+  course['desc'] = target_td[idx]
+
+# print(courseInfo)
 
 ### create json file to store details of modules
 # file_name = "csc-2023-sem1-y1-courses.json"
