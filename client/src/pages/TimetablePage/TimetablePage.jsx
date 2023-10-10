@@ -1,7 +1,7 @@
 import React from 'react';
-import './IndexPage.css';
+import './TimetablePage.css';
 
-function Landing() {
+function TimetablePage() {
   return (
     <div className="container mt-5">
       <div className="row custom-row">
@@ -13,4 +13,4 @@ function Landing() {
   );
 }
 
-export default Landing;
+export default TimetablePage;

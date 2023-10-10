@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import "./ForumPage.css"
 
-function TimetablePage() {
+// For swapping of modules
+function ForumPage() {
     return (
-        <div className="container mt-50">
+        <div className="test">
           <h2>FORUM PAGE - MOD SWAP, BALLOT, POINTS ETC</h2>
         </div>
       );
 }
 
-export default TimetablePage;
+export default ForumPage;
