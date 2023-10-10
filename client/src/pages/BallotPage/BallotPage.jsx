@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react'
 
-// For balloting of modules
-const BallotPage = () => {
-    return <div>BallotPage</div>;
-};
+function BallotPage() {
+  return (
+    <div>BallotPage</div>
+  )
+}
 
-export default BallotPage;
-1;
+export default BallotPage

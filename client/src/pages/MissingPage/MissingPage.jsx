@@ -1,8 +1,12 @@
 import React from 'react'
 
-const MissingPage = () => {
+function MissingPage() {
   return (
-    <div>MissingPage</div>
+    <div>
+      <H1>
+        Error 404: Page not found
+      </H1>
+    </div>
   )
 }
 

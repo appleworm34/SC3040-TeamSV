@@ -1,16 +1,18 @@
-import React from 'react';
-import './TimetablePage.css';
+import React from "react";
+import "./TimetablePage.css";
+import Timetable from "../../components/Timetable";
 
 function TimetablePage() {
-  return (
-    <div className="container mt-5">
-      <div className="row custom-row">
-        <div className="col-md-6">
-          <h1>Insert Timetable</h1>
+    return (
+        <div className="mainContainer">
+            <div className="leftColumn">
+                <Timetable />
+            </div>
+            <div className="rightColumn">
+              <h1> This is for the forms </h1>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default TimetablePage;
