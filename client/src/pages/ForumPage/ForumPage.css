@@ -67,3 +67,41 @@
 .status h1 {
     font-size: 20px;
 }
+
+/* RadioForm container styles */
+.radioform_mods.radioform_mods {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.radioform_mods.radioform_mods h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333; /* Change text color as needed */
+}
+
+.radioform_mods.radioform_mods label {
+    display: block;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333; /* Change text color as needed */
+}
+
+.radioform_mods.radioform_mods input[type="radio"] {
+    margin-right: 5px;
+    color: black;
+}
+
+.radioform_mods.radioform_mods label.selected {
+    color: #007bff; /* Change to your preferred selected color */
+    font-weight: bold;
+}
+
+/* Selected option text styles */
+.radioform {
+    font-size: 18px;
+    margin-top: 20px;
+    color: #007bff; /* Change to your preferred text color */
+    font-weight: bold;
+}
