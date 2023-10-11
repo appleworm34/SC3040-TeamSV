@@ -2,54 +2,63 @@ import mongoose from "mongoose"
 
 const indexSchema = new mongoose.Schema(
   {
-    index: {
+    indexNo: {
       type: String,
-      required: true
-    },
-    type: {
-      type: String,
-      required: true
-    },
-    group: {
-      type: String,
-      required: true
-    },
-    day: {
-      type: String,
-      required: true
-    },
-    time: {
-      type: String,
-      required: true
-    },
-    venue: {
-      type: String,
-      required: true
-    },
-    remarks: {
-      type: String,
-      required: true,
       default: ""
     },
+    lessons: [
+      {
+        type: {
+          type: String,
+          default: ""
+        },
+        group: {
+          type: String,
+          default: ""
+        },
+        day: {
+          type: String,
+          default: ""
+        },
+        time: {
+          type: String,
+          default: ""
+        },
+        venue: {
+          type: String,
+          default: ""
+        },
+        remarks: {
+          type: String,
+          default: ""
+        },
+      }
+    ]
   }
 )
 
 const courseSchema = new mongoose.Schema(
   {
-    code: {
+    courseCode: {
       type: String,
-      unique: true,
-      required: true
+      default: ""
     },
-    name: {
+    courseName: {
       type: String,
-      required: true
+      default: ""
     },
-    numOfAU: {
-      type: Number,
-      required: true
+    courseNumOfAU: {
+      type: String,
+      default: ""
     },
-    indexInfo: [indexSchema],
+    indexes: [indexSchema],
+    isBDE: {
+      type: Boolean,
+    },
+    desc: {
+      type: String,
+      default: ""
+    }
   }
 )
 

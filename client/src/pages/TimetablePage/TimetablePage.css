@@ -1,0 +1,17 @@
+.mainContainer {
+    display: flex;
+    flex-direction: row;
+    padding-top: 20%;
+}
+
+.leftColumn {
+    display: flex;
+    width: 50%;
+    height: 80px;
+}
+
+.rightColumn {
+    display: flex;
+    width: 50%;
+    height: 80px;
+}
