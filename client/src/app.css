@@ -1,0 +1,52 @@
+/* Reset default margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Basic styling for the header (Navbar) */
+.navbar {
+    background-color: #333; /* Change to your preferred background color */
+    color: #fff; /* Change to your preferred text color */
+    padding: 10px;
+}
+
+/* Responsive design for the header */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 5px;
+        font-size: 16px; /* Adjust font size as needed */
+    }
+}
+
+/* Main content container */
+.main-content {
+    padding: 20px;
+    /* Ensure content doesn't overlap with the header and footer */
+    margin-top: 60px; /* Adjust according to the header height */
+    margin-bottom: 60px; /* Adjust according to the footer height */
+}
+
+/* Responsive design for content */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 10px;
+    }
+}
+
+/* Basic styling for the footer */
+.footer {
+    background-color: #333; /* Change to your preferred background color */
+    color: #fff; /* Change to your preferred text color */
+    padding: 10px;
+    text-align: center;
+}
+
+/* Responsive design for the footer */
+@media (max-width: 768px) {
+    .footer {
+        padding: 5px;
+        font-size: 16px; /* Adjust font size as needed */
+    }
+}

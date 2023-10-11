@@ -6,8 +6,7 @@ import DropdownModuleSearchBox from "../../components/DropdownModuleSearchBox";
 function ForumPage() {
     return (
         <div className="page">
-            <DropdownModuleSearchBox />
-            <section>
+            <section className="mod_information_section">
                 <div className="mod_information">
                     <div className="course_code">
                         <h1> Course code </h1>
@@ -23,6 +22,7 @@ function ForumPage() {
                     </div>
                 </div>
             </section>
+            <DropdownModuleSearchBox />
             <h2 className="temp">FORUM PAGE - MOD SWAP, BALLOT, POINTS ETC</h2>
         </div>
         

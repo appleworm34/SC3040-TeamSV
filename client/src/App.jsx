@@ -6,6 +6,8 @@ import ForumPage from "./pages/ForumPage/ForumPage";
 import TimetablePage from "./pages/TimetablePage/TimetablePage";
 import MissingPage from "./pages/MissingPage/MissingPage";
 import BallotPage from "./pages/BallotPage/BallotPage";
+import './app.css'
+
 
 export default function App() {
     return (
