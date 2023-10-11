@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import SearchBar from '../../components/SearchBar';
-import CourseList from '../../components/CourseList';
+import "./ForumPage.css"
+import DropdownModuleSearchBox from '../../components/DropdownModuleSearchBox';
 
-function TimetablePage() {
+// For swapping of modules
+function ForumPage() {
     return (
-        <div className="container mt-50">
-          <div className="container mt-5">
-            <div className="row custom-row">
-              <div className="col-md-6">
-                <SearchBar />
-                <CourseList />
-                <h1>FORUM PAGE - MOD SWAP, BALLOT, POINTS ETC</h1>
-              </div>
-            </div>
-          </div>
+        <div className="test">
+          <DropdownModuleSearchBox/>
+          <h2 className='temp'>FORUM PAGE - MOD SWAP, BALLOT, POINTS ETC</h2>
         </div>
         
       );
 }
 
-export default TimetablePage;
+export default ForumPage;
