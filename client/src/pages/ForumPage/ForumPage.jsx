@@ -25,7 +25,8 @@ function ForumPage() {
             </section>
             <h2 className="temp">FORUM PAGE - MOD SWAP, BALLOT, POINTS ETC</h2>
         </div>
-    );
+        
+      );
 }
 
 export default ForumPage;
