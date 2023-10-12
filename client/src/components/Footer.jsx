@@ -22,7 +22,7 @@ import {
           sx={{
             background: Colors.shaft,
             color: Colors.white,
-            p: { xs: 4, md: 10 },
+            p: { xs: 2, md: 4 },
             pt: 12,
             pb: 12,
             fontSize: { xs: '12px', md: '14px' }

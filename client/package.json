@@ -29,6 +29,7 @@
     "morgan": "^1.10.0",
     "npm": "^9.6.1",
     "react": "^18.2.0",
+    "react-big-calendar": "^1.8.4",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-icons": "^4.8.0",

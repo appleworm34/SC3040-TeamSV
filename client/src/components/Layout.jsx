@@ -6,7 +6,9 @@ export default function Layout(){
     return (
         <div className=" flex flex-col min-h-screen">
             <Navbar />
-            <Outlet />
+            <div className="flex-1" style={{marginTop: '75px'}}>
+                <Outlet />
+            </div>
             <Footer />
         </div>
     )
