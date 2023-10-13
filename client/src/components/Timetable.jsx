@@ -10,27 +10,77 @@ const localizer = momentLocalizer(moment);
 const minTime = moment().set({ hour: 7, minute: 0, second: 0 });
 const maxTime = moment().set({ hour: 23, minute: 0, second: 0 });
 
-const initialEvents = [
-    {
-      start: new Date(2023, 9, 10, 10, 30, 0),
-      end: new Date(2023, 9, 10, 12, 30, 0),
-      title: 'Event 1',
-      description: 'hi'
-    },
-    {
-      start: new Date(2023, 9, 11, 14, 0, 0),
-      end: new Date(2023, 9, 11, 16, 0, 0),
-      title: 'Event 2',
-    },
-    // Add more events here
-];
+const course = {
+  "courseCode": "SP0061", 
+  "courseName": "SCIENCE & TECHNOLOGY FOR HUMANITY", 
+  "courseNumOfAU": "3.0 AU", 
+  "indexes": 
+    [{
+      "indexNo": "22127", 
+      "lessons": 
+        [{
+          "type": "SEM", 
+          "group": "S1", 
+          "day": "WED", 
+          "time": "1430-1620", 
+          "venue": "LHS-TR+36", 
+          "remarks": ""
+        }]
+      }, 
+      {
+      "indexNo": "22128", 
+      "lessons": 
+        [{
+          "type": "SEM", 
+          "group": "S2", 
+          "day": "WED", 
+          "time": "1730-1920", 
+          "venue": "LHS-TR+35", 
+          "remarks": ""
+        }]
+    }]
+}
+
+function addStartDateAndEndDateToLessons(course) {
+  const today = new Date()
+  const todayDay = today.getDate()
+  const dayOfWeek = {"SUN": 0, "MON": 1, "TUE": 2, "WED": 3, "THU": 4, "FRI": 5, "SAT": 6}
+
+  // Process each index and its lessons
+  course.indexes.forEach((index) => {
+    index.lessons.forEach((lesson) => {
+      // Parse day and time information
+      let timing = lesson.time
+      let [startTime, endTime] = timing.split("-")
+      let startHour = startTime.substring(0, 2)
+      let startMin = startTime.substring(2)
+      let endHour = endTime.substring(0, 2)
+      let endMin = endTime.substring(2)
+      let day = dayOfWeek[lesson.day]
+      let diff = today.getDay() - day
+
+      let startDate = new Date(2023, today.getMonth(), todayDay-diff, startHour, startMin)
+      let endDate = new Date(2023, today.getMonth(), todayDay-diff, endHour, endMin)
+      // console.log(startDate)
+      // console.log(endDate)
+
+      lesson['startDate'] = startDate
+      lesson['endDate'] = endDate
+    });
+  });
+
+  return course;
+}
+
+const courseWithDates = addStartDateAndEndDateToLessons(course);
+console.log(courseWithDates);
 
 const initialEvents1 = [
   {
-    start: new Date(2023, 9, 10, 10, 30, 0),
-    end: new Date(2023, 9, 10, 12, 30, 0),
-    title: 'Event 1',
-    description: 'hi'
+    "start": new Date(2023, 9, 10, 10, 30, 0),
+    "end": new Date(2023, 9, 10, 12, 30, 0),
+    "title": 'Event 1',
+    "description": 'hi'
   },
   {
     start: new Date(2023, 9, 11, 14, 0, 0),
@@ -39,6 +89,7 @@ const initialEvents1 = [
   },
   // Add more events here
 ];
+
 const CustomToolbar = () => {
     return (
       <div className="flex justify-between bg-gray-200 p-2">
@@ -69,18 +120,19 @@ const CustomEvent = ({ event }) => (
 
 function Timetable() {
     const [eventLists, setEventLists] = useState({
-      "0": initialEvents,
-      "1": initialEvents1
+      "0": initialEvents1
     });
-    const [selectedEvent, setSelectedEvent] = useState([]);
+    const [selectedEvents, setSelectedEvents] = useState([]);
     const [showEventList, setShowEventList] = useState({
       "0": false,
-      "1": false
+      // "1": false
     });
 
+    const courseIndexes = course['indexes']
+    console.log(courseIndexes)
+
     const handleEventHover = (event) => {
-        const selectedEvent = [event]
-        setSelectedEvent(selectedEvent);
+        setSelectedEvents(event);
     };
     
     const toggleEventList = (eventListKey) => {
@@ -95,7 +147,7 @@ function Timetable() {
               <div className="w-2/3 p-4">
                 <Calendar
                   localizer={localizer}
-                  events={selectedEvent}
+                  events={selectedEvents}
                   defaultView="week" // Set the default view to week
                   views={['week']} // Specify that only the week view is available
                   startAccessor="start"
@@ -123,16 +175,15 @@ function Timetable() {
                         </div>
                         {showEventList[eventListKey.toString()] && (
                           <div>
-                            {eventLists[eventListKey.toString()].map((event) => (
+                            {
                               <div
-                                key={event.id}
-                                onMouseEnter={() => handleEventHover(event)}
+                                onMouseEnter={() => handleEventHover(eventLists[eventListKey.toString()])}
                                 onMouseLeave={() => handleEventHover([])}
                                 className='cursor-pointer p-2'
                               >
-                                {event.title}
+                                xxxxxxxxxxx
                               </div>
-                            ))}
+                            }
                           </div>
                         )}
                       </div>
