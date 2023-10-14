@@ -3,45 +3,16 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useState } from 'react';
-import AddIcon from '@mui/icons-material/Add'
-import RemoveIcon from '@mui/icons-material/Remove'
+import CourseIndex from './CourseIndex';
+import CourseIndexList from './CourseIndexList';
 
 const localizer = momentLocalizer(moment);
 const minTime = moment().set({ hour: 7, minute: 0, second: 0 });
 const maxTime = moment().set({ hour: 23, minute: 0, second: 0 });
 
-const course = {
-  "courseCode": "SP0061", 
-  "courseName": "SCIENCE & TECHNOLOGY FOR HUMANITY", 
-  "courseNumOfAU": "3.0 AU", 
-  "indexes": 
-    [{
-      "indexNo": "22127", 
-      "lessons": 
-        [{
-          "type": "SEM", 
-          "group": "S1", 
-          "day": "WED", 
-          "time": "1430-1620", 
-          "venue": "LHS-TR+36", 
-          "remarks": ""
-        }]
-      }, 
-      {
-      "indexNo": "22128", 
-      "lessons": 
-        [{
-          "type": "SEM", 
-          "group": "S2", 
-          "day": "WED", 
-          "time": "1730-1920", 
-          "venue": "LHS-TR+35", 
-          "remarks": ""
-        }]
-    }]
-}
 
-function addStartDateAndEndDateToLessons(course) {
+const addStartDateAndEndDateToLessons = (course) => {
+  // console.log(course)
   const today = new Date()
   const todayDay = today.getDate()
   const dayOfWeek = {"SUN": 0, "MON": 1, "TUE": 2, "WED": 3, "THU": 4, "FRI": 5, "SAT": 6}
@@ -63,32 +34,17 @@ function addStartDateAndEndDateToLessons(course) {
       let endDate = new Date(2023, today.getMonth(), todayDay-diff, endHour, endMin)
       // console.log(startDate)
       // console.log(endDate)
-
-      lesson['startDate'] = startDate
-      lesson['endDate'] = endDate
+      // console.log(index.indexNo)
+      if (index.indexNo)
+        lesson['indexNo'] = index.indexNo
+      lesson['start'] = startDate
+      lesson['end'] = endDate
+      delete index.indexNo
     });
   });
 
   return course;
 }
-
-const courseWithDates = addStartDateAndEndDateToLessons(course);
-console.log(courseWithDates);
-
-const initialEvents1 = [
-  {
-    "start": new Date(2023, 9, 10, 10, 30, 0),
-    "end": new Date(2023, 9, 10, 12, 30, 0),
-    "title": 'Event 1',
-    "description": 'hi'
-  },
-  {
-    start: new Date(2023, 9, 11, 14, 0, 0),
-    end: new Date(2023, 9, 11, 16, 0, 0),
-    title: 'Event 2',
-  },
-  // Add more events here
-];
 
 const CustomToolbar = () => {
     return (
@@ -113,85 +69,85 @@ const CustomHeader = ({ label }) => {
 
 const CustomEvent = ({ event }) => (
     <div>
-      <strong>{event.title}</strong>
-      <p>{event.description}</p>
+      <strong>{event.indexNo}</strong>
+      <p>{event.group}</p>
     </div>
 );
 
-function Timetable() {
-    const [eventLists, setEventLists] = useState({
-      "0": initialEvents1
-    });
-    const [selectedEvents, setSelectedEvents] = useState([]);
-    const [showEventList, setShowEventList] = useState({
-      "0": false,
-      // "1": false
-    });
+function Timetable({ courseList }) {
+  
+  const formatIndexList = (course) => {
+    const formattedLessons = {}
+    const lessonList = []
+    const courseCode = course.courseCode
+    const courseIndex = course.indexes
+    for (const lesson in courseIndex) {
+      // console.log(courseIndex[lesson.toString()].lessons)
+      lessonList.push(courseIndex[lesson.toString()].lessons)
+    }
+    formattedLessons[courseCode] = lessonList
+    // console.log(formattedLessons)
+    return formattedLessons
+  }
 
-    const courseIndexes = course['indexes']
-    console.log(courseIndexes)
+  // console.log(course)
+  const formattedCourseList = []
 
-    const handleEventHover = (event) => {
-        setSelectedEvents(event);
-    };
+  for(const e in courseList) {
+    const courseWithDate = addStartDateAndEndDateToLessons(courseList[e]);
+    // console.log(courseWithDate)
+    const formattedLessons = formatIndexList(courseWithDate)
+    formattedCourseList.push(formattedLessons)
+    // console.log(formattedCourseList)
+  }
+
+  const [eventLists, setEventLists] = useState(formattedCourseList);
+  const [selectedEvents, setSelectedEvents] = useState([]);
+  const [showEventList, setShowEventList] = useState({});
+
+  const handleEventHover = (event) => {
+    setSelectedEvents(event);
+    // console.log(selectedEvents)
+  };
+  
+  const toggleEventList = (eventListKey) => {
+    setShowEventList((prevShowEventList) => ({
+      ...prevShowEventList,
+      [eventListKey]: !prevShowEventList[eventListKey],
+    }));
+  };
     
-    const toggleEventList = (eventListKey) => {
-      setShowEventList((prevShowEventList) => ({
-        ...prevShowEventList,
-        [eventListKey]: !prevShowEventList[eventListKey],
-      }));
-    };
-    
-    return (
-            <div className="flex">
-              <div className="w-2/3 p-4">
-                <Calendar
-                  localizer={localizer}
-                  events={selectedEvents}
-                  defaultView="week" // Set the default view to week
-                  views={['week']} // Specify that only the week view is available
-                  startAccessor="start"
-                  endAccessor="end"
-                  min={minTime} // Set the minimum time
-                  max={maxTime} // Set the maximum time
-                  components={{
-                      toolbar: CustomToolbar, // Use the custom toolbar
-                      header: CustomHeader,
-                      event: CustomEvent,
-                  }}
-                />
-                </div>
-                <div className="w-1/3 p-4">
-                  {
-                    Object.keys(eventLists).map((eventListKey) => (
-                      <div key={eventListKey}>
-                        <div className="flex items-center">
-                          <h2 className="mr-5 mt-1">Event List {eventListKey}</h2>
-                          <button onClick={() => 
-                            toggleEventList(eventListKey)}
-                          >
-                            {showEventList[eventListKey] ? (<RemoveIcon fontSize="medium" />) : (<AddIcon fontSize="small" />)}
-                          </button>
-                        </div>
-                        {showEventList[eventListKey.toString()] && (
-                          <div>
-                            {
-                              <div
-                                onMouseEnter={() => handleEventHover(eventLists[eventListKey.toString()])}
-                                onMouseLeave={() => handleEventHover([])}
-                                className='cursor-pointer p-2'
-                              >
-                                xxxxxxxxxxx
-                              </div>
-                            }
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  }
-                </div>
-            </div>
-      );
+  return (
+    <div className="flex">
+      <div className="w-2/3 p-4">
+        <Calendar
+          localizer={localizer}
+          events={selectedEvents}
+          defaultView="week" // Set the default view to week
+          views={['week']} // Specify that only the week view is available
+          startAccessor="start"
+          endAccessor="end"
+          min={minTime} // Set the minimum time
+          max={maxTime} // Set the maximum time
+          components={{
+              toolbar: CustomToolbar, // Use the custom toolbar
+              header: CustomHeader,
+              event: CustomEvent,
+          }}
+        />
+        </div>
+        <div className="w-1/3 p-4">
+          {
+            <CourseIndexList
+              eventLists={eventLists}
+              showEventList={showEventList}
+              toggleEventList={toggleEventList}
+              handleEventHover={handleEventHover}
+            />
+          }
+        </div>
+    </div>
+    );
 }
 
 export default Timetable;
