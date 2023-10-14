@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import "./TimetablePage.css";
 import Timetable from "../../components/Timetable";
 
+// can update based on what courses user adds
 const courses = [
     {
       "courseCode": "SP0062", 
