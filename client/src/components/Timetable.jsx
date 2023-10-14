@@ -3,7 +3,6 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useState } from 'react';
-import CourseIndex from './CourseIndex';
 import CourseIndexList from './CourseIndexList';
 
 const localizer = momentLocalizer(moment);
@@ -35,11 +34,10 @@ const addStartDateAndEndDateToLessons = (course) => {
       // console.log(startDate)
       // console.log(endDate)
       // console.log(index.indexNo)
-      if (index.indexNo)
-        lesson['indexNo'] = index.indexNo
+      lesson['indexNo'] = index.indexNo
       lesson['start'] = startDate
       lesson['end'] = endDate
-      delete index.indexNo
+      // delete index.indexNo
     });
   });
 
@@ -67,12 +65,14 @@ const CustomHeader = ({ label }) => {
     );
 };
 
-const CustomEvent = ({ event }) => (
+const CustomEvent = ({ event }) => {
+  return(
     <div>
-      <strong>{event.indexNo}</strong>
+      <strong>{event.type}</strong>
       <p>{event.group}</p>
     </div>
-);
+  )
+};
 
 function Timetable({ courseList }) {
   
@@ -106,6 +106,7 @@ function Timetable({ courseList }) {
   const [showEventList, setShowEventList] = useState({});
 
   const handleEventHover = (event) => {
+    console.log(event)
     setSelectedEvents(event);
     // console.log(selectedEvents)
   };
@@ -119,7 +120,7 @@ function Timetable({ courseList }) {
     
   return (
     <div className="flex">
-      <div className="w-2/3 p-4">
+      <div className="w-3/4 p-4">
         <Calendar
           localizer={localizer}
           events={selectedEvents}
@@ -136,7 +137,7 @@ function Timetable({ courseList }) {
           }}
         />
         </div>
-        <div className="w-1/3 p-4">
+        <div className="w-1/4 p-4">
           {
             <CourseIndexList
               eventLists={eventLists}

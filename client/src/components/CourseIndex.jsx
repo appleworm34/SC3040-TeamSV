@@ -3,7 +3,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 const CourseIndex = ({ eventListKey, eventLists, showEventList, toggleEventList, handleEventHover }) => {
-    // console.log(eventListKey)
+    
     return (
         <div key={eventListKey}>
         <div className="flex items-center">
