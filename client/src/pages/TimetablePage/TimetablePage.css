@@ -21,13 +21,13 @@
 }
 
 .rbc-day-bg.rbc-today {
-    background-color: white;
+    background-color: transparent;
 }
 
 .rbc-header.rbc-today {
-    background-color: white;
+    background-color: transparent;
 }
 
 .rbc-day-slot.rbc-time-column.rbc-now.rbc-today {
-    background-color: white;
+    background-color: transparent;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import CourseIndex from './CourseIndex'; 
 
-const CourseIndexList= ({ eventLists, showEventList, toggleEventList, handleEventHover }) => {
+const CourseIndexList= ({ eventLists, showEventList, toggleEventList, handleEventHover, handleEventLeave }) => {
     // console.log(eventLists)
   return (
     <div>
@@ -13,6 +13,7 @@ const CourseIndexList= ({ eventLists, showEventList, toggleEventList, handleEven
           showEventList={showEventList}
           toggleEventList={toggleEventList}
           handleEventHover={handleEventHover}
+          handleEventLeave={handleEventLeave}
         />
       ))}
     </div>

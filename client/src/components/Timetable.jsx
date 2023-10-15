@@ -102,13 +102,36 @@ function Timetable({ courseList }) {
   }
 
   const [eventLists, setEventLists] = useState(formattedCourseList);
-  const [selectedEvents, setSelectedEvents] = useState([]);
+  const [selectedEvents, setSelectedEvents] = useState([
+    // this will be the modules with the indexes already added
+    // {
+    //   type: 4,
+    //   group: 'Workshop',
+    //   start: new Date(2023, 9, 15, 9, 0),
+    //   end: new Date(2023, 9, 15, 17, 0),
+    // }
+  ]);
+  const [currentHoveredEvents, setCurrentHoveredEvents] = useState([]);  
   const [showEventList, setShowEventList] = useState({});
 
-  const handleEventHover = (event) => {
-    console.log(event)
-    setSelectedEvents(event);
-    // console.log(selectedEvents)
+  const handleEventHover = (events) => {
+    // Clear the previously hovered events
+    setCurrentHoveredEvents(events);
+    // Add the events from the currently hovered element to selectedEvents
+    setSelectedEvents((prevSelectedEvents) => (
+      [...prevSelectedEvents, ...events]
+    ));
+  };
+
+  const handleEventLeave = () => {
+    // Remove the previously hovered events from selectedEvents
+    setSelectedEvents((prevSelectedEvents) => {
+      return prevSelectedEvents.filter(
+        (event) => !currentHoveredEvents.includes(event)
+      );
+    });
+    // Clear the current hovered events
+    setCurrentHoveredEvents([]);
   };
   
   const toggleEventList = (eventListKey) => {
@@ -138,14 +161,17 @@ function Timetable({ courseList }) {
         />
         </div>
         <div className="w-1/4 p-4">
-          {
-            <CourseIndexList
-              eventLists={eventLists}
-              showEventList={showEventList}
-              toggleEventList={toggleEventList}
-              handleEventHover={handleEventHover}
-            />
-          }
+          <aside className="sticky top-20">
+            {
+              <CourseIndexList
+                eventLists={eventLists}
+                showEventList={showEventList}
+                toggleEventList={toggleEventList}
+                handleEventHover={handleEventHover}
+                handleEventLeave={handleEventLeave}
+              />
+            }
+          </aside>
         </div>
     </div>
     );
