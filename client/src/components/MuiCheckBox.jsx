@@ -46,7 +46,8 @@ function MuiCheckBox({ options, onCheckboxChange}) {
                         ))}
                 </FormGroup>
             </FormControl>
-            <h1> The current selected indexes are {selectedOptions} </h1>
+            { selectedOptions.length>0 && <h1> The current selected indexes are {selectedOptions} </h1>}
+            { selectedOptions.length===0 && <h1> No indexes are selected... </h1>}
         </Box>
     );
 }
