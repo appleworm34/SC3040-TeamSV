@@ -99,7 +99,7 @@
 }
 
 /* Selected option text styles */
-.radioform {
+.radioform_mods.radioform {
     font-size: 18px;
     margin-top: 20px;
     color: #007bff; /* Change to your preferred text color */

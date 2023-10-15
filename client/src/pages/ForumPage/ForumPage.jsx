@@ -9,6 +9,7 @@ function ForumPage() {
 
     const handleRadioChange = (value) => {
         setSelectedRadioValue(value);
+        console.log("Selected Radio Value: ", selectedRadioValue);;
     };
     return (
         <div className="page">
@@ -35,7 +36,7 @@ function ForumPage() {
                     onRadioChange={handleRadioChange}
                     className="radioform_mods"
                 />
-                <h1 className="radioform"> Selected option is {selectedRadioValue} </h1>
+                
             </section>
         </div>
     );
