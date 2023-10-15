@@ -6,7 +6,7 @@ import { useState } from 'react';
 import CourseIndexList from './CourseIndexList';
 
 const localizer = momentLocalizer(moment);
-const minTime = moment().set({ hour: 7, minute: 0, second: 0 });
+const minTime = moment().set({ hour: 8, minute: 0, second: 0 });
 const maxTime = moment().set({ hour: 23, minute: 0, second: 0 });
 
 
@@ -35,6 +35,7 @@ const addStartDateAndEndDateToLessons = (course) => {
       // console.log(endDate)
       // console.log(index.indexNo)
       lesson['indexNo'] = index.indexNo
+      lesson['courseCode'] = course.courseCode
       lesson['start'] = startDate
       lesson['end'] = endDate
       // delete index.indexNo
@@ -104,12 +105,12 @@ function Timetable({ courseList }) {
   const [eventLists, setEventLists] = useState(formattedCourseList);
   const [selectedEvents, setSelectedEvents] = useState([
     // this will be the modules with the indexes already added
-    // {
-    //   type: 4,
-    //   group: 'Workshop',
-    //   start: new Date(2023, 9, 15, 9, 0),
-    //   end: new Date(2023, 9, 15, 17, 0),
-    // }
+    {
+      type: 4,
+      group: 'Workshop',
+      start: new Date(2023, 9, 15, 9, 0),
+      end: new Date(2023, 9, 15, 17, 0),
+    }
   ]);
   const [currentHoveredEvents, setCurrentHoveredEvents] = useState([]);  
   const [showEventList, setShowEventList] = useState({});
@@ -133,7 +134,26 @@ function Timetable({ courseList }) {
     // Clear the current hovered events
     setCurrentHoveredEvents([]);
   };
+
+  const handleEventClick = (events) => {
+    setSelectedEvents((prevSelectedEvents) => {
+      // Check if the events are already selected
+      const areEventsSelected = events.every((event) =>
+        prevSelectedEvents.some((selectedEvent) => selectedEvent.indexNo === event.indexNo)
+      );
   
+      if (areEventsSelected) {
+        // Deselect the events by filtering them out
+        return prevSelectedEvents.filter((selectedEvent) =>
+          events.every((event) => selectedEvent.indexNo !== event.indexNo)
+        );
+      } else {
+        // Select the events by adding them
+        return [...prevSelectedEvents, ...events];
+      }
+    });
+  };
+
   const toggleEventList = (eventListKey) => {
     setShowEventList((prevShowEventList) => ({
       ...prevShowEventList,
@@ -169,6 +189,7 @@ function Timetable({ courseList }) {
                 toggleEventList={toggleEventList}
                 handleEventHover={handleEventHover}
                 handleEventLeave={handleEventLeave}
+                handleEventClick={handleEventClick}
               />
             }
           </aside>

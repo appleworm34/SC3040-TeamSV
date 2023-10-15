@@ -1,9 +1,24 @@
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { useState } from 'react';
 
-const CourseIndex = ({ eventListKey, eventLists, showEventList, toggleEventList, handleEventHover, handleEventLeave }) => {
-    
+const CourseIndex = ({ eventListKey, eventLists, showEventList, toggleEventList, handleEventHover, handleEventLeave, handleEventClick }) => {
+    const [clickedStates, setClickedStates] = useState(eventLists[eventListKey].map(() => false));
+
+    const handleElementClick = (index) => {
+        setClickedStates((prevClickedStates) => {
+            const newClickedStates = [...prevClickedStates];
+            newClickedStates[index] = !newClickedStates[index];
+            return newClickedStates;
+        });
+
+        // Handle event click
+        if(clickedStates[index]) {
+            handleEventClick(eventLists[eventListKey][index]);
+        }
+    };
+
     return (
         <div key={eventListKey}>
             <div className='flex justify-between'>
@@ -20,9 +35,18 @@ const CourseIndex = ({ eventListKey, eventLists, showEventList, toggleEventList,
                 <div>
                 {eventLists[eventListKey].map((element, index) => (
                     <div
-                    onMouseEnter={() => handleEventHover(element)}
-                    onMouseLeave={() => handleEventLeave()}
-                    className="cursor-pointer p-2"
+                        onMouseEnter={() => {
+                            if(!clickedStates[index])
+                                handleEventHover(element)
+                        }}
+                        onMouseLeave={() => {
+                            if(!clickedStates[index])
+                                handleEventLeave()
+                        }}
+                        onClick={() => {
+                            handleElementClick(index)
+                        }}
+                        className={`cursor-pointer p-2 ${clickedStates[index] ? 'clicked' : ''}`}
                     >
                     {eventLists[eventListKey][index][0].indexNo}
                     </div>
