@@ -37,7 +37,7 @@ function Navbar() {
     }, [user]);
 
     return (
-        <AppBar component="nav" sx={{ bgcolor: "white" }}>
+        <AppBar component="nav" sx={{ bgcolor: "white", elevation: 0}}>
             <Toolbar>
                 <IconButton
                     style={{ backgroundColor: "transparent" }}

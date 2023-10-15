@@ -1,10 +1,53 @@
 .main-container {
     padding-top: 10%;
+    padding-bottom: 10%;
     display: flex;
     justify-content: center;
+    align-content: center;
+    flex-direction: row;
 }
 
-.temp {
-    padding-top: 10%;
-    padding-bottom: 10%;
+
+.dropdown-search-box {
+    position: relative;
+    width: 300px;
+    margin-top: 20px;
+    padding-left: 25px;
+}
+
+.search-box {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.dropdown-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-height: 120px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-options li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dropdown-options li:hover {
+    background-color: #f0f0f0;
+}
+
+.student_info .student {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    padding-right: 25px;
 }
