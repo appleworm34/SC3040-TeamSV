@@ -105,3 +105,43 @@
     color: #007bff; /* Change to your preferred text color */
     font-weight: bold;
 }
+
+/* Style the container that holds the checkboxes */
+.checkbox_index {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+}
+
+/* Style the form label for the group of checkboxes */
+.checkbox_index.FormLabel {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Style each individual checkbox label */
+.checkbox_index.FormControlLabel {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+/* Style the checkbox itself */
+.checkbox_index.Checkbox {
+    color: #007bff; /* Change the color of the checkbox when selected */
+}
+
+/* Style the text of the selected options */
+.checkbox_index.selected-options {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.module_swapping_section {
+    display: flex;
+    flex-direction: row;
+}

@@ -7,6 +7,7 @@ function RadioForm({ options, onRadioChange }) {
 
     const handleRadioChange = (e) => {
         const newValue = e.target.value;
+        console.log("Radio form value changed to: ", selectedOption)
         setSelectedOption(newValue);
         onRadioChange(newValue);
     };

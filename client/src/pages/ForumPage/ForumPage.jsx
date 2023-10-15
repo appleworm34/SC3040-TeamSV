@@ -2,15 +2,27 @@ import React, { useState, useEffect } from "react";
 import "./ForumPage.css";
 import DropdownModuleSearchBox from "../../components/DropdownModuleSearchBox";
 import RadioForm from "../../components/Radioform";
+import MuiCheckBox from "../../components/MuiCheckBox";
 
 // For swapping of modules
 function ForumPage() {
-    const [selectedRadioValue, setSelectedRadioValue] = useState("");
+    const [ModToSwap, setModToSwap] = useState("");
+    const [IndexToSwap, setIndexToSwap] = useState([])
 
-    const handleRadioChange = (value) => {
-        setSelectedRadioValue(value);
-        console.log("Selected Radio Value: ", selectedRadioValue);;
+    const onRadioChange = (value) => {
+        setModToSwap(value);
+        console.log("Selected module: ", ModToSwap);
     };
+
+    const onCheckboxChange = (value) => {
+        if (IndexToSwap.includes(value)) {
+            setIndexToSwap(IndexToSwap.filter((option) => option!=value));
+        } else {
+            setIndexToSwap([...IndexToSwap, value]);
+        }
+        console.log("Selected indexes are ", IndexToSwap);
+    }
+
     return (
         <div className="page">
             <section className="mod_information_section">
@@ -29,14 +41,18 @@ function ForumPage() {
                     </div>
                 </div>
             </section>
-            <DropdownModuleSearchBox />
-            <section>
+            <section className="mod_swapping_section">
                 <RadioForm
-                    options={["SC1001", "SC1002", "SC1003", "AD1102", "AB1601"]}
-                    onRadioChange={handleRadioChange}
+                    options={["SC1001", "SC1002", "SC1003", "AD1102", "AB1601"]} // TOOD: link to API call to current registered modules
+                    onRadioChange={onRadioChange}
                     className="radioform_mods"
                 />
-                
+
+                <MuiCheckBox
+                    options={["10101", "10102", "10103"]} // TODO: link to API call to available indexes to module swap
+                    onCheckboxChange={onCheckboxChange}
+                    className="checkbox_index"
+                />
             </section>
         </div>
     );
