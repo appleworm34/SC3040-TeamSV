@@ -2,7 +2,7 @@ import React from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CourseIndexList from './CourseIndexList';
 import generateTimetable from './TimetableGenerator';
 import { Button } from '@mui/material';
@@ -95,15 +95,19 @@ function Timetable({ courseList, setCourseList }) {
   }
 
   // console.log(course)
-  const formattedCourseList = []
-  for(const e in courseList) {
-    const courseWithDate = addStartDateAndEndDateToLessons(courseList[e]);
-    // console.log(courseWithDate)
-    const formattedLessons = formatIndexList(courseWithDate)
-    formattedCourseList.push(formattedLessons)
-    // console.log(formattedCourseList)
+  const formatCourseList = () => {
+    const formattedCourseList = []
+    for(const e in courseList) {
+      const courseWithDate = addStartDateAndEndDateToLessons(courseList[e]);
+      // console.log(courseWithDate)
+      const formattedLessons = formatIndexList(courseWithDate)
+      formattedCourseList.push(formattedLessons)
+      // console.log(formattedCourseList)
+    }
+    return formattedCourseList
   }
 
+  let formattedCourseList = formatCourseList()
   // generateTimetable(courseList)
 
   const [eventLists, setEventLists] = useState(formattedCourseList);
@@ -174,6 +178,12 @@ function Timetable({ courseList, setCourseList }) {
     setAddCourseModalOpen(false);
   };
 
+  useEffect(() => {
+    // This code will run whenever courseList changes
+    formattedCourseList = formatCourseList(courseList);
+    setEventLists(formattedCourseList);
+  }, [courseList]);
+
   return (
     <div className="flex">
       <div className="w-3/4 p-4">
@@ -201,6 +211,7 @@ function Timetable({ courseList, setCourseList }) {
                 <AddCourseModal 
                   isOpen={isAddCourseModalOpen} 
                   handleClose={closePopup} 
+                  courseList={courseList}
                   setCourseList={setCourseList}
                 />
                 <div className="ml-2">

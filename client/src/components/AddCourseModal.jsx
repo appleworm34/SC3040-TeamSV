@@ -4,17 +4,33 @@ import { useState } from 'react';
 import CourseList from './CourseList';
 import { ArrowBack } from '@mui/icons-material';
 
-const AddCourseModal = ({ isOpen, handleClose, children, setCourseList }) => {
+const AddCourseModal = ({ isOpen, handleClose, children, courseList, setCourseList }) => {
   const [showCourseInfo, setShowCourseInfo] = useState(false)
   const [courseInfo, setCourseInfo] = useState({})
+
+  const handleAddCourseClick = () => {
+    // Check if the course is already in the courseList
+    const isCourseInList = courseList.some(
+      (existingCourse) => existingCourse._id === courseInfo._id
+    );
+
+    if (!isCourseInList) {
+      // If the course is not in the list, add it
+      const updatedCourseList = [...courseList, courseInfo];
+      setCourseList(updatedCourseList);
+    }
+
+    // Close the modal
+    handleClose();
+  };
 
   const modalStyle = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '80%',
-    maxWidth: '400px',
+    width: '100%',
+    maxWidth: '1000px',
     bgcolor: 'background.paper',
     borderRadius: '8px',
     overflowY: 'auto', // Make the content scrollable
@@ -35,7 +51,12 @@ const AddCourseModal = ({ isOpen, handleClose, children, setCourseList }) => {
                 </Button>
                 <Typography variant="h6">Course Info</Typography>
               </Box>
-              <Typography sx={{ padding: "10px"}}variant="h6">{courseInfo.courseCode}</Typography>
+              <Box display={"flex"}>
+                <Typography sx={{ padding: "10px"}}variant="h6">{courseInfo.courseCode}</Typography>
+                <Typography sx={{ padding: "10px"}}variant="h6">{courseInfo.courseName}</Typography>
+                <Box sx={{width: "230px"}}></Box>
+                <Button onClick={()=>{handleAddCourseClick()}}>Add</Button>
+              </Box>
               <Typography>{courseInfo.desc}</Typography>
             </Box>
           ) : (

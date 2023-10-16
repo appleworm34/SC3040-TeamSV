@@ -75,7 +75,7 @@ function TimetablePage() {
     return (
         <Box marginTop={"75px"}>
             <Timetable 
-                courseList={courses}
+                courseList={courseList}
                 setCourseList={setCourseList}
             />
         </Box>
