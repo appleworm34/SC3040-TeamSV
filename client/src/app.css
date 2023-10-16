@@ -1,0 +1,33 @@
+/* App.css */
+
+/* Define a class for the overall layout */
+.layout-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Style the header (Navbar) */
+  .navbar {
+    background-color: #333; /* Change to your desired header background color */
+    color: white;
+    padding: 1rem;
+  }
+  
+  /* Style the main content with a fixed height and scrolling */
+  .main-content {
+    padding-top: 20%;
+    flex-grow: 1;
+    overflow-y: auto;
+    height: calc(100vh - 2 * 1rem); /* Adjust 1rem to your header and footer height */
+    padding: 2rem;
+    background-color: #f5f5f5; /* Change to your desired main content background color */
+  }
+  
+  /* Style the footer */
+  .footer {
+    background-color: #333; /* Change to your desired footer background color */
+    color: white;
+    padding: 1rem;
+  }
+  

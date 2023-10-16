@@ -6,13 +6,16 @@ import ForumPage from "./pages/ForumPage/ForumPage";
 import TimetablePage from "./pages/TimetablePage/TimetablePage";
 import MissingPage from "./pages/MissingPage/MissingPage";
 import BallotPage from "./pages/BallotPage/BallotPage";
+import React from "react";
+import './App.css'
+
 
 export default function App() {
     return (
         <BrowserRouter>
             <CssBaseline>
                 <Routes>
-                    <Route exact path="/" element={<Layout />}>
+                    <Route exact path="/" element={<Layout className="layout-container" />}>
                         <Route exact index element={<TimetablePage />} />
                         <Route exact path="/login" element={<LoginPage />} />
                         <Route exact path="/forum" element={<ForumPage />} />

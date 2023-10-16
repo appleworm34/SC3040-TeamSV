@@ -15,3 +15,23 @@
     width: 50%;
     height: 80px;
 }
+
+.rbc-current-time-indicator {
+    display: none
+}
+
+.rbc-day-bg.rbc-today {
+    background-color: transparent;
+}
+
+.rbc-header.rbc-today {
+    background-color: transparent;
+}
+
+.rbc-day-slot.rbc-time-column.rbc-now.rbc-today {
+    background-color: transparent;
+}
+
+.clicked {
+    background-color: rgba(0, 255, 0, 0.5); /* Light green with reduced opacity */
+  }
