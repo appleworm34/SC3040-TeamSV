@@ -78,7 +78,7 @@ const CustomEvent = ({ event }) => {
   )
 };
 
-function Timetable({ courseList }) {
+function Timetable({ courseList, setCourseList }) {
   
   const formatIndexList = (course) => {
     const formattedLessons = {}
@@ -96,7 +96,6 @@ function Timetable({ courseList }) {
 
   // console.log(course)
   const formattedCourseList = []
-
   for(const e in courseList) {
     const courseWithDate = addStartDateAndEndDateToLessons(courseList[e]);
     // console.log(courseWithDate)
@@ -199,7 +198,11 @@ function Timetable({ courseList }) {
             {
               <div>
                 <Button onClick={openPopup}>Add Courses</Button>
-                <AddCourseModal isOpen={isAddCourseModalOpen} handleClose={closePopup} />
+                <AddCourseModal 
+                  isOpen={isAddCourseModalOpen} 
+                  handleClose={closePopup} 
+                  setCourseList={setCourseList}
+                />
                 <div className="ml-2">
                   <div>Added Courses:</div>
                   <CourseIndexList

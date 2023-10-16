@@ -1,8 +1,8 @@
-import { Box, Typography, TextField, CircularProgress } from "@mui/material";
+import { Box, Typography, TextField, CircularProgress, Button } from "@mui/material";
 import CourseInfo from "./CourseInfo.jsx";
 import { useEffect, useState } from "react";
 
-const CourseList = () => {
+const CourseList = ({ setShowCourseInfo, setCourseList, setCourseInfo }) => {
   const [courses, setCourses] = useState([])
   const [search, setSearch] = useState("") // Add search state
   const [isLoading, setIsLoading] = useState(false)
@@ -36,6 +36,8 @@ const CourseList = () => {
       id = {courses._id}
       courseCode = {courses.courseCode}
       courseName = {courses.courseName}
+      setShowCourseInfo = {setShowCourseInfo}
+      setCourseInfo={setCourseInfo}
     />
   ))
     
@@ -57,17 +59,20 @@ const CourseList = () => {
         >
           <CircularProgress /> 
         </Box>
-        : <Box display="flex" flexDirection="column" gap="1.5rem">
-        {courseComponent
-          .filter(
-            (course) =>
-              course.props.courseCode
-                .toLowerCase()
-                .includes(search.toLowerCase()) ||
-              course.props.courseName.toLowerCase().includes(search.toLowerCase())
-          )
-          .map((filteredCourse) => filteredCourse)}
-      </Box>
+        : 
+        <Box>
+          <Box display="flex" flexDirection="column" gap="1.5rem">
+            {courseComponent
+              .filter(
+                (course) =>
+                  course.props.courseCode
+                    .toLowerCase()
+                    .includes(search.toLowerCase()) ||
+                  course.props.courseName.toLowerCase().includes(search.toLowerCase())
+              )
+              .map((filteredCourse) => filteredCourse)}
+          </Box>
+        </Box>
       }
     </Box>
   )

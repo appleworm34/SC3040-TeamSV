@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import "./TimetablePage.css";
 import Timetable from "../../components/Timetable";
+import { useState } from "react";
 
 // can update based on what courses user adds
 const courses = [
@@ -69,9 +70,14 @@ const courses = [
 ]
 
 function TimetablePage() {
+    const [courseList, setCourseList] = useState([])
+
     return (
         <Box marginTop={"75px"}>
-            <Timetable courseList={courses}/>
+            <Timetable 
+                courseList={courses}
+                setCourseList={setCourseList}
+            />
         </Box>
 
     );
