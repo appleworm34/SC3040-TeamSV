@@ -4,6 +4,9 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useState } from 'react';
 import CourseIndexList from './CourseIndexList';
+import generateTimetable from './TimetableGenerator';
+import { Button } from '@mui/material';
+import AddCourseModal from './AddCourseModal';
 
 const localizer = momentLocalizer(moment);
 const minTime = moment().set({ hour: 8, minute: 0, second: 0 });
@@ -102,6 +105,8 @@ function Timetable({ courseList }) {
     // console.log(formattedCourseList)
   }
 
+  // generateTimetable(courseList)
+
   const [eventLists, setEventLists] = useState(formattedCourseList);
   const [selectedEvents, setSelectedEvents] = useState([
     // this will be the modules with the indexes already added
@@ -114,6 +119,7 @@ function Timetable({ courseList }) {
   ]);
   const [currentHoveredEvents, setCurrentHoveredEvents] = useState([]);  
   const [showEventList, setShowEventList] = useState({});
+  const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);
 
   const handleEventHover = (events) => {
     // Clear the previously hovered events
@@ -160,7 +166,15 @@ function Timetable({ courseList }) {
       [eventListKey]: !prevShowEventList[eventListKey],
     }));
   };
-    
+  
+  const openPopup = () => {
+    setAddCourseModalOpen(true);
+  };
+
+  const closePopup = () => {
+    setAddCourseModalOpen(false);
+  };
+
   return (
     <div className="flex">
       <div className="w-3/4 p-4">
@@ -183,14 +197,21 @@ function Timetable({ courseList }) {
         <div className="w-1/4 p-4">
           <aside className="sticky top-20">
             {
-              <CourseIndexList
-                eventLists={eventLists}
-                showEventList={showEventList}
-                toggleEventList={toggleEventList}
-                handleEventHover={handleEventHover}
-                handleEventLeave={handleEventLeave}
-                handleEventClick={handleEventClick}
-              />
+              <div>
+                <Button onClick={openPopup}>Add Courses</Button>
+                <AddCourseModal isOpen={isAddCourseModalOpen} handleClose={closePopup} />
+                <div className="ml-2">
+                  <div>Added Courses:</div>
+                  <CourseIndexList
+                    eventLists={eventLists}
+                    showEventList={showEventList}
+                    toggleEventList={toggleEventList}
+                    handleEventHover={handleEventHover}
+                    handleEventLeave={handleEventLeave}
+                    handleEventClick={handleEventClick}
+                  />
+                </div>
+              </div>
             }
           </aside>
         </div>

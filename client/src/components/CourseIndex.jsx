@@ -2,6 +2,7 @@ import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useState } from 'react';
+import { Divider } from '@mui/material';
 
 const CourseIndex = ({ eventListKey, eventLists, showEventList, toggleEventList, handleEventHover, handleEventLeave, handleEventClick }) => {
     const [clickedStates, setClickedStates] = useState(eventLists[eventListKey].map(() => false));
@@ -21,7 +22,7 @@ const CourseIndex = ({ eventListKey, eventLists, showEventList, toggleEventList,
 
     return (
         <div key={eventListKey}>
-            <div className='flex justify-between'>
+            <div className='flex justify-between mt-4'>
                 <h2 className="mt-1">{eventListKey}</h2>
                 <button onClick={() => toggleEventList(eventListKey)}>
                 {showEventList[eventListKey] ? (
@@ -31,24 +32,28 @@ const CourseIndex = ({ eventListKey, eventLists, showEventList, toggleEventList,
                 )}
                 </button>
             </div>
+            <Divider />
             {showEventList[eventListKey] && (
                 <div>
                 {eventLists[eventListKey].map((element, index) => (
-                    <div
-                        onMouseEnter={() => {
-                            if(!clickedStates[index])
-                                handleEventHover(element)
-                        }}
-                        onMouseLeave={() => {
-                            if(!clickedStates[index])
-                                handleEventLeave()
-                        }}
-                        onClick={() => {
-                            handleElementClick(index)
-                        }}
-                        className={`cursor-pointer p-2 ${clickedStates[index] ? 'clicked' : ''}`}
-                    >
-                    {eventLists[eventListKey][index][0].indexNo}
+                    <div>
+                        {/* <Divider /> */}
+                        <div
+                            onMouseEnter={() => {
+                                if(!clickedStates[index])
+                                    handleEventHover(element)
+                            }}
+                            onMouseLeave={() => {
+                                if(!clickedStates[index])
+                                    handleEventLeave()
+                            }}
+                            onClick={() => {
+                                handleElementClick(index)
+                            }}
+                            className={`cursor-pointer p-2 ${clickedStates[index] ? 'clicked' : ''}`}
+                        >
+                        {eventLists[eventListKey][index][0].indexNo}
+                        </div>
                     </div>
                 ))}
                 </div>
