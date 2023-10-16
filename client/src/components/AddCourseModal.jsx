@@ -1,10 +1,12 @@
 import React from 'react';
-import { Modal, Paper, Typography, Button } from '@mui/material';
+import { Modal, Paper, Typography, Button, Box } from '@mui/material';
 import { useState } from 'react';
 import CourseList from './CourseList';
+import { ArrowBack } from '@mui/icons-material';
 
-const AddCourseModal = ({ isOpen, handleClose, children }) => {
-  const [showHi, setShowHi] = useState(false);
+const AddCourseModal = ({ isOpen, handleClose, children, setCourseList }) => {
+  const [showCourseInfo, setShowCourseInfo] = useState(false)
+  const [courseInfo, setCourseInfo] = useState({})
 
   const modalStyle = {
     position: 'absolute',
@@ -23,21 +25,28 @@ const AddCourseModal = ({ isOpen, handleClose, children }) => {
     <Modal open={isOpen} onClose={handleClose}>
       <div style={modalStyle}>
         <Paper style={{ padding: '16px' }}>
-          {showHi ? (
-            <Typography variant="h6">Hi</Typography>
+          {showCourseInfo ? (
+            <Box>
+              <Box display="flex" alignItems="center">
+                <Button
+                  onClick={() => setShowCourseInfo(false)}
+                >
+                  <ArrowBack />
+                </Button>
+                <Typography variant="h6">Course Info</Typography>
+              </Box>
+              <Typography sx={{ padding: "10px"}}variant="h6">{courseInfo.courseCode}</Typography>
+              <Typography>{courseInfo.desc}</Typography>
+            </Box>
           ) : (
             <div>
               {children}
-              <CourseList />
+              <CourseList 
+                setShowCourseInfo={setShowCourseInfo}
+                setCourseList={setCourseList}
+                setCourseInfo={setCourseInfo}
+              />
             </div>
-          )}
-          {showHi && (
-            <Button
-              variant="contained"
-              onClick={() => setShowHi(false)}
-            >
-              Back
-            </Button>
           )}
         </Paper>
       </div>
