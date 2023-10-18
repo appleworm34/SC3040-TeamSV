@@ -28,6 +28,16 @@ const UserSchema = new mongoose.Schema(
     modulesAdded : {
       type: [String],
       required: true
+    },
+    // [[courseId,courseCode,index], ...]
+    modulesCurrentIndex: {
+      type: [[String]],
+      required: true,
+    },
+    // [[courseId,courseCode,[index...]]]
+    modulesDesiredIndex: {
+      type: [[]],
+      required: true,
     }
   }, {timestamps: true}
 )
