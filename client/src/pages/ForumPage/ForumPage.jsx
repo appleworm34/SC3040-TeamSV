@@ -3,6 +3,7 @@ import "./ForumPage.css";
 import DropdownModuleSearchBox from "../../components/DropdownModuleSearchBox";
 import RadioForm from "../../components/Radioform";
 import MuiCheckBox from "../../components/MuiCheckBox";
+import MuiTable from "../../components/MuiTable";
 
 // For swapping of modules
 function ForumPage() {
@@ -29,9 +30,22 @@ function ForumPage() {
         "SP0061": ["30303", ["30301"], "Pending"]
     }
 
+    const exampleRows = [
+        {'Course Code': 'CC0001' , 'Current Index': 'MH1810', 'Desired Index':["10102", "10103"]}
+    ]
+
+    const headers = ['Course Code','Current Index','Desired Index','Status']
+    const rows = exampleRows
+
+    // console.log(headers)
+
     return ( //TODO: Change into table format, where each entry is a new row element
         <div className="page"> 
-            <section className="mod_information_section">
+        <MuiTable
+            headers = {headers}
+            rows = {rows}
+        />
+            {/* <section className="mod_information_section">
                 <div className="mod_information">
                     <div className="course_code">
                         <h1> Course code </h1>
@@ -50,7 +64,7 @@ function ForumPage() {
                         <h1> {exampleStudentModule.CC0001[2]} </h1>
                     </div>
                 </div>
-            </section>
+            </section> */}
             <section className="mod_swapping_section">
                 <RadioForm
                     options={["SC1001", "SC1002", "SC1003", "AD1102", "AB1601"]} // TOOD: link to API call to current registered modules
