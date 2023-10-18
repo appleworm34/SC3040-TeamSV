@@ -4,27 +4,116 @@ import DropdownModuleSearchBox from "../../components/DropdownModuleSearchBox";
 import RadioForm from "../../components/Radioform";
 import MuiCheckBox from "../../components/MuiCheckBox";
 import MuiTable from "../../components/MuiTable";
+import BasicButtons from "../../components/MuiButton";
 
 // For swapping of modules
 function ForumPage() {
     const [ModToSwap, setModToSwap] = useState("");
     const [IndexToSwap, setIndexToSwap] = useState([])
     const [DesiredIndex,setDesiredIndex] = useState([])
+    const [ModsTaken, setModTaken] = useState([])
+    const [IndexAvailable,setIndexAvail] = useState([])
+    const [AddVisibility,setAddVisibility]=useState(false)
 
-    const onRadioChange = (value) => {
+    const onRadioChange = async (value) => {
         setModToSwap(value);
+        setAddVisibility(false)
         console.log("Selected module: ", ModToSwap);
+        let courseId = await getCourseId(value)
+        console.log(courseId)
+        let availIndex = await getAvailIndex(courseId)
+        console.log(availIndex)
+        setIndexAvail(availIndex)
     };
-
+    const getCourseId = async (courseCode) =>{
+        const response = await fetch(
+        `http://localhost:3001/user/652421361a4e6f2e49c4224a`,
+        {
+            method: "GET"
+        }
+        )
+        const data = await response.json()
+        console.log(data)
+        let courseId = data.modulesCurrentIndex.find(array=>array[1]==courseCode)
+        console.log(courseId)
+        courseId = courseId[0]
+        return courseId
+    }
+    const getAvailIndex = async (courseId) =>{
+        const indexes = await fetch(
+            `http://localhost:3001/course/index/${courseId}`,
+            {
+                method: "GET"
+            }
+        )
+        let temp = await indexes.json()
+        return temp['indexes']
+    }
     const onCheckboxChange = (value) => {
         if (IndexToSwap.includes(value)) {
+            if (IndexToSwap.length==1){
+                setAddVisibility(false)
+            }
             setIndexToSwap(IndexToSwap.filter((option) => option!=value));
         } else {
             setIndexToSwap([...IndexToSwap, value]);
+            setAddVisibility(true)
         }
+        
         console.log("Selected indexes are ", IndexToSwap);
+        
     }
-
+    const clearSelection = () =>{
+        setModToSwap("")
+        setIndexToSwap([])
+    }
+    const addDesiredIndexHandler = async () =>{
+        // call backend api to chcek for match and perform swap
+        try{
+            const url = 'http://localhost:3001/swap/add'; // Replace with your API endpoint
+          
+            const data = {
+                userId:"653038f9f57af2505a5f8614",
+                courseCode:"SC1010",
+                currentIndex:"105",
+                desiredIndex:["106","107"]
+            }
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json', // Specify the content type as JSON
+                  // Add any other headers if needed
+                },
+                body: JSON.stringify(data), // Convert data to a JSON string
+              };
+            const response = await fetch(url, requestOptions);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+          
+              const responseData = await response.json(); // Parse the response as JSON
+              console.log('Response data:', responseData);
+              if (responseData.swap){
+                    alert("Dear Student, MOONS has found a matching swap and performed the swap on your behalf!")
+                }
+                else{
+                    alert("Dear Student, MOONS did not find a matching swap and will continue to look out for them.")
+                }
+              // Handle the response data as needed
+            } catch (error) {
+              console.error('Fetch error:', error);
+              // Handle any errors
+            } 
+        // alert if matched
+        // let match = true
+        // if (match){
+        //     alert("Dear Student, MOONS has found a matching swap and performed the swap on your behalf!")
+        // }
+        // else{
+        //     alert("Dear Student, MOONS did not find a matching swap and will continue to look out for them.")
+        // }
+        // clearSelection()
+    }
     const exampleStudentModule = {
         "CC0001": ["10101", ["10102", "10103"], "Pending"],
         "MH1810": ["20202", ["20203", "20204"], "Pending"],
@@ -63,11 +152,45 @@ function ForumPage() {
             })
             
             setDesiredIndex(rows)
+
+            let moduleTaken = await Promise.all(data.modulesTaken.map(async (courseId)=>{
+                const courseResponse = await fetch(
+                    `http://localhost:3001/course/${courseId}`,
+                    {
+                        method: "GET"
+                    }
+                    )
+                let temp = await courseResponse.json()
+                console.log(temp)
+                return temp.courseCode
+            }))
+            setModTaken(moduleTaken)
+
+            // let modulesTaken = await data.modulesTaken.map(async (courseId)=>{
+            //     const courseResponse = await fetch(
+            //         `http://localhost:3001/course/${courseId}`,
+            //         {
+            //             method: "GET"
+            //         }
+            //     )
+            //     const courseData = await courseResponse.json()
+            //     setModTaken([...ModsTaken,courseData.courseCode])
+            //     const indexes = await fetch(
+            //         `http://localhost:3001/course/index/${courseId}`,
+            //         {
+            //             method: "GET"
+            //         }
+            //     )
+            //     let temp = await indexes.json()
+            //     // console.log(temp['indexes'])
+            //     setIndexAvail(temp['indexes'])
+            // })
+
+            
         } catch (error) {
             console.log(error)
         }
     }
-
     useEffect(()=>{
         getExampleCourse()
     },[])
@@ -80,38 +203,26 @@ function ForumPage() {
             headers = {headers}
             rows = {DesiredIndex}
         />
-            {/* <section className="mod_information_section">
-                <div className="mod_information">
-                    <div className="course_code">
-                        <h1> Course code </h1>
-                        <h1> CC0001 </h1>
-                    </div>
-                    <div className="current_index">
-                        <h1> Current Index </h1>
-                        <h1> {exampleStudentModule.CC0001[0]} </h1>
-                    </div>
-                    <div className="desired_index">
-                        <h1> Desired Index </h1>
-                        <h1> {exampleStudentModule.CC0001[1]} </h1>
-                    </div>
-                    <div className="status">
-                        <h1> Status </h1>
-                        <h1> {exampleStudentModule.CC0001[2]} </h1>
-                    </div>
-                </div>
-            </section> */}
             <section className="mod_swapping_section">
                 <RadioForm
-                    options={["SC1001", "SC1002", "SC1003", "AD1102", "AB1601"]} // TOOD: link to API call to current registered modules
+                    options={ModsTaken?ModsTaken:["abc"]} // TOOD: link to API call to current registered modules
                     onRadioChange={onRadioChange}
                     className="radioform_mods"
                 />
 
                 <MuiCheckBox
-                    options={["10101", "10102", "10103"]} // TODO: link to API call to available indexes to module swap
+                    options={IndexAvailable?IndexAvailable:["10101", "10102", "10103"]} // TODO: link to API call to available indexes to module swap
                     onCheckboxChange={onCheckboxChange}
                     className="checkbox_index"
                 />
+                <div>
+                <BasicButtons
+                    choice="contained"
+                    text="add"
+                    visibility={AddVisibility}
+                    func={addDesiredIndexHandler}
+                />
+                </div>
             </section>
         </div>
     );

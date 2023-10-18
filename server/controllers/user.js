@@ -95,7 +95,13 @@ export const addDesiredIndex = async (req, res) => {
     user.modulesDesiredIndex.push([courseId,courseCode,mergedArray])
     // user.modulesDesiredIndex.push(mergedArray)
     // user.modulesDesiredIndex = [courseId,courseCode,mergedArray]
-
+    
+    // user.modulesAdded = []
+    // user.modulesTaken = ["652f3f113eed7ca480f1c168","652f3f113eed7ca480f1c169"]
+    // user.modulesCurrentIndex =[]
+    // user.modulesDesiredIndex = []
+    // user.modulesCurrentIndex = [["652f3f113eed7ca480f1c168","CZ1107","10524"],["652f3f113eed7ca480f1c169","CZ1113","10535"]]
+    // user.modulesDesiredIndex = [["652f3f113eed7ca480f1c168","CZ1107",["10545","10555"]],["652f3f113eed7ca480f1c169","CZ1113",["10536","10546"]]]
     await user.save();
 
     res.status(200).json({usr:user.modulesDesiredIndex, msg:mergedArray});
@@ -133,4 +139,16 @@ export const removeDesiredIndex = async (req, res) => {
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
+}
+
+export const swapIndex = async (userId,courseCode,desiredIndex) => {
+  const user = await User.findById(userId);
+  //update current index
+  user.modulesCurrentIndex.map((module)=>{
+    if (module.courseCode==courseCode){
+      module.index=desiredIndex
+    }
+  })
+  //update desired index
+  user.modulesDesiredIndex.filter((module)=>module.courseCode!==courseCode)
 }
