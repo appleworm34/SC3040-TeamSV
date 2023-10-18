@@ -51,7 +51,7 @@ const AddCourseModal = ({ isOpen, handleClose, children, courseList, setCourseLi
                 </Button>
                 <Typography variant="h6">Course Info</Typography>
               </Box>
-              <Box display={"flex"}>
+              <Box display={"flex"} justifyContent={"space-between"}>
                 <Typography sx={{ padding: "10px"}}variant="h6">{courseInfo.courseCode}</Typography>
                 <Typography sx={{ padding: "10px"}}variant="h6">{courseInfo.courseName}</Typography>
                 <Box sx={{width: "230px"}}></Box>
