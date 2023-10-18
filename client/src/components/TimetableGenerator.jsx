@@ -1,4 +1,4 @@
-export default function generateTimetable(courses) {
+export default function generateTimetable(courses, blockedDays, earliestStartTime, latestEndTime) {
     // const courses = [
     //     {
     //         "courseCode": "CC0001",
@@ -160,9 +160,9 @@ export default function generateTimetable(courses) {
     }
 
     // Define the constraints
-    const blockedDays = ["THU"];
-    const earliestStartTime = "0700";
-    const latestEndTime = "1800";
+    // const blockedDays = ["THU"];
+    // const earliestStartTime = "0700";
+    // const latestEndTime = "1800";
     const failedReasons = [];
 
     const validIndexCombinations = findValidIndexCombinations(0, [], blockedDays, earliestStartTime, latestEndTime, failedReasons);
@@ -173,10 +173,13 @@ export default function generateTimetable(courses) {
             for (const reason of failedReasons) {
                 console.log(reason);
             }
+            return [];
         } else {
             console.log("No valid combinations due to time constraints or blocked days.");
+            return [];
         }
     } else {
         console.log(validIndexCombinations);
+        return validIndexCombinations;
     }
 }
