@@ -26,7 +26,12 @@ const CourseIndex = ({ eventListKey, eventLists, showEventList, toggleEventList,
     return (
         <div key={eventListKey}>
             <div className='flex justify-between mt-4'>
-                <h2 className="mt-1">{eventListKey}</h2>
+                <div className="flex items-center">
+                    <button className="remove-button" onClick={() => handleRemoveCourse(eventLists[eventListKey][index])}>
+                        <RemoveIcon fontSize="small" />
+                    </button>
+                    <h2 className="mt-1">{eventListKey}</h2>
+                </div>
                 <button onClick={() => toggleEventList(eventListKey)}>
                 {showEventList[eventListKey] ? (
                     <ExpandLessIcon fontSize="small" />
