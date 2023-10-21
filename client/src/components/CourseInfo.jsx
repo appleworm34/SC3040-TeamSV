@@ -1,25 +1,32 @@
 import { Box, Typography } from "@mui/material";
 
-const CourseInfo = ({ id, courseCode, courseName }) => {
-  // const [course, setCourse] = useState([])
+const CourseInfo = ({ id, courseCode, courseName, setShowCourseInfo, setCourseInfo }) => {
 
-  // const getCourse = async () => {
-  //   const response = await fetch(
-  //     `https://localhost:3001/courses/${id}`,
-  //     {
-  //       method: "GET"
-  //     }
-  //   )
+  const getCourse = async () => {
+    const response = await fetch(
+      `http://localhost:3001/course/${id}`,
+      {
+        method: "GET"
+      }
+    )
 
-  //   const data = response.json()
-  // }
-
+    const data = await response.json()
+    return data
+  }
+  
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center">
       <Box display="flex" justifyContent="start" alignItems="center" gap="1rem">
         <Box
           onClick={() => {
             // handle click maybe open up a popup that displays all info
+            setShowCourseInfo(true)
+            getCourse().then((data) => {
+              setCourseInfo(data)
+            })
+            .catch((error) => {
+              console.error(error)
+            })
           }}
         >
           <Typography

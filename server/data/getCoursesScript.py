@@ -113,11 +113,19 @@ soup1 = BeautifulSoup(collections2.text, features='html.parser')
 
 target_td = soup1.find_all('td', {'colspan': '3', 'width': '650'})
 target_td = [t.text.strip() for t in target_td]
-# print(target_td)
+correct_desc = []
+
+remove = [8, 10, 17, 18, 26, 28, 33]
+for idx, desc in enumerate(target_td):
+  if idx not in remove:
+    correct_desc.append(desc)
+
+# print(len(correct_desc))
 
 for idx, course in enumerate(courseInfo):
   course['isBDE'] = isBDE
-  course['desc'] = target_td[idx]
+  course['desc'] = correct_desc[idx]
+
 
 # print(courseInfo)
 
@@ -130,7 +138,7 @@ for idx, course in enumerate(courseInfo):
 
 # print(f"Data saved to {file_name}")
 
-### add to DB
+# ### add to DB
 
 # client = pymongo.MongoClient("") #insert MONGO_URL from .env
 # file_path = "./courses/csc-2023-sem1-y1-courses.json"

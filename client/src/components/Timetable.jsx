@@ -2,8 +2,12 @@ import React from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CourseIndexList from './CourseIndexList';
+import generateTimetable from './TimetableGenerator';
+import { Select, MenuItem, Button } from '@mui/material';
+import AddCourseModal from './AddCourseModal';
+import TimetableConstraintsForm from './TimetableConstraintsForm';
 
 const localizer = momentLocalizer(moment);
 const minTime = moment().set({ hour: 8, minute: 0, second: 0 });
@@ -69,13 +73,14 @@ const CustomHeader = ({ label }) => {
 const CustomEvent = ({ event }) => {
   return(
     <div>
-      <strong>{event.type}</strong>
+      <strong>{event.courseCode}</strong>
+      <p>{event.type}</p>
       <p>{event.group}</p>
     </div>
   )
 };
 
-function Timetable({ courseList }) {
+function Timetable({ courseList, setCourseList }) {
   
   const formatIndexList = (course) => {
     const formattedLessons = {}
@@ -92,15 +97,20 @@ function Timetable({ courseList }) {
   }
 
   // console.log(course)
-  const formattedCourseList = []
-
-  for(const e in courseList) {
-    const courseWithDate = addStartDateAndEndDateToLessons(courseList[e]);
-    // console.log(courseWithDate)
-    const formattedLessons = formatIndexList(courseWithDate)
-    formattedCourseList.push(formattedLessons)
-    // console.log(formattedCourseList)
+  const formatCourseList = () => {
+    const formattedCourseList = []
+    for(const e in courseList) {
+      const courseWithDate = addStartDateAndEndDateToLessons(courseList[e]);
+      // console.log(courseWithDate)
+      const formattedLessons = formatIndexList(courseWithDate)
+      formattedCourseList.push(formattedLessons)
+      // console.log(formattedCourseList)
+    }
+    return formattedCourseList
   }
+
+  let formattedCourseList = formatCourseList()
+  // generateTimetable(courseList)
 
   const [eventLists, setEventLists] = useState(formattedCourseList);
   const [selectedEvents, setSelectedEvents] = useState([
@@ -114,6 +124,13 @@ function Timetable({ courseList }) {
   ]);
   const [currentHoveredEvents, setCurrentHoveredEvents] = useState([]);  
   const [showEventList, setShowEventList] = useState({});
+  const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);
+  const [generatedTimetableOptions, setGeneratedTimetableOptions] = useState([]);
+  const [selectedPlanIndex, setSelectedPlanIndex] = useState(-1)
+  const [selectedBlockedDays, setSelectedBlockedDays] = useState([]);
+  const [selectedEarliestStartTime, setSelectedEarliestStartTime] = useState("");
+  const [selectedLatestEndTime, setSelectedLatestEndTime] = useState("");
+  const [showGenerateOptions, setShowGenerateOptions] = useState(false);
 
   const handleEventHover = (events) => {
     // Clear the previously hovered events
@@ -139,19 +156,26 @@ function Timetable({ courseList }) {
     setSelectedEvents((prevSelectedEvents) => {
       // Check if the events are already selected
       const areEventsSelected = events.every((event) =>
-        prevSelectedEvents.some((selectedEvent) => selectedEvent.indexNo === event.indexNo)
+        prevSelectedEvents.some(
+          (selectedEvent) => selectedEvent.indexNo === event.indexNo || selectedEvent.courseCode === event.courseCode
+        )
       );
   
       if (areEventsSelected) {
         // Deselect the events by filtering them out
-        return prevSelectedEvents.filter((selectedEvent) =>
-          events.every((event) => selectedEvent.indexNo !== event.indexNo)
-        );
+        return prevSelectedEvents.filter((selectedEvent) => {
+          // console.log(selectedEvent.courseCode)
+          !events.some(
+            (event) => selectedEvent.indexNo === event.indexNo || selectedEvent.courseCode === event.courseCode
+          )
+      });
       } else {
         // Select the events by adding them
         return [...prevSelectedEvents, ...events];
       }
     });
+
+    console.log(selectedEvents)
   };
 
   const toggleEventList = (eventListKey) => {
@@ -160,11 +184,56 @@ function Timetable({ courseList }) {
       [eventListKey]: !prevShowEventList[eventListKey],
     }));
   };
-    
+  
+  const openPopup = () => {
+    setAddCourseModalOpen(true);
+  };
+
+  const closePopup = () => {
+    setAddCourseModalOpen(false);
+  };
+
+  const formatGeneratedTimeTable = (lessonsList) => {
+    let generatedList = [];
+    for (const idx in lessonsList) {
+      for (const idx1 in lessonsList[idx].lessons)
+        generatedList.push(lessonsList[idx].lessons[idx1]);
+    }
+    setSelectedEvents(generatedList);
+    // console.log(selectedEvents);
+  };
+
+  const handlePlanChange = (event) => {
+    setSelectedPlanIndex(event.target.value);
+  };
+
+  const handleBlockedDaysChange = (event) => {
+    setSelectedBlockedDays(event.target.value);
+  };
+
+  const handleEarliestStartTimeChange = (event) => {
+    setSelectedEarliestStartTime(event.target.value);
+  };
+
+  const handleLatestEndTimeChange = (event) => {
+    setSelectedLatestEndTime(event.target.value);
+  };
+
+  useEffect(() => {    
+    formatGeneratedTimeTable(generatedTimetableOptions[selectedPlanIndex]);
+  }, [selectedPlanIndex, generatedTimetableOptions]);
+
+  useEffect(() => {
+    // This code will run whenever courseList changes
+    formattedCourseList = formatCourseList(courseList);
+    setEventLists(formattedCourseList);
+  }, [courseList]);
+
   return (
     <div className="flex">
       <div className="w-3/4 p-4">
         <Calendar
+          // key={JSON.stringify(selectedEvents)} // Adding a key to force re-render
           localizer={localizer}
           events={selectedEvents}
           defaultView="week" // Set the default view to week
@@ -181,16 +250,80 @@ function Timetable({ courseList }) {
         />
         </div>
         <div className="w-1/4 p-4">
-          <aside className="sticky top-20">
+          <aside>
             {
-              <CourseIndexList
-                eventLists={eventLists}
-                showEventList={showEventList}
-                toggleEventList={toggleEventList}
-                handleEventHover={handleEventHover}
-                handleEventLeave={handleEventLeave}
-                handleEventClick={handleEventClick}
-              />
+              <div>
+                <Button onClick={openPopup}>Add Courses</Button>
+                <AddCourseModal 
+                  isOpen={isAddCourseModalOpen} 
+                  handleClose={closePopup} 
+                  courseList={courseList}
+                  setCourseList={setCourseList}
+                />
+                <div className="ml-2 mt-1">
+                  <div>Added Courses:</div>
+                  <CourseIndexList
+                    eventLists={eventLists}
+                    showEventList={showEventList}
+                    toggleEventList={toggleEventList}
+                    handleEventHover={handleEventHover}
+                    handleEventLeave={handleEventLeave}
+                    handleEventClick={handleEventClick}
+                  />
+                </div>
+                <Button sx={{ marginTop: "20px"}} onClick={() => setShowGenerateOptions(!showGenerateOptions)}>Generate Timetables</Button>
+                {
+                  showGenerateOptions ? (
+                    <div className="flex flex-col">
+                      <TimetableConstraintsForm
+                        selectedBlockedDays={selectedBlockedDays}
+                        selectedEarliestStartTime={selectedEarliestStartTime}
+                        selectedLatestEndTime={selectedLatestEndTime}
+                        handleBlockedDaysChange={handleBlockedDaysChange}
+                        handleEarliestStartTimeChange={handleEarliestStartTimeChange}
+                        handleLatestEndTimeChange={handleLatestEndTimeChange}
+                      />
+                      <div className="self-end mr-5">
+                        <Button sx={{marginTop: "20px" }} onClick={() => setGeneratedTimetableOptions(generateTimetable(courseList, selectedBlockedDays, selectedEarliestStartTime, selectedLatestEndTime))}>Generate</Button>
+                      </div>
+                    </div>
+                  ) : null
+                }
+                {generatedTimetableOptions.length > 1 ? 
+                (
+                  <div className='ml-2 mt-5'>
+                    <div>Generated Timetables:</div>
+                    <Select
+                      value={selectedPlanIndex}
+                      onChange={handlePlanChange}
+                      sx={{ marginTop: '20px' }}
+                    >
+                      <MenuItem value={-1}>None</MenuItem> 
+                      {generatedTimetableOptions.map((option, index) => (
+                        <MenuItem key={index} value={index}>
+                          Plan {index + 1}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {
+                      selectedPlanIndex > -1 ? 
+                        (
+                          <div>
+                            <div className='mt-5 mb-2'>Plan details:</div>
+                            {generatedTimetableOptions[selectedPlanIndex].map((course) => (
+                            <div className='flex'>
+                              <div className='mr-4'>{course.courseCode}</div>
+                              <div>{course.indexNo}</div>
+                            </div>
+                            ))}
+                          </div>
+                        ) 
+                        : null
+                    }
+                  </div>
+                ) 
+                : null}
+              </div>
             }
           </aside>
         </div>
