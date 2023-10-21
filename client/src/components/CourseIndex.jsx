@@ -1,6 +1,9 @@
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useState } from 'react';
 import { Divider } from '@mui/material';
 
@@ -26,9 +29,9 @@ const CourseIndex = ({ eventListKey, eventLists, showEventList, toggleEventList,
                 <h2 className="mt-1">{eventListKey}</h2>
                 <button onClick={() => toggleEventList(eventListKey)}>
                 {showEventList[eventListKey] ? (
-                    <RemoveIcon fontSize="small" />
+                    <ExpandLessIcon fontSize="small" />
                 ) : (
-                    <AddIcon fontSize="small" />
+                    <ListAltIcon fontSize="small" />
                 )}
                 </button>
             </div>
