@@ -3,6 +3,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useState, useEffect } from 'react';
+import CourseIndex from './CourseIndex'
 import CourseIndexList from './CourseIndexList';
 import generateTimetable from './TimetableGenerator';
 import { Select, MenuItem, Button } from '@mui/material';
@@ -219,6 +220,17 @@ function Timetable({ courseList, setCourseList }) {
     setSelectedLatestEndTime(event.target.value);
   };
 
+  const handleRemoveCourse = (courseCode) => {
+    //console.log(courseCode[0]); // course code of the course to be removed
+  
+    // filter the courseList to remove the course with the specified course code
+    if (courseList) {
+      const updatedCourseList = courseList.filter((course) => course.courseCode !== courseCode[0]);
+      setCourseList(updatedCourseList);
+    }
+    
+  };
+
   useEffect(() => {    
     formatGeneratedTimeTable(generatedTimetableOptions[selectedPlanIndex]);
   }, [selectedPlanIndex, generatedTimetableOptions]);
@@ -269,6 +281,7 @@ function Timetable({ courseList, setCourseList }) {
                     handleEventHover={handleEventHover}
                     handleEventLeave={handleEventLeave}
                     handleEventClick={handleEventClick}
+                    handleRemoveCourse={handleRemoveCourse}
                   />
                 </div>
                 <Button sx={{ marginTop: "20px"}} onClick={() => setShowGenerateOptions(!showGenerateOptions)}>Generate Timetables</Button>

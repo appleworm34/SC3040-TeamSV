@@ -1,10 +1,22 @@
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useState } from 'react';
 import { Divider } from '@mui/material';
 
-const CourseIndex = ({ eventListKey, eventLists, showEventList, toggleEventList, handleEventHover, handleEventLeave, handleEventClick }) => {
+const CourseIndex = ({ 
+    eventListKey, 
+    eventLists, 
+    showEventList, 
+    toggleEventList, 
+    handleEventHover, 
+    handleEventLeave, 
+    handleEventClick, 
+    handleRemoveCourse
+}) => {
     const [clickedStates, setClickedStates] = useState(eventLists[eventListKey].map(() => false));
 
     const handleElementClick = (index) => {
@@ -23,12 +35,17 @@ const CourseIndex = ({ eventListKey, eventLists, showEventList, toggleEventList,
     return (
         <div key={eventListKey}>
             <div className='flex justify-between mt-4'>
-                <h2 className="mt-1">{eventListKey}</h2>
+                <div className="flex items-center">
+                <button className="remove-button" onClick={() => handleRemoveCourse(eventListKey)}>
+                        <RemoveIcon fontSize="small" />
+                    </button>
+                    <h2 className="mt-1">{eventListKey}</h2>
+                </div>
                 <button onClick={() => toggleEventList(eventListKey)}>
                 {showEventList[eventListKey] ? (
-                    <RemoveIcon fontSize="small" />
+                    <ExpandLessIcon fontSize="small" />
                 ) : (
-                    <AddIcon fontSize="small" />
+                    <ListAltIcon fontSize="small" />
                 )}
                 </button>
             </div>
