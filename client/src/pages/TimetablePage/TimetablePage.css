@@ -8,12 +8,14 @@
     display: flex;
     width: 50%;
     height: 80px;
+    padding: 20px;
 }
 
 .rightColumn {
     display: flex;
     width: 50%;
     height: 80px;
+    padding: 20px;
 }
 
 .rbc-current-time-indicator {
@@ -33,5 +35,7 @@
 }
 
 .clicked {
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background-color: rgba(0, 255, 0, 0.5); /* Light green with reduced opacity */
   }

@@ -5,8 +5,8 @@ import CourseList from './CourseList';
 import { ArrowBack } from '@mui/icons-material';
 
 const AddCourseModal = ({ isOpen, handleClose, children, courseList, setCourseList }) => {
-  const [showCourseInfo, setShowCourseInfo] = useState(false)
-  const [courseInfo, setCourseInfo] = useState({})
+  const [showCourseInfo, setShowCourseInfo] = useState(false);
+  const [courseInfo, setCourseInfo] = useState({});
 
   const handleAddCourseClick = () => {
     // Check if the course is already in the courseList
@@ -30,39 +30,63 @@ const AddCourseModal = ({ isOpen, handleClose, children, courseList, setCourseLi
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: '100%',
-    maxWidth: '1000px',
-    bgcolor: 'background.paper',
+    maxWidth: '800px',
+    bgcolor: 'white',
     borderRadius: '8px',
-    overflowY: 'auto', // Make the content scrollable
-    maxHeight: '80vh'
+    overflowY: 'auto',
+    maxHeight: '80vh',
+  };
+
+  const headerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: '16px',
+  };
+
+  const backButtonStyle = {
+    marginLeft: '-16px', // align to the left
+  };
+
+  const addCourseButtonContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+  };
+
+  const contentStyle = {
+    padding: '32px',
+    paddingBottom: '32px',
   };
 
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <div style={modalStyle}>
-        <Paper style={{ padding: '16px' }}>
+        <Paper>
           {showCourseInfo ? (
-            <Box>
-              <Box display="flex" alignItems="center">
-                <Button
-                  onClick={() => setShowCourseInfo(false)}
-                >
+            <Box style={contentStyle}>
+              <Box style={headerStyle}>
+                <Button onClick={() => setShowCourseInfo(false)} style={backButtonStyle}>
                   <ArrowBack />
                 </Button>
                 <Typography variant="h6">Course Info</Typography>
+                <Box style={addCourseButtonContainerStyle}>
+                  <Button onClick={handleAddCourseClick} variant="contained" color="primary">
+                    Add
+                  </Button>
+                </Box>
               </Box>
-              <Box display={"flex"} justifyContent={"space-between"}>
-                <Typography sx={{ padding: "10px"}}variant="h6">{courseInfo.courseCode}</Typography>
-                <Typography sx={{ padding: "10px"}}variant="h6">{courseInfo.courseName}</Typography>
-                <Box sx={{width: "230px"}}></Box>
-                <Button onClick={()=>{handleAddCourseClick()}}>Add</Button>
-              </Box>
+              <Typography variant="h6" gutterBottom>
+                {courseInfo.courseCode}
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                {courseInfo.courseName}
+              </Typography>
               <Typography>{courseInfo.desc}</Typography>
             </Box>
           ) : (
-            <div>
+            <div style={contentStyle}>
               {children}
-              <CourseList 
+              <CourseList
                 setShowCourseInfo={setShowCourseInfo}
                 setCourseList={setCourseList}
                 setCourseInfo={setCourseInfo}
