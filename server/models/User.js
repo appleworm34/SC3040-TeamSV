@@ -21,23 +21,20 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    // prerequisites or filter
     modulesTaken: {
-      type: [String],
-      required: true,
+      type: [{}], // [{courseId:"",courseCode:""}]
+      // required: true,
     },
+    // courses added by user BUT not assigned
     modulesAdded : {
-      type: [String],
-      required: true
+      type: [{}],// {courseId:"",courseCode:"",index:""}
+      // required: true
     },
-    // [[courseId,courseCode,index], ...]
+    // [{courseId:,courseCode:,index:}, ...]
     modulesCurrentIndex: {
-      type: [[String]],
-      required: true,
-    },
-    // [[courseId,courseCode,[index...]]]
-    modulesDesiredIndex: {
-      type: [[]],
-      required: true,
+      type: [{}],
+      // required: true,
     }
   }, {timestamps: true}
 )

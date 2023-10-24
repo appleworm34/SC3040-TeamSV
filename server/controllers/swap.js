@@ -1,5 +1,7 @@
 import Swap from "../models/Swap.js"
-import swapIndex from "../controllers/user.js"
+import {swapIndex} from "../controllers/user.js"
+import User from '../models/User.js'
+import Course from "../models/Course.js"
 
 export const getSwaps = async(req,res)=>{
     try{
@@ -9,6 +11,16 @@ export const getSwaps = async(req,res)=>{
         res.status(409).json({ message: error.message });
     }
 }
+
+export const deleteAllSwaps = async (req, res) => {
+    try {
+      // Delete all swap records in the database
+      await Swap.deleteMany({});
+      res.status(200).json({ message: 'All swap records deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
 
 const findMatch = async (courseList,courseCode) => {
     // CONCEPT: use graph to simplify matching problem, nodes represent indexes, directed edge comes from current index to desired index, if there is a cycle in the constructed graph, then there is a matching set which can be swapped
@@ -113,6 +125,12 @@ export const addSwap = async (req, res) => {
 
     const course = await Swap.find();
     // add into user.moduledesiredindex
+    const user = await User.findById(userId);
+    let courses = await Course.find();
+    let courseId=courses.filter((course)=>course.courseCode===courseCode)[0]._id
+    // user.modulesCurrentIndex.push([courseId,courseCode,currentIndex])
+    user.modulesDesiredIndex=[]
+    await user.save()
     let pass = findMatch(course,courseCode)
     res.status(201).json({swap:pass});
   } catch (err) {

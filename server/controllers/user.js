@@ -1,6 +1,17 @@
 import Course from '../models/Course.js'
 import User from '../models/User.js'
 
+export const deleteAllUsers = async (req, res) => {
+  try {
+    // Use the deleteMany method to delete all documents in the "User" collection
+    const result = await User.deleteMany({});
+    console.log(`Deleted ${result.deletedCount} user(s)`);    
+    res.status(200).json({message:"deleted all users"})
+  } catch (e) {
+    res.status(404).json({message: e.message})
+  }
+}
+
 export const getUser = async (req, res) => {
   try {
     const { id } = req.params
@@ -71,15 +82,6 @@ export const addDesiredIndex = async (req, res) => {
     const courseCode = req.body['courseCode']
     const indexes = req.body['indexes']
     const user = await User.findById(userId);
-    if (!user.modulesCurrentIndex.find(arr => arr[1]===courseCode)){
-      res.json({
-        message:"module is not yet assigned to user!",
-        req:req.body,
-        code: courseCode,
-        usr:user.modulesCurrentIndex
-      })
-      return
-    }
     const courseId = user.modulesCurrentIndex.find(arr => arr[1]==courseCode)[0]
     // can add
     const array1 = user.modulesDesiredIndex.find((arr)=>arr[1]==courseCode)?user.modulesDesiredIndex.find((arr)=>arr[1]==courseCode)[2]:[];
