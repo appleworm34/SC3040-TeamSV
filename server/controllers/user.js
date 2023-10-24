@@ -53,3 +53,14 @@ export const addRemoveCourseTaken = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 }
+
+export const getUserAddedModules = async (req, res) => {
+  try {
+    const { id } = req.params
+    const user = await User.findById(id)
+    
+    res.status(200).json(user.modulesAdded)
+  } catch (e) {
+    res.status(404).json({message: e.message})
+  }
+}

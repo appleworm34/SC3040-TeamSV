@@ -9,6 +9,7 @@ import generateTimetable from './TimetableGenerator';
 import { Select, MenuItem, Button } from '@mui/material';
 import AddCourseModal from './AddCourseModal';
 import TimetableConstraintsForm from './TimetableConstraintsForm';
+import { useSelector } from 'react-redux';
 
 const localizer = momentLocalizer(moment);
 const minTime = moment().set({ hour: 8, minute: 0, second: 0 });
@@ -132,6 +133,7 @@ function Timetable({ courseList, setCourseList }) {
   const [selectedEarliestStartTime, setSelectedEarliestStartTime] = useState("");
   const [selectedLatestEndTime, setSelectedLatestEndTime] = useState("");
   const [showGenerateOptions, setShowGenerateOptions] = useState(false);
+  const {_id} = useSelector((state) => state.user) || "";
 
   const handleEventHover = (events) => {
     // Clear the previously hovered events
@@ -222,13 +224,28 @@ function Timetable({ courseList, setCourseList }) {
 
   const handleRemoveCourse = (courseCode) => {
     //console.log(courseCode[0]); // course code of the course to be removed
-  
+    const patchModulesAdded = async (courseId) => {
+      const response = await fetch(
+        `http://localhost:3001/user/add/${_id}/${courseId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+    };
     // filter the courseList to remove the course with the specified course code
     if (courseList) {
+      const courseToUpdate = courseList.filter((course) => course.courseCode === courseCode[0]);
+      // console.log(courseToUpdate[0]);
+      const courseId = courseToUpdate[0]._id;
       const updatedCourseList = courseList.filter((course) => course.courseCode !== courseCode[0]);
       setCourseList(updatedCourseList);
+      patchModulesAdded(courseId);
     }
-    
+
   };
 
   useEffect(() => {    
