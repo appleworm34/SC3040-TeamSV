@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import CourseIndex from './CourseIndexes'
 import CourseIndexList from './CourseIndexList';
 import generateTimetable from './TimetableGenerator';
-import { Select, MenuItem, Button, Divider } from '@mui/material';
+import { Select, MenuItem, Button, Divider, Alert, Snackbar, Dialog } from '@mui/material';
 import AddCourseModal from './AddCourseModal';
 import TimetableConstraintsForm from './TimetableConstraintsForm';
 import { useSelector } from 'react-redux';
@@ -131,6 +131,14 @@ function Timetable({ courseList, setCourseList }) {
   const [showGenerateOptions, setShowGenerateOptions] = useState(false);
   const [plans, setPlans] = useState([[], [], [], [], []]);
   const [active, setActive] = useState([]); 
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [failedReasons, setFailedReasons] = useState([])
+
   const {_id} = useSelector((state) => state.user) || "";
 
   const getUserPlans = async () => {
@@ -287,6 +295,7 @@ function Timetable({ courseList, setCourseList }) {
       updatedPlans[planIndex] = newPlan;
       setPlans(updatedPlans);
       updatePlans(updatedPlans);
+      handleOpenSnackbar(`Plan ${planIndex+1} saved.`, "success");
       // console.log(updatedPlans)
     }
   };
@@ -314,19 +323,59 @@ function Timetable({ courseList, setCourseList }) {
       updatePlans(updatedPlans);
       setSelectedEvents([...plans[planIndex]]);
       setCourseList([]);
+      handleOpenSnackbar(`Plan ${planIndex+1} deleted.`, "success");
     }
   };
 
   // Function to handle plan selection from the dropdown
   const handlePlanSelect = (planIndex) => {
-    if (planIndex === -1)
+    if (planIndex === -1) {
       setSelectedEvents([]);
-    if (planIndex >= 0 && planIndex < plans.length && plans[planIndex].length > 0) {
-      setSelectedEvents([...plans[planIndex]]);
+      handleOpenSnackbar('No Plan selected.', "info");
     }
+    if (planIndex >= 0 && planIndex < plans.length) {
+      if (plans[planIndex].length > 0) {
+        setSelectedEvents([...plans[planIndex]]);
+        handleOpenSnackbar(`Plan ${planIndex+1} loaded.`, "success");
+      }
+      else {
+        handleOpenSnackbar(`Plan empty.`, "info");
+      }
+    } 
     setSelectedPlanIndex(planIndex);
-  }
-  
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  const handleOpenSnackbar = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleGenerateTimetable = () => {
+      const [options, failedReasons] = generateTimetable(courseList, selectedBlockedDays, selectedEarliestStartTime, selectedLatestEndTime)
+      if (courseList.length === 0) setFailedReasons(["No courses selected."]);
+      else setFailedReasons(failedReasons);
+
+      if (options.length !== 0) {
+        setGeneratedTimetableOptions(options);
+        handleOpenSnackbar(`Successfully generated ${options.length} plans.`, "success");
+      }
+      else {
+        handleOpenSnackbar(`Not able to generate plans.`, "warning");
+      }
+  };
+
+  const handleViewMoreClick = () => {
+    setDialogOpen(true);
+    handleCloseSnackbar(); // Close the Snackbar when you open the dialog
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
   useEffect(() => {
     function convertToDates(arr) {
       return arr.map((item) => {
@@ -436,6 +485,37 @@ function Timetable({ courseList, setCourseList }) {
               handleSelectPlan={handlePlanSelect} 
               selectedPlanIndex={selectedPlanIndex}
             />
+            <Snackbar
+              open={snackbar.open}
+              autoHideDuration={1000}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              onClose={handleCloseSnackbar}
+            >
+              <Alert
+                sx={{ width: "100%", fontSize: "1.1rem" }}
+                elevation={6}
+                variant="filled"
+                onClose={handleCloseSnackbar}
+                severity={snackbar.severity}
+                action={
+                  snackbar.severity === 'warning' ? (
+                  <Button color="inherit" size="small" onClick={handleViewMoreClick}>
+                    View More
+                  </Button> ) : null
+                }
+              >
+                {snackbar.message}
+              </Alert>
+            </Snackbar>
+            <Dialog open={dialogOpen} onClose={handleDialogClose}>
+              <div className='m-4'>
+                {
+                  failedReasons.map((reason) => (
+                    <div>{reason}</div>
+                  ))
+                }
+              </div>
+            </Dialog>
             {
               <div className='mt-4'>
                 <Button onClick={openPopup}>Add Courses</Button>
@@ -473,7 +553,8 @@ function Timetable({ courseList, setCourseList }) {
                         handleLatestEndTimeChange={handleLatestEndTimeChange}
                       />
                       <div className="self-end mr-5">
-                        <Button sx={{marginTop: "20px" }} onClick={() => setGeneratedTimetableOptions(generateTimetable(courseList, selectedBlockedDays, selectedEarliestStartTime, selectedLatestEndTime))}>Generate</Button>
+                        <Button sx={{marginTop: "20px" }} onClick={() => handleGenerateTimetable()}
+                        >Generate</Button>
                       </div>
                     </div>
                   ) : null
@@ -490,7 +571,7 @@ function Timetable({ courseList, setCourseList }) {
                       <MenuItem value={-1}>None</MenuItem> 
                       {generatedTimetableOptions.map((option, index) => (
                         <MenuItem key={index} value={index}>
-                          Plan {index + 1}
+                          Generated Plan {index + 1}
                         </MenuItem>
                       ))}
                     </Select>

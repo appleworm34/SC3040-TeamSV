@@ -82,6 +82,10 @@ export default function generateTimetable(courses, blockedDays, earliestStartTim
         });
         console.log(courses[e])
     }
+    
+    // Set default values
+    if (earliestStartTime === '') earliestStartTime = "0600";
+    if (latestEndTime === '') latestEndTime = "2200";
 
     function findValidIndexCombinations(courseIndex, currentCombination, blockedDays, earliestStartTime, latestEndTime, failedReasons) {
         if (courseIndex === courses.length) {
@@ -173,13 +177,14 @@ export default function generateTimetable(courses, blockedDays, earliestStartTim
             for (const reason of failedReasons) {
                 console.log(reason);
             }
-            return [];
+            return [[], failedReasons];
         } else {
             console.log("No valid combinations due to time constraints or blocked days.");
-            return [];
+            return [[], failedReasons];
         }
     } else {
         console.log(validIndexCombinations);
-        return validIndexCombinations;
+        if (validIndexCombinations[0].length === 0) return [[], failedReasons];
+        else return [validIndexCombinations, failedReasons];
     }
 }
