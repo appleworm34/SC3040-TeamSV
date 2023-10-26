@@ -64,7 +64,7 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      handleOpenSnackbar("Welcome to SG Acad", "success");
+      handleOpenSnackbar("Welcome to NTU MOONS", "success");
       navigate("/");
     }
   };
