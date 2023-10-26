@@ -26,7 +26,11 @@ const UserSchema = new mongoose.Schema(
       required: true,
     },
     modulesAdded : {
-      type: [String],
+      type: Array,
+      required: true
+    },
+    plans : {
+      type: Array,
       required: true
     }
   }, {timestamps: true}

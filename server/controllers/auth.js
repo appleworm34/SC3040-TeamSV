@@ -4,7 +4,7 @@ import User from "../models/User.js"
 
 export const register = async (req, res) => {
   try {
-      console.log("register req body: ", req.body)
+    //   console.log("register req body: ", req.body)
       const {
           name,
           email,
