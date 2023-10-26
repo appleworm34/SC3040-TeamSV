@@ -102,6 +102,7 @@ const findMatch = async (courseList,courseCode) => {
             let removed = await Swap.findByIdAndRemove(userId)
             let courseCode = removed.courseCode
             swapIndex(removed.userId,courseCode,vertex2)
+
           console.log(`${vertex1} -> ${vertex2} (swap_id: ${userId})`);
           pass=true
         }
@@ -121,18 +122,31 @@ export const addSwap = async (req, res) => {
         currentIndex:currentIndex,
         desiredIndex:desiredIndex
     });
+    
     await newSwap.save();
 
+    
     const course = await Swap.find();
-    // add into user.moduledesiredindex
-    const user = await User.findById(userId);
-    let courses = await Course.find();
-    let courseId=courses.filter((course)=>course.courseCode===courseCode)[0]._id
-    // user.modulesCurrentIndex.push([courseId,courseCode,currentIndex])
-    user.modulesDesiredIndex=[]
-    await user.save()
-    let pass = findMatch(course,courseCode)
-    res.status(201).json({swap:pass});
+    // // add into user.moduledesiredindex
+    // const user = await User.findById(userId);
+    // let courses = await Course.find();
+    // let courseId=courses.filter((course)=>course.courseCode===courseCode)[0]._id
+    // // user.modulesCurrentIndex.push([courseId,courseCode,currentIndex])
+    // user.modulesDesiredIndex=[]
+    // await user.save()
+    let pass = await findMatch(course,courseCode)
+    if (pass){
+      // change current user index
+      const user = await User.findById(newSwap.userId)
+      user.modulesCurrentIndex.map(module => {
+        if (module.courseCode==courseCode){
+          module.index=desiredIndex
+        }
+      })
+      await user.save();
+    }
+    // res.status(201).json({swap:pass});
+    res.status(200).json({swap:pass})
   } catch (err) {
     res.status(409).json({ message: err.message });
   }

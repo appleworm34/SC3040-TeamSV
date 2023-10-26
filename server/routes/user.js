@@ -1,5 +1,5 @@
 import express from "express"
-import {deleteAllUsers, getUser, addRemoveCourse, addRemoveCourseTaken, getAllUsers, addDesiredIndex, removeDesiredIndex} from "../controllers/user.js"
+import {deleteUser, deleteAllUsers, getUser, addRemoveCourse, addRemoveCourseTaken, getAllUsers, addDesiredIndex, removeDesiredIndex} from "../controllers/user.js"
 
 const router = express.Router();
 
@@ -8,6 +8,7 @@ router.get("/", getAllUsers)
 router.get("/:id", getUser);
 
 router.post("/delete-all",deleteAllUsers);
+router.post("/delete-user/:id",deleteUser);
 
 router.patch("/add/:userId/:courseId/:index", addRemoveCourse)
 

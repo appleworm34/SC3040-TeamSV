@@ -128,7 +128,7 @@ function ForumPage() {
             const data = {
                 userId:user_id,
                 courseCode:ModToSwap,
-                currentIndex:user.modulesCurrentIndex.filter(module=>module[1]===ModToSwap)[0][2],
+                currentIndex:user.modulesCurrentIndex.filter(module=>module.courseCode===ModToSwap)[0].index,
                 desiredIndex:IndexToSwap
             }
             console.log(data)
@@ -140,6 +140,7 @@ function ForumPage() {
                 },
                 body: JSON.stringify(data), // Convert data to a JSON string
               };
+            console.log(data)
             const response = await fetch(url, requestOptions);
             if (!response.ok) {
                 throw new Error('Network response was not ok');

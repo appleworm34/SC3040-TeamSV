@@ -1,6 +1,24 @@
 import Course from '../models/Course.js'
 import User from '../models/User.js'
 
+export const deleteUser = async (req,res) => {
+  try {
+    const {id} = req.params
+    console.log(id)
+    const deletedUser = await User.findByIdAndRemove(id);
+    if (deletedUser) {
+      console.log(`Deleted user: ${deletedUser.name}`);
+    } else {
+      console.log('User not found.');
+    }
+    res.status(200).json({message:"pass"})
+
+  } catch(e){
+    res.status(404).json({message:e.message})
+  }
+
+}
+
 export const deleteAllUsers = async (req, res) => {
   try {
     // Use the deleteMany method to delete all documents in the "User" collection
@@ -151,6 +169,5 @@ export const swapIndex = async (userId,courseCode,desiredIndex) => {
       module.index=desiredIndex
     }
   })
-  //update desired index
-  user.modulesDesiredIndex.filter((module)=>module.courseCode!==courseCode)
+  //
 }
