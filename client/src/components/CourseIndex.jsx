@@ -1,82 +1,73 @@
-import React from 'react';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { useState } from 'react';
-import { Divider } from '@mui/material';
+import React, { useState } from 'react';
 
-const CourseIndex = ({ 
-    eventListKey, 
-    eventLists, 
-    showEventList, 
-    toggleEventList, 
-    handleEventHover, 
-    handleEventLeave, 
-    handleEventClick, 
-    handleRemoveCourse
+const CourseIndex = ({
+  eventListKey,
+  eventLists,
+  handleEventHover,
+  handleEventLeave,
+  handleEventClick,
+  element,
+  index,
+  active,
+  setActive,
+  listIndex
 }) => {
-    const [clickedStates, setClickedStates] = useState(eventLists[eventListKey].map(() => false));
+  const [isClicked, setIsClicked] = useState(active[listIndex] === index);
 
-    const handleElementClick = (index) => {
-        setClickedStates((prevClickedStates) => {
-            const newClickedStates = [...prevClickedStates];
-            newClickedStates[index] = !newClickedStates[index];
-            return newClickedStates;
-        });
+  // console.log(active)
+  const handleElementClick = () => {
+    setIsClicked(!isClicked);
 
-        // Handle event click
-        if(clickedStates[index]) {
-            handleEventClick(eventLists[eventListKey][index]);
-        }
-    };
+    if (isClicked) {
+      setActive((prevActive) => {
+        const temp = [...prevActive];
+        temp[listIndex] = -1;
+        return temp;
+      });
+    } else {
+      setActive((prevActive) => {
+        const temp = [...prevActive];
+        temp[listIndex] = index;
+        return temp;
+      });
+    }
+    
+    // let temp = active;
+    // // console.log(index)
+    // if (active[listIndex] === -1) {
+    //   temp[listIndex] = index;
+    // }
+    // else {
+    //   temp[listIndex] = -1;
+    // } 
+    // setActive(temp);
+    // console.log(active)
 
-    return (
-        <div key={eventListKey}>
-            <div className='flex justify-between mt-4'>
-                <div className="flex items-center">
-                <button className="remove-button" onClick={() => handleRemoveCourse(eventListKey)}>
-                        <RemoveIcon fontSize="small" />
-                    </button>
-                    <h2 className="mt-1">{eventListKey}</h2>
-                </div>
-                <button onClick={() => toggleEventList(eventListKey)}>
-                {showEventList[eventListKey] ? (
-                    <ExpandLessIcon fontSize="small" />
-                ) : (
-                    <ListAltIcon fontSize="small" />
-                )}
-                </button>
-            </div>
-            <Divider />
-            {showEventList[eventListKey] && (
-                <div>
-                {eventLists[eventListKey].map((element, index) => (
-                    <div>
-                        {/* <Divider /> */}
-                        <div
-                            onMouseEnter={() => {
-                                if(!clickedStates[index])
-                                    handleEventHover(element)
-                            }}
-                            onMouseLeave={() => {
-                                if(!clickedStates[index])
-                                    handleEventLeave()
-                            }}
-                            onClick={() => {
-                                handleElementClick(index)
-                            }}
-                            className={`cursor-pointer p-2 ${clickedStates[index] ? 'clicked' : ''}`}
-                        >
-                        {eventLists[eventListKey][index][0].indexNo}
-                        </div>
-                    </div>
-                ))}
-                </div>
-            )}
-        </div>
-    );
-};
+    if(isClicked)
+      handleEventClick(eventLists[eventListKey][index]);
+  }
+
+  return (
+    <div>
+      <div
+        onMouseEnter={() => {
+          if(!isClicked)
+            handleEventHover(element)
+        }}
+        onMouseLeave={() => {
+          if(!isClicked)
+            handleEventLeave()
+        }}
+        onClick={() => {
+          if(active[listIndex] === -1 || active[listIndex] === index)
+            handleElementClick(index)
+        }}
+        className={`cursor-pointer p-2 mt-1 mb-1 mr-2 rounded border-4 ${isClicked ? 'bg-emerald-300 border-emerald-300' : ''}`}
+      >
+      {eventLists[eventListKey][index][0].indexNo}
+      </div>
+    </div>
+  )
+}
 
 export default CourseIndex;

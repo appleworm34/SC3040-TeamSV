@@ -3,23 +3,39 @@ import { Modal, Paper, Typography, Button, Box } from '@mui/material';
 import { useState } from 'react';
 import CourseList from './CourseList';
 import { ArrowBack } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
 
 const AddCourseModal = ({ isOpen, handleClose, children, courseList, setCourseList }) => {
   const [showCourseInfo, setShowCourseInfo] = useState(false);
   const [courseInfo, setCourseInfo] = useState({});
+  const user = useSelector((state) => state.user);
+
+  // const patchModulesAdded = async () => {
+  //   const response = await fetch(
+  //     `http://localhost:3001/user/add/${user._id}/${courseInfo._id}`,
+  //     {
+  //       method: "PATCH",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
+  //   const data = await response.json();
+  // };
 
   const handleAddCourseClick = () => {
     // Check if the course is already in the courseList
-    const isCourseInList = courseList.some(
+    const isCourseInList = courseList.length > 0 ? courseList.some(
       (existingCourse) => existingCourse._id === courseInfo._id
-    );
+    ) : false;
 
     if (!isCourseInList) {
       // If the course is not in the list, add it
       const updatedCourseList = [...courseList, courseInfo];
       setCourseList(updatedCourseList);
     }
-
+    // patchModulesAdded();
+    setShowCourseInfo(false);
     // Close the modal
     handleClose();
   };
