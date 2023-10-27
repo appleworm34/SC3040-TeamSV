@@ -161,6 +161,7 @@ export const removeDesiredIndex = async (req, res) => {
   }
 }
 
+
 export const swapIndex = async (userId,courseCode,desiredIndex) => {
   console.log("in swapindex")
   const user = await User.findOne({_id:userId});
@@ -188,4 +189,43 @@ export const swapIndex = async (userId,courseCode,desiredIndex) => {
   }
   
   //
+
+export const getUserAddedModules = async (req, res) => {
+  try {
+    const { id } = req.params
+    const user = await User.findById(id)
+    
+    res.status(200).json(user.modulesAdded)
+  } catch (e) {
+    res.status(404).json({message: e.message})
+  }
+}
+
+export const getUserPlans = async (req, res) => {
+  try {
+    const { id } = req.params
+    const user = await User.findById(id)
+    
+    res.status(200).json(user.plans)
+  } catch (e) {
+    res.status(404).json({message: e.message})
+  }
+}
+
+export const updatePlans = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newPlan } = req.body;
+    console.log(id)
+    const user = await User.findById(id);
+    console.log(user.plans)
+    user.plans = newPlan;
+
+    await user.save();
+
+    res.status(200).json(user.plans)
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+
 }

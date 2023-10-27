@@ -35,6 +35,11 @@ const UserSchema = new mongoose.Schema(
     modulesCurrentIndex: {
       type: [{}],
       // required: true,
+    },
+    plans : {
+      type: Array,
+      required: true
+
     }
   }, {timestamps: true}
 )

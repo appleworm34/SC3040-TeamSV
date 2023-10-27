@@ -32,7 +32,7 @@ import {
             <Grid item md={6} lg={4}>
               <FooterTitle variant="body1">About us</FooterTitle>
               <Typography variant="caption2">
-                NTU Moon aims to help students of NTU ease timetable scheduling.
+                NTU Moons aims to help students of NTU ease timetable scheduling.
               </Typography>
     
               <Box

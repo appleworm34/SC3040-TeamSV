@@ -1,4 +1,4 @@
-export default function generateTimetable(courses) {
+export default function generateTimetable(courses, blockedDays, earliestStartTime, latestEndTime) {
     // const courses = [
     //     {
     //         "courseCode": "CC0001",
@@ -82,6 +82,10 @@ export default function generateTimetable(courses) {
         });
         console.log(courses[e])
     }
+    
+    // Set default values
+    if (earliestStartTime === '') earliestStartTime = "0600";
+    if (latestEndTime === '') latestEndTime = "2200";
 
     function findValidIndexCombinations(courseIndex, currentCombination, blockedDays, earliestStartTime, latestEndTime, failedReasons) {
         if (courseIndex === courses.length) {
@@ -160,9 +164,9 @@ export default function generateTimetable(courses) {
     }
 
     // Define the constraints
-    const blockedDays = ["THU"];
-    const earliestStartTime = "0700";
-    const latestEndTime = "1800";
+    // const blockedDays = ["THU"];
+    // const earliestStartTime = "0700";
+    // const latestEndTime = "1800";
     const failedReasons = [];
 
     const validIndexCombinations = findValidIndexCombinations(0, [], blockedDays, earliestStartTime, latestEndTime, failedReasons);
@@ -173,10 +177,14 @@ export default function generateTimetable(courses) {
             for (const reason of failedReasons) {
                 console.log(reason);
             }
+            return [[], failedReasons];
         } else {
             console.log("No valid combinations due to time constraints or blocked days.");
+            return [[], failedReasons];
         }
     } else {
         console.log(validIndexCombinations);
+        if (validIndexCombinations[0].length === 0) return [[], failedReasons];
+        else return [validIndexCombinations, failedReasons];
     }
 }
