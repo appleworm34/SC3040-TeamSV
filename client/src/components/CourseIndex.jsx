@@ -10,9 +10,10 @@ const CourseIndex = ({
   index,
   active,
   setActive,
-  listIndex
+  listIndex,
+  indexNo
 }) => {
-  const [isClicked, setIsClicked] = useState(active[listIndex] === index);
+  const [isClicked, setIsClicked] = useState(active[listIndex] === indexNo);
 
   // console.log(active)
   const handleElementClick = () => {
@@ -27,11 +28,11 @@ const CourseIndex = ({
     } else {
       setActive((prevActive) => {
         const temp = [...prevActive];
-        temp[listIndex] = index;
+        temp[listIndex] = indexNo;
         return temp;
       });
     }
-    
+
     // let temp = active;
     // // console.log(index)
     // if (active[listIndex] === -1) {
@@ -59,7 +60,7 @@ const CourseIndex = ({
             handleEventLeave()
         }}
         onClick={() => {
-          if(active[listIndex] === -1 || active[listIndex] === index)
+          if(active[listIndex] === -1 || active[listIndex] === indexNo)
             handleElementClick(index)
         }}
         className={`cursor-pointer p-2 mt-1 mb-1 mr-2 rounded border-4 ${isClicked ? 'bg-emerald-300 border-emerald-300' : ''}`}

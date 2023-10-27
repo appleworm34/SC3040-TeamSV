@@ -337,6 +337,9 @@ function Timetable({ courseList, setCourseList }) {
       if (plans[planIndex].length > 0) {
         setSelectedEvents([...plans[planIndex]]);
         handleOpenSnackbar(`Plan ${planIndex+1} loaded.`, "success");
+        const uniqueIndexNo = new Set(plans[planIndex].map((lesson) => lesson.indexNo));
+        const uniqueIndexNoArray = Array.from(uniqueIndexNo);
+        setActive(uniqueIndexNoArray);
       }
       else {
         handleOpenSnackbar(`Plan empty.`, "info");

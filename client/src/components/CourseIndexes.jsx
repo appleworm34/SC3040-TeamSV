@@ -54,6 +54,7 @@ const CourseIndexes = ({
                             active={active}
                             setActive={setActive}
                             listIndex={listIndex}
+                            indexNo={element? element[0].indexNo : null}
                         />
                     ))}
                 </div>
