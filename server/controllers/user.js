@@ -162,18 +162,27 @@ export const removeDesiredIndex = async (req, res) => {
 }
 
 export const swapIndex = async (userId,courseCode,desiredIndex) => {
-  const user = await User.findById(userId);
+  console.log("in swapindex")
+  const user = await User.findOne({_id:userId});
   //update current index
+  console.log(user)
   user.modulesCurrentIndex.map((module)=>{
     if (module.courseCode==courseCode){
       module.index=desiredIndex
     }
+    console.log("module")
+    console.log(module)
   })
   try{
     console.log("user")
-    console.log(desiredIndex)
+    // console.log(desiredIndex)
+    // console.log(user)
+    user.markModified("modulesCurrentIndex");
     await user.save();
-    console.log(user)
+    
+    // console.log(test)
+    // console.log(await User.find())
+    // console.log(user)
   }catch(e){
     console.log("e",e)
   }

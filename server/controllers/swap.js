@@ -159,7 +159,7 @@ export const addSwap = async (req, res) => {
     // await user.save()
     let pass = await findMatch(course,courseCode)
     if (pass){
-      console.log(pass)
+      // console.log(pass)
       // change current user index
       // const user = await User.findById(newSwap.userId)
       // user.modulesCurrentIndex = user.modulesCurrentIndex.map(module => {

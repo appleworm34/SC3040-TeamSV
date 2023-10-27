@@ -15,7 +15,7 @@ function ForumPage() {
     const [ModsAssigned, setModAssigned] = useState([])
     const [IndexAvailable,setIndexAvail] = useState([])
     const [AddVisibility,setAddVisibility]=useState(false)
-    const user = useSelector((state) => state.user)
+    let user = useSelector((state) => state.user)
     
     const getModsAssigned = () =>{
         const courseCodes =  user.modulesCurrentIndex.map(course => course.courseCode)
@@ -58,6 +58,14 @@ function ForumPage() {
         })
         console.log(relevantSwapList)
         setDesiredIndex(rows)
+        // user = await fetch(
+        //     `http://localhost:3001/user/${user._id}`,
+        //     {
+        //         method: "GET"
+        //     }
+        //     )
+        // user = await user.json()
+        // console.log(user)
     }
 
     useEffect(()=>{
@@ -74,6 +82,15 @@ function ForumPage() {
         console.log(courseId)
         let availIndex = await getAvailIndex(courseId)
         console.log(availIndex)
+        const user_id = user._id
+        user = await fetch(
+            `http://localhost:3001/user/${user_id}`,
+            {
+                method: "GET"
+            }
+            )
+        user = await user.json()
+        console.log(user)
         const mod = user.modulesCurrentIndex.filter(module=>module.courseCode==value)
         // console.log(mod[0].index)
         if (mod){
