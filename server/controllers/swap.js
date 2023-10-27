@@ -28,6 +28,8 @@ const findMatch = async (courseList,courseCode) => {
 
     // filter courseList to only those in this courseCode
     const filteredList = courseList.filter(dic=>dic.courseCode==courseCode);
+    console.log("filteredlist",filteredList)
+    console.log(courseList)
     // run findcycle
     class DiGraph {
         constructor(vertices) {
@@ -84,6 +86,7 @@ const findMatch = async (courseList,courseCode) => {
       const graph = new DiGraph(filteredList.length);
       filteredList.map((dic)=>{
         dic.desiredIndex.map((d_index)=>{
+          console.log(dic.currentIndex,d_index,dic._id)
             graph.addEdge(dic.currentIndex,d_index,dic._id)
         })
       })
@@ -96,13 +99,15 @@ const findMatch = async (courseList,courseCode) => {
       const cycleEdges = graph.findCycle();
       if (cycleEdges) {
         console.log('Cycle detected in the directed graph. Edges involved in the cycle:');
-        for (const { vertex1, vertex2, swapId } of cycleEdges) {
+        for (const { vertex1, vertex2, userId } of cycleEdges) {
             // go to each swapid and perform the swap
             // remove this swap entry
-            let removed = await Swap.findByIdAndRemove(swapId)
+            console.log(cycleEdges)
+            let removed = await Swap.findByIdAndRemove(userId)
             let courseCode = removed.courseCode
+            console.log(removed,courseCode)
             await swapIndex(removed.userId,courseCode,vertex2)
-          console.log(`${vertex1} -> ${vertex2} (swap_id: ${swapId})`);
+          console.log(`${vertex1} -> ${vertex2} (swap_id: ${userId})`);
           pass=vertex1
         }
         
@@ -117,21 +122,19 @@ export const addSwap = async (req, res) => {
     const { userId,courseCode,currentIndex,desiredIndex } = req.body;
     console.log(currentIndex,desiredIndex)
     // check if swap already exist
-    const course = await Swap.find();
+    let course = await Swap.find();
     let existingSwap = course.filter((swap)=>swap.userId==userId && swap.courseCode==courseCode)
-    if (existingSwap){
+    console.log(existingSwap)
+    if (existingSwap.length>0){
       existingSwap = existingSwap[0]
-      // console.log([new Set([...existingSwap.desiredIndex,...desiredIndex])])
       existingSwap.desiredIndex = [...new Set([...existingSwap.desiredIndex,...desiredIndex])]
-      console.log(existingSwap.desiredIndex)
       await Swap.updateOne(
         {_id:existingSwap._id},
         {desiredIndex: existingSwap.desiredIndex}
         )
-      
-      console.log(existingSwap)
     }
     else{
+      console.log("here")
       // create new swap
       const newSwap = new Swap({
           userId:userId,
@@ -139,10 +142,11 @@ export const addSwap = async (req, res) => {
           currentIndex:currentIndex,
           desiredIndex:desiredIndex
       });
-      
       await newSwap.save();
     }
-    
+    // console.log("error?")
+    course = await Swap.find();
+    console.log(course)
 
     
     
@@ -155,8 +159,9 @@ export const addSwap = async (req, res) => {
     // await user.save()
     let pass = await findMatch(course,courseCode)
     if (pass){
+      console.log(pass)
       // change current user index
-      const user = await User.findById(newSwap.userId)
+      // const user = await User.findById(newSwap.userId)
       // user.modulesCurrentIndex = user.modulesCurrentIndex.map(module => {
       //   if (module.courseCode==courseCode){
       //     module.index=pass
