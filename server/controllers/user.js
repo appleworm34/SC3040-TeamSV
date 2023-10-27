@@ -169,5 +169,14 @@ export const swapIndex = async (userId,courseCode,desiredIndex) => {
       module.index=desiredIndex
     }
   })
+  try{
+    console.log("user")
+    console.log(desiredIndex)
+    await user.save();
+    console.log(user)
+  }catch(e){
+    console.log("e",e)
+  }
+  
   //
 }

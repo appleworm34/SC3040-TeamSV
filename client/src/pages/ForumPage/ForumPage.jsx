@@ -74,6 +74,11 @@ function ForumPage() {
         console.log(courseId)
         let availIndex = await getAvailIndex(courseId)
         console.log(availIndex)
+        const mod = user.modulesCurrentIndex.filter(module=>module.courseCode==value)
+        // console.log(mod[0].index)
+        if (mod){
+            availIndex = availIndex.filter(index=>index!==mod[0].index)
+        }
         setIndexAvail(availIndex)
     };
     const getCourseId = async (courseCode) =>{
