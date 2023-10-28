@@ -1,6 +1,7 @@
 import React from 'react'
 import './BallotPage.css'
 import DropdownModuleSearchBox from '../../components/DropdownModuleSearchBox'
+import AllocatePoints from '../../components/AllocatePoints'
 
 function BallotPage() {
   const exampleStudent = {
@@ -25,6 +26,7 @@ function BallotPage() {
                 </div>
             </section>
       <DropdownModuleSearchBox />
+      <AllocatePoints />
     </div>
   )
 }
