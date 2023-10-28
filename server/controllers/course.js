@@ -10,6 +10,19 @@ export const getCourse = async (req, res) => {
   }
 }
 
+export const getCourseIndex = async (req,res) => {
+  try {
+    const {id} = req.params;
+    const course = await Course.findById(id);
+    const indexes = course.indexes.map((indexStruct)=>{
+      return indexStruct.indexNo
+    })
+    res.status(200).json({indexes:indexes});
+  }catch (err){
+    res.status(404).json({ message: err.message });
+  }
+}
+
 export const getAllCourses = async (req, res) => {
   try {
     const courses = await Course.find();
