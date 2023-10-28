@@ -188,7 +188,7 @@ export const swapIndex = async (userId,courseCode,desiredIndex) => {
     console.log("e",e)
   }
   
-  //
+}
 
 export const getUserAddedModules = async (req, res) => {
   try {
@@ -227,5 +227,4 @@ export const updatePlans = async (req, res) => {
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
-
 }
