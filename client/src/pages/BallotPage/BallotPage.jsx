@@ -41,86 +41,87 @@ function BallotPage() {
     ];
 
     return (
-        <div className="h-screen w-screen pt-32 grid grid-cols-2 grid-rows-2 gap-16 flex flex-row">
-            <div className="bg-white h-full w-full" style={{ flex: 1 }}>
-                <Typography
-                    variant="h4"
-                    component="div"
-                    display={"flex"}
-                    justifyContent={"center"}
-                >
-                    Student Information
-                </Typography>
+        <div className="pt-32 flex flex-row justify-around h-screen w-screen">
+            {/* Left hand side */}
+            <div className="flex-auto w-64">
+                <div className="flex flex-col">
+                    <div className="bg-white-200 h-full w-full">
+                        <div className="p-4">
+                            <Typography
+                                variant="h4"
+                                component="div"
+                                textAlign="center"
+                            >
+                                Student Information
+                            </Typography>
+                        </div>
+                        <MuiTable
+                            headers={[
+                                "name",
+                                "year",
+                                "modulesTaken",
+                                "credit_score",
+                            ]}
+                            rows={testData}
+                        />
+                    </div>
+                    <div className="bg-white-200 pt-32 h-full w-full">
+                        <div className="p-4">
+                            <Typography
+                                variant="h4"
+                                component="div"
+                                textAlign="center"
+                            >
+                                Bidding dates:
+                            </Typography>
+                        </div>
+                        <MuiTable
+                            headers={["eventName", "startDate", "endDate"]}
+                            rows={eventData}
+                        />
+                    </div>
+                </div>
+            </div>
 
-                <MuiTable
-                    headers={["name", "year", "modulesTaken", "credit_score"]}
-                    rows={testData}
-                />
-            </div>
-            <div className="bg-white-200 h-full w-full" style={{ flex: 2 }}>
-                <Typography
-                    variant="h4"
-                    component="div"
-                    display={"flex"}
-                    justifyContent={"center"}
-                >
-                    Results
-                </Typography>
-                <MuiTable
-                    headers={["eventName", "startDate", "endDate"]}
-                    rows={eventData}
-                />
-            </div>
-            <div className="bg-white-200 h-full w-full " style={{ flex: 1 }}>
-                <Typography
-                    variant="h4"
-                    component="div"
-                    display={"flex"}
-                    justifyContent={"center"}
-                >
-                    Bidding dates: 
-                </Typography>
-                <MuiTable
-                    headers={["eventName", "startDate", "endDate"]}
-                    rows={eventData}
-                />
-            </div>
-            <div className="bg-white-200 h-full w-full " style={{ flex: 2 }}>
-                <Typography
-                    variant="h4"
-                    component="div"
-                    display={"flex"}
-                    justifyContent={"center"}
-                >
-                    FORM FOR THE MODULE BIDDING: TO BE ADDED
-                </Typography>
-                <MuiTable
-                    headers={["eventName", "startDate", "endDate"]}
-                    rows={eventData}
-                />
+
+
+            {/* Right hand side */}
+            <div className="flex-auto w-128">
+                <div className="flex flex-col">
+                    <div className="bg-white-200 h-full w-full">
+                        <div className="p-4">
+                            <Typography
+                                variant="h4"
+                                component="div"
+                                textAlign="center"
+                            >
+                                Results
+                            </Typography>
+                        </div>
+                        <MuiTable
+                            headers={["eventName", "startDate", "endDate"]}
+                            rows={eventData}
+                        />
+                    </div>
+                    <div className="bg-white-200 pt-32 h-full w-full">
+                        <div className="p-4">
+                            <Typography
+                                variant="h4"
+                                component="div"
+                                textAlign="center"
+                            >
+                                FORM FOR THE MODULE BIDDING: TO BE ADDED
+                            </Typography>
+                        </div>
+                        <MuiTable
+                            headers={["eventName", "startDate", "endDate"]}
+                            rows={eventData}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );
 }
 
 export default BallotPage;
-
-{
-    /* <section className="student_info">
-                <div className="student">
-                    <div className="student_name">
-                        <h1> Name: {exampleStudent.name} </h1>
-                    </div>
-                    <div className="year_of_study">
-                        <h1> Current year of study: {exampleStudent.year} </h1>
-                    </div>
-                    <div className="semester">
-                        <h1> Semester: {exampleStudent.semester} </h1>
-                    </div>
-                    <div className="credit_status">
-                        <h1> Available credits: {exampleStudent.credit_score} </h1>
-                    </div>
-                </div>
-            </section>
-      <DropdownModuleSearchBox /> */
-}
