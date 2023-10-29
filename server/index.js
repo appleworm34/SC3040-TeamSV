@@ -11,6 +11,7 @@ import { fileURLToPath } from "url"
 import authRoutes from "./routes/auth.js"
 import courseRoutes from "./routes/course.js"
 import userRoutes from "./routes/user.js"
+import swapRoutes from "./routes/swap.js"
 
 /* CONFIGS */
 
@@ -34,6 +35,7 @@ app.use(cors())
 app.use("/auth", authRoutes)
 app.use("/user", userRoutes)
 app.use("/course", courseRoutes)
+app.use("/swap",swapRoutes)
 
 /* MONGOOSE SETUP */
 

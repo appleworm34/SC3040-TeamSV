@@ -2,11 +2,17 @@ import React from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import CourseIndex from './CourseIndexes'
 import CourseIndexList from './CourseIndexList';
 import generateTimetable from './TimetableGenerator';
-import { Button } from '@mui/material';
+import { Select, MenuItem, Button, Divider, Alert, Snackbar, Dialog } from '@mui/material';
 import AddCourseModal from './AddCourseModal';
+import TimetableConstraintsForm from './TimetableConstraintsForm';
+import { useDispatch, useSelector } from 'react-redux';
+import PlanSelector from './PlanSelector';
+import RegisterButton from './RegisterButton';
+import { setLogin } from '../state/index';
 
 const localizer = momentLocalizer(moment);
 const minTime = moment().set({ hour: 8, minute: 0, second: 0 });
@@ -14,6 +20,7 @@ const maxTime = moment().set({ hour: 23, minute: 0, second: 0 });
 
 
 const addStartDateAndEndDateToLessons = (course) => {
+  if(!course) return null;
   // console.log(course)
   const today = new Date()
   const todayDay = today.getDate()
@@ -37,6 +44,7 @@ const addStartDateAndEndDateToLessons = (course) => {
       // console.log(startDate)
       // console.log(endDate)
       // console.log(index.indexNo)
+      lesson['courseId'] = course._id
       lesson['indexNo'] = index.indexNo
       lesson['courseCode'] = course.courseCode
       lesson['start'] = startDate
@@ -71,8 +79,9 @@ const CustomHeader = ({ label }) => {
 
 const CustomEvent = ({ event }) => {
   return(
-    <div>
-      <strong>{event.type}</strong>
+    <div className='text-xs'>
+      <strong>{event.courseCode}</strong>
+      <p>{event.type}</p>
       <p>{event.group}</p>
     </div>
   )
@@ -95,31 +104,61 @@ function Timetable({ courseList, setCourseList }) {
   }
 
   // console.log(course)
-  const formattedCourseList = []
-  for(const e in courseList) {
-    const courseWithDate = addStartDateAndEndDateToLessons(courseList[e]);
-    // console.log(courseWithDate)
-    const formattedLessons = formatIndexList(courseWithDate)
-    formattedCourseList.push(formattedLessons)
-    // console.log(formattedCourseList)
+  const formatCourseList = () => {
+    const formattedCourseList = []
+    for(const e in courseList) {
+      const courseWithDate = addStartDateAndEndDateToLessons(courseList[e]);
+      // console.log(courseWithDate)
+      const formattedLessons = formatIndexList(courseWithDate)
+      formattedCourseList.push(formattedLessons)
+      // console.log(formattedCourseList)
+    }
+    return formattedCourseList
   }
 
+  let formattedCourseList = formatCourseList()
   // generateTimetable(courseList)
 
+  const [initLoad, setInitLoad] = useState(true);
   const [eventLists, setEventLists] = useState(formattedCourseList);
-  const [selectedEvents, setSelectedEvents] = useState([
-    // this will be the modules with the indexes already added
-    {
-      type: 4,
-      group: 'Workshop',
-      start: new Date(2023, 9, 15, 9, 0),
-      end: new Date(2023, 9, 15, 17, 0),
-    }
-  ]);
+  const [selectedEvents, setSelectedEvents] = useState([]);
   const [currentHoveredEvents, setCurrentHoveredEvents] = useState([]);  
   const [showEventList, setShowEventList] = useState({});
   const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);
+  const [generatedTimetableOptions, setGeneratedTimetableOptions] = useState([]);
+  const [selectedGeneratedPlanIndex, setSelectedGeneratedPlanIndex] = useState(-1)
+  const [selectedPlanIndex, setSelectedPlanIndex] = useState(-1)
+  const [selectedBlockedDays, setSelectedBlockedDays] = useState([]);
+  const [selectedEarliestStartTime, setSelectedEarliestStartTime] = useState("");
+  const [selectedLatestEndTime, setSelectedLatestEndTime] = useState("");
+  const [showGenerateOptions, setShowGenerateOptions] = useState(false);
+  const [plans, setPlans] = useState([[], [], [], [], [], []]);
+  const [active, setActive] = useState([]); 
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [failedReasons, setFailedReasons] = useState([]);
+  const [isValid, setisValid] = useState(false);
+  
+  const {_id} = useSelector((state) => state.user) || "";
+  const token = useSelector((state) => state.token) || "";
 
+  const getUserPlans = async () => {
+    const response = await fetch(
+      `http://localhost:3001/user/${_id}/plans`,
+      {
+        method: "GET"
+      }
+    )
+
+    const data = await response.json()
+    return data
+  }
+
+  // Function to show lesson timings when hovering over a certain index
   const handleEventHover = (events) => {
     // Clear the previously hovered events
     setCurrentHoveredEvents(events);
@@ -127,8 +166,10 @@ function Timetable({ courseList, setCourseList }) {
     setSelectedEvents((prevSelectedEvents) => (
       [...prevSelectedEvents, ...events]
     ));
+    // console.log(selectedEvents)
   };
 
+  // Function to remove the lesson timings when leaving hover
   const handleEventLeave = () => {
     // Remove the previously hovered events from selectedEvents
     setSelectedEvents((prevSelectedEvents) => {
@@ -136,29 +177,32 @@ function Timetable({ courseList, setCourseList }) {
         (event) => !currentHoveredEvents.includes(event)
       );
     });
+    // console.log(selectedEvents)
     // Clear the current hovered events
     setCurrentHoveredEvents([]);
   };
 
+  // Function to add and retain the lesson timings on timetable from certain index
   const handleEventClick = (events) => {
+    console.log(selectedEvents)
     setSelectedEvents((prevSelectedEvents) => {
-      // Check if the events are already selected
-      const areEventsSelected = events.every((event) =>
-        prevSelectedEvents.some((selectedEvent) => selectedEvent.indexNo === event.indexNo)
-      );
-  
-      if (areEventsSelected) {
-        // Deselect the events by filtering them out
-        return prevSelectedEvents.filter((selectedEvent) =>
-          events.every((event) => selectedEvent.indexNo !== event.indexNo)
-        );
-      } else {
-        // Select the events by adding them
-        return [...prevSelectedEvents, ...events];
-      }
-    });
+      // Create a Set of _id values from the events to be removed
+      const eventsToRemove = new Set(events.map(event => event.indexNo));
+
+      // Filter out the events with matching _id
+      const updatedSelectedEvents = prevSelectedEvents.filter(selectedEvent => !eventsToRemove.has(selectedEvent.indexNo));
+
+      // Add the events that don't exist in selectedEvents
+      const updatedEvents = [
+          ...updatedSelectedEvents,
+          ...events.filter(event => !eventsToRemove.has(event.indexNo))
+      ];
+
+      return updatedEvents;
+  });
   };
 
+  // Toggle showing all indexes of course
   const toggleEventList = (eventListKey) => {
     setShowEventList((prevShowEventList) => ({
       ...prevShowEventList,
@@ -166,18 +210,356 @@ function Timetable({ courseList, setCourseList }) {
     }));
   };
   
+  // Function to open the popup to view course info and add courses
   const openPopup = () => {
     setAddCourseModalOpen(true);
   };
 
+  // Function to close the popup to view course info and add courses
   const closePopup = () => {
     setAddCourseModalOpen(false);
   };
+
+  // Function to format the generated timetable schedule so it can be displayed on timetable
+  const formatGeneratedTimeTable = (lessonsList) => {
+    let generatedList = [];
+    for (const idx in lessonsList) {
+      for (const idx1 in lessonsList[idx].lessons)
+        generatedList.push(lessonsList[idx].lessons[idx1]);
+    }
+    setSelectedEvents(generatedList);
+    // console.log(selectedEvents);
+  };
+
+  // Function to change the lessons on timetable according to the selected generated plan
+  const handleGeneratedPlanChange = (event) => {
+    setSelectedGeneratedPlanIndex(event.target.value);
+  };
+
+  // Function to add blocked days constraint for generation of timetable
+  const handleBlockedDaysChange = (event) => {
+    setSelectedBlockedDays(event.target.value);
+  };
+
+  // Function to add earliest start time constraint for generation of timetable
+  const handleEarliestStartTimeChange = (event) => {
+    setSelectedEarliestStartTime(event.target.value);
+  };
+
+  // Function to add latest end time constraint for generation of timetable
+  const handleLatestEndTimeChange = (event) => {
+    setSelectedLatestEndTime(event.target.value);
+  };
+
+  // Function to remove course from added courses
+  const handleRemoveCourse = (courseCode) => {
+    //console.log(courseCode[0]); // course code of the course to be removed
+    // const patchModulesAdded = async (courseId) => {
+    //   const response = await fetch(
+    //     `http://localhost:3001/user/add/${_id}/${courseId}`,
+    //     {
+    //       method: "PATCH",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   );
+    //   const data = await response.json();
+    // };
+    // filter the courseList to remove the course with the specified course code
+    if (courseList) {
+      const courseToUpdate = courseList.filter((course) => course.courseCode === courseCode[0]);
+      // console.log(courseToUpdate[0]);
+      const courseId = courseToUpdate[0]._id;
+      const updatedCourseList = courseList.filter((course) => course.courseCode !== courseCode[0]);
+      setCourseList(updatedCourseList);
+      // patchModulesAdded(courseId);
+    }
+
+  };
+
+  // Function to save the current selected indexes to a plan
+  const saveCurrentPlan = (planIndex) => {
+    const updatePlans = async (newPlan) => {
+      const response = await fetch(
+        `http://localhost:3001/user/${_id}/update_plans`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ newPlan })
+        }
+      );
+      const data = await response.json();
+    };
+
+    if (selectedEvents.length > 0 && planIndex < 5 && planIndex >= 0) {
+      const newPlan = [...selectedEvents];
+      let updatedPlans = plans;
+      updatedPlans[planIndex] = newPlan;
+      setPlans(updatedPlans);
+      updatePlans(updatedPlans);
+      handleOpenSnackbar(`Plan ${planIndex+1} saved.`, "success");
+      // console.log(updatedPlans)
+    } else if (selectedEvents.length > 0 && planIndex === 5) {
+      const newPlan = [...selectedEvents];
+      let updatedPlans = plans;
+      updatedPlans[planIndex] = newPlan;
+      setPlans(updatedPlans);
+      updatePlans(updatedPlans);
+    }
+  };
+
+  const deleteCurrentPlan = (planIndex) => {
+    const updatePlans = async (newPlan) => {
+      const response = await fetch(
+        `http://localhost:3001/user/${_id}/update_plans`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ newPlan })
+        }
+      );
+      const data = await response.json();
+    };
+
+    if (planIndex< 5) {
+      const newPlan = [];
+      let updatedPlans = plans;
+      updatedPlans[planIndex] = newPlan;
+      setPlans(updatedPlans);
+      updatePlans(updatedPlans);
+      setSelectedEvents([...plans[planIndex]]);
+      setCourseList([]);
+      handleOpenSnackbar(`Plan ${planIndex+1} deleted.`, "success");
+    }
+  };
+
+  // Function to handle plan selection from the dropdown
+  const handlePlanSelect = (planIndex) => {
+    if (planIndex === -1) {
+      setSelectedEvents([...plans[5]]);
+      handleOpenSnackbar('Registered Plan loaded.', "success");
+      const uniqueIndexNo = new Set(plans[5].map((lesson) => lesson.indexNo));
+      const uniqueIndexNoArray = Array.from(uniqueIndexNo);
+      setActive(uniqueIndexNoArray);
+    }
+    if (planIndex >= 0 && planIndex < plans.length) {
+      if (plans[planIndex].length > 0) {
+        setSelectedEvents([...plans[planIndex]]);
+        handleOpenSnackbar(`Plan ${planIndex+1} loaded.`, "success");
+        const uniqueIndexNo = new Set(plans[planIndex].map((lesson) => lesson.indexNo));
+        const uniqueIndexNoArray = Array.from(uniqueIndexNo);
+        setActive(uniqueIndexNoArray);
+      }
+      else {
+        handleOpenSnackbar(`Plan empty.`, "info");
+      }
+    } 
+    setSelectedPlanIndex(planIndex);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  const handleOpenSnackbar = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleGenerateTimetable = () => {
+      const [options, failedReasons] = generateTimetable(courseList, selectedBlockedDays, selectedEarliestStartTime, selectedLatestEndTime)
+      if (courseList.length === 0) setFailedReasons(["No courses selected."]);
+      else setFailedReasons(failedReasons);
+
+      if (options.length !== 0) {
+        setGeneratedTimetableOptions(options);
+        handleOpenSnackbar(`Successfully generated ${options.length} plans.`, "success");
+      }
+      else {
+        handleOpenSnackbar(`Not able to generate plans.`, "warning");
+      }
+  };
+
+  const handleViewMoreClick = () => {
+    setDialogOpen(true);
+    handleCloseSnackbar(); // Close the Snackbar when you open the dialog
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const checkLessonsValid = (lessons) => {
+    if (lessons.length === 0) return false;
+
+    for (let i = 0; i < lessons.length; i++) {
+      for (let j = i + 1; j < lessons.length; j++) {
+        const lessonA = lessons[i];
+        const lessonB = lessons[j];
+  
+        // Convert lesson start and end times to date objects
+        const startA = new Date(lessonA.start);
+        const endA = new Date(lessonA.end);
+        const startB = new Date(lessonB.start);
+        const endB = new Date(lessonB.end);
+
+        // Check for overlap
+        if (startA.getDay() == startB.getDay()) {
+          if (startA <= endB && startB <= endA) {
+            return false; // Lessons overlap
+          }
+        } 
+      }
+    }
+  
+    return true; // No overlapping lessons
+  }
+  
+  const handleRegisterCourses = () => {
+    const registerCourses = async (courses) => {
+      const response = await fetch(
+        `http://localhost:3001/user/add-courses/${_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ courses })
+        }
+      );
+      const data = await response.json();
+    };
+
+    const coursesToRegister = selectedEvents;
+    console.log(coursesToRegister)
+
+    const uniqueCourses = {};
+
+    // Iterate through the data array
+    coursesToRegister.forEach(item => {
+      const { courseId, courseCode, indexNo } = item;
+      
+      // Check if the courseId is not already in the uniqueCourses object
+      if (!uniqueCourses[courseId]) {
+        uniqueCourses[courseId] = [courseCode, indexNo];
+      }
+    });
+
+    // Convert the uniqueCourses object to an array of objects
+    const uniqueCoursesArray = Object.entries(uniqueCourses).map(([courseId, [courseCode, indexNo]]) => ({
+      courseId: courseId,
+      courseCode: courseCode,
+      index: indexNo,
+    }));
+
+    registerCourses(uniqueCoursesArray);
+    saveCurrentPlan(5);
+    handleOpenSnackbar(`Plan successfully registered.`, "success");
+  }
+
+  useEffect(() => {
+    function convertToDates(arr) {
+      return arr.map((item) => {
+        if (item.start && item.end) {
+          return {
+            ...item,
+            start: new Date(item.start),
+            end: new Date(item.end),
+          };
+        }
+        return item;
+      });
+    }
+    getUserPlans().then((data) => {
+      const updatedData = data.map((arr) => convertToDates(arr));
+      // console.log(updatedData);
+      setPlans(updatedData);
+      setInitLoad(false);
+    })
+    
+  }, []);
+
+  useEffect(() => {
+    if(!initLoad)
+      handlePlanSelect(-1);
+  }, [initLoad]);
+
+  useEffect(() => {    
+    if(selectedGeneratedPlanIndex !== -1)
+      formatGeneratedTimeTable(generatedTimetableOptions[selectedGeneratedPlanIndex]);
+  }, [selectedGeneratedPlanIndex, generatedTimetableOptions]);
+
+  useEffect(() => {
+    // This code will run whenever courseList changes
+    formattedCourseList = formatCourseList(courseList);
+    setEventLists(formattedCourseList);
+  }, [courseList]);
+
+  useEffect(() => {
+    // console.log(plans[selectedPlanIndex])
+    // To update the courseList according to courses in plan
+    if (selectedPlanIndex !== -1 && plans[selectedPlanIndex].length > 0)
+    {
+      // console.log(selectedEvents)
+      const tempPlan = plans[selectedPlanIndex];
+      setisValid(checkLessonsValid(tempPlan));
+      // console.log(isValid)
+      const uniqueCourseIds = new Set();
+
+      tempPlan.forEach((item) => uniqueCourseIds.add(item.courseId));
+
+      const uniqueCourseIdArray = [...uniqueCourseIds];
+      // console.log(uniqueCourseIdArray)
+      if (uniqueCourseIdArray.length === 0) return;
+
+      const getCourseInfo = async (courseId) => {
+        const response = await fetch(
+          `http://localhost:3001/course/${courseId}`,
+          {
+            method: "GET",
+          }
+        );
+        const data = await response.json();
+        return data;
+      };
+
+      const fetchCourseInfo = async () => {
+        const courseInfoArray = [];
+        for (const courseId of uniqueCourseIdArray) {
+          try {
+            const courseInfoPromises = uniqueCourseIdArray.map(courseId => getCourseInfo(courseId));
+            const courseInfoArray = await Promise.all(courseInfoPromises);
+            return courseInfoArray;
+          } catch (error) {
+            console.error(`Failed to fetch course info for courseId ${courseId}.`, error);
+            return [];
+          }
+        }
+      };
+      
+      fetchCourseInfo().then((data) => {
+        if (data)
+          setCourseList(data)
+        else 
+          setCourseList([])
+      });
+    }
+  }, [selectedPlanIndex])
+
+  useEffect(() => {
+    setisValid(checkLessonsValid(selectedEvents));
+    // console.log(selectedEvents)
+  }, [selectedEvents]);
 
   return (
     <div className="flex">
       <div className="w-3/4 p-4">
         <Calendar
+          // key={JSON.stringify(selectedEvents)} // Adding a key to force re-render
           localizer={localizer}
           events={selectedEvents}
           defaultView="week" // Set the default view to week
@@ -194,16 +576,55 @@ function Timetable({ courseList, setCourseList }) {
         />
         </div>
         <div className="w-1/4 p-4">
-          <aside className="sticky top-20">
+          <aside>            
+            <PlanSelector 
+              plans={plans} 
+              savePlan={saveCurrentPlan} 
+              deletePlan={deleteCurrentPlan}
+              handleSelectPlan={handlePlanSelect} 
+              selectedPlanIndex={selectedPlanIndex}
+            />
+            <Snackbar
+              open={snackbar.open}
+              autoHideDuration={1000}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              onClose={handleCloseSnackbar}
+            >
+              <Alert
+                sx={{ width: "100%", fontSize: "1.1rem" }}
+                elevation={6}
+                variant="filled"
+                onClose={handleCloseSnackbar}
+                severity={snackbar.severity}
+                action={
+                  snackbar.severity === 'warning' ? (
+                  <Button color="inherit" size="small" onClick={handleViewMoreClick}>
+                    View More
+                  </Button> ) : null
+                }
+              >
+                {snackbar.message}
+              </Alert>
+            </Snackbar>
+            <Dialog open={dialogOpen} onClose={handleDialogClose}>
+              <div className='m-4'>
+                {
+                  failedReasons.map((reason) => (
+                    <div>{reason}</div>
+                  ))
+                }
+              </div>
+            </Dialog>
             {
-              <div>
+              <div className='mt-4'>
                 <Button onClick={openPopup}>Add Courses</Button>
                 <AddCourseModal 
                   isOpen={isAddCourseModalOpen} 
                   handleClose={closePopup} 
+                  courseList={courseList}
                   setCourseList={setCourseList}
                 />
-                <div className="ml-2">
+                <div className="ml-2 mt-1">
                   <div>Added Courses:</div>
                   <CourseIndexList
                     eventLists={eventLists}
@@ -212,10 +633,68 @@ function Timetable({ courseList, setCourseList }) {
                     handleEventHover={handleEventHover}
                     handleEventLeave={handleEventLeave}
                     handleEventClick={handleEventClick}
+                    handleRemoveCourse={handleRemoveCourse}
+                    active={active}
+                    setActive={setActive}
                   />
                 </div>
+                <Divider />
+                <Button sx={{ marginTop: "20px"}} onClick={() => setShowGenerateOptions(!showGenerateOptions)}>Generate Timetables</Button>
+                {
+                  showGenerateOptions ? (
+                    <div className="flex flex-col">
+                      <TimetableConstraintsForm
+                        selectedBlockedDays={selectedBlockedDays}
+                        selectedEarliestStartTime={selectedEarliestStartTime}
+                        selectedLatestEndTime={selectedLatestEndTime}
+                        handleBlockedDaysChange={handleBlockedDaysChange}
+                        handleEarliestStartTimeChange={handleEarliestStartTimeChange}
+                        handleLatestEndTimeChange={handleLatestEndTimeChange}
+                      />
+                      <div className="self-end mr-5">
+                        <Button sx={{marginTop: "20px" }} onClick={() => handleGenerateTimetable()}
+                        >Generate</Button>
+                      </div>
+                    </div>
+                  ) : null
+                }
+                {generatedTimetableOptions.length > 1 ? 
+                (
+                  <div className='ml-2 mt-5'>
+                    <div>Generated Timetables:</div>
+                    <Select
+                      value={selectedGeneratedPlanIndex}
+                      onChange={handleGeneratedPlanChange}
+                      sx={{ marginTop: '20px' }}
+                    >
+                      <MenuItem value={-1}>None</MenuItem> 
+                      {generatedTimetableOptions.map((option, index) => (
+                        <MenuItem key={index} value={index}>
+                          Generated Plan {index + 1}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {
+                      selectedGeneratedPlanIndex > -1 ? 
+                        (
+                          <div>
+                            <div className='mt-5 mb-2'>Plan details:</div>
+                            {generatedTimetableOptions[selectedGeneratedPlanIndex].map((course) => (
+                            <div className='flex'>
+                              <div className='mr-4'>{course.courseCode}</div>
+                              <div>{course.indexNo}</div>
+                            </div>
+                            ))}
+                          </div>
+                        ) 
+                        : null
+                    }
+                  </div>
+                ) 
+                : null}
               </div>
             }
+            <RegisterButton isValid={isValid} handleRegisterCourses={handleRegisterCourses} />
           </aside>
         </div>
     </div>
