@@ -456,6 +456,7 @@ function Timetable({ courseList, setCourseList }) {
 
     registerCourses(uniqueCoursesArray);
     saveCurrentPlan(5);
+    handleOpenSnackbar(`Plan successfully registered.`, "success");
   }
 
   useEffect(() => {
