@@ -4,9 +4,10 @@ import DropdownModuleSearchBox from "../../components/DropdownModuleSearchBox";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import MuiTable from "../../components/MuiTable";
+import { Typography } from "@mui/material";
 
 function BallotPage() {
-    let user = useSelector((state) => state.user)
+    let user = useSelector((state) => state.user);
     // const testData = {
     //     "name":user.name,
     //     "year":user.year,
@@ -15,12 +16,13 @@ function BallotPage() {
     // }
 
     const testData = [
-        {"name":"testname",
-        "year":"testyear",
-        "modulesTaken":"33",
-        "credit_score": "100"}
-    ]
-
+        {
+            name: "testname",
+            year: "testyear",
+            modulesTaken: "33",
+            credit_score: "100",
+        },
+    ];
 
     const [DesiredModules, setDesiredModules] = useState([]);
     const [Dates, setDates] = useState([]);
@@ -37,28 +39,61 @@ function BallotPage() {
             endDate: "2023-11-07",
         },
     ];
-    
+
     return (
-        <div className="h-screen w-screen pt-32 grid grid-cols-2 grid-rows-2">
-            <div className="bg-gray-200 h-full w-full">
+        <div className="h-screen w-screen pt-32 grid grid-cols-2 grid-rows-2 gap-16 flex flex-row">
+            <div className="bg-white h-full w-full" style={{ flex: 1 }}>
+                <Typography
+                    variant="h4"
+                    component="div"
+                    display={"flex"}
+                    justifyContent={"center"}
+                >
+                    Student Information
+                </Typography>
+
                 <MuiTable
                     headers={["name", "year", "modulesTaken", "credit_score"]}
                     rows={testData}
                 />
             </div>
-            <div className="bg-gray-200 h-full w-full">
+            <div className="bg-white-200 h-full w-full" style={{ flex: 2 }}>
+                <Typography
+                    variant="h4"
+                    component="div"
+                    display={"flex"}
+                    justifyContent={"center"}
+                >
+                    Results
+                </Typography>
                 <MuiTable
                     headers={["eventName", "startDate", "endDate"]}
                     rows={eventData}
                 />
             </div>
-            <div className="bg-gray-200 h-full w-full">
+            <div className="bg-white-200 h-full w-full " style={{ flex: 1 }}>
+                <Typography
+                    variant="h4"
+                    component="div"
+                    display={"flex"}
+                    justifyContent={"center"}
+                >
+                    Bidding dates: 
+                </Typography>
                 <MuiTable
                     headers={["eventName", "startDate", "endDate"]}
                     rows={eventData}
                 />
             </div>
-            <div className="bg-gray-200 h-full w-full">
+            <div className="bg-white-200 h-full w-full " style={{ flex: 2 }}>
+                <Typography
+                    variant="h4"
+                    component="div"
+                    display={"flex"}
+                    justifyContent={"center"}
+                >
+                    FORM FOR THE MODULE BIDDING: TO BE ADDED
+                </Typography>
                 <MuiTable
                     headers={["eventName", "startDate", "endDate"]}
                     rows={eventData}
