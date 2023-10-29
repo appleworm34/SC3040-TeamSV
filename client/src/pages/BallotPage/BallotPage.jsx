@@ -45,12 +45,13 @@ function BallotPage() {
             {/* Left hand side */}
             <div className="flex-auto w-64">
                 <div className="flex flex-col">
-                    <div className="bg-white-200 h-full w-full">
+                    <div className="bg-white-200 p-16 h-full w-full">
                         <div className="p-4">
                             <Typography
                                 variant="h4"
                                 component="div"
                                 textAlign="center"
+                                bgcolor={"lightgrey"}
                             >
                                 Student Information
                             </Typography>
@@ -65,12 +66,13 @@ function BallotPage() {
                             rows={testData}
                         />
                     </div>
-                    <div className="bg-white-200 pt-32 h-full w-full">
+                    <div className="bg-white-200 p-16 h-full w-full">
                         <div className="p-4">
                             <Typography
                                 variant="h4"
                                 component="div"
                                 textAlign="center"
+                                bgcolor={"lightgrey"}
                             >
                                 Bidding dates:
                             </Typography>
@@ -88,12 +90,13 @@ function BallotPage() {
             {/* Right hand side */}
             <div className="flex-auto w-128">
                 <div className="flex flex-col">
-                    <div className="bg-white-200 h-full w-full">
+                    <div className="bg-white-200 p-16 h-full w-full">
                         <div className="p-4">
                             <Typography
                                 variant="h4"
                                 component="div"
                                 textAlign="center"
+                                bgcolor={"lightgrey"}
                             >
                                 Results
                             </Typography>
@@ -103,12 +106,13 @@ function BallotPage() {
                             rows={eventData}
                         />
                     </div>
-                    <div className="bg-white-200 pt-32 h-full w-full">
+                    <div className="bg-white-200 p-16 h-full w-full">
                         <div className="p-4">
                             <Typography
                                 variant="h4"
                                 component="div"
                                 textAlign="center"
+                                bgcolor={"lightgrey"}
                             >
                                 FORM FOR THE MODULE BIDDING: TO BE ADDED
                             </Typography>
