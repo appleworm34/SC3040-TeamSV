@@ -1,6 +1,8 @@
-import React from "react";
-import "./BallotPage.css";
-import DropdownModuleSearchBox from "../../components/DropdownModuleSearchBox";
+
+import React from 'react'
+import './BallotPage.css'
+import CourseForm from '../../components/CourseForm';
+
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import MuiTable from "../../components/MuiTable";
@@ -123,9 +125,15 @@ function BallotPage() {
                         />
                     </div>
                 </div>
+
+            </section>
+      <CourseForm />
+    </div>
+  )
+=======
             </div>
         </div>
     );
-}
+
 
 export default BallotPage;
