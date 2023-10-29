@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PlanSelector from './PlanSelector';
 import RegisterButton from './RegisterButton';
 import { setLogin } from '../state/index';
+import PlanDetails from './PlanDetails';
 
 const localizer = momentLocalizer(moment);
 const minTime = moment().set({ hour: 8, minute: 0, second: 0 });
@@ -435,7 +436,7 @@ function Timetable({ courseList, setCourseList }) {
     };
 
     const coursesToRegister = selectedEvents;
-    console.log(coursesToRegister)
+    // console.log(coursesToRegister)
 
     const uniqueCourses = {};
 
@@ -455,7 +456,7 @@ function Timetable({ courseList, setCourseList }) {
       courseCode: courseCode,
       index: indexNo,
     }));
-
+    console.log(uniqueCoursesArray)
     registerCourses(uniqueCoursesArray);
     saveCurrentPlan(5);
     handleOpenSnackbar(`Plan successfully registered.`, "success");
@@ -674,27 +675,16 @@ function Timetable({ courseList, setCourseList }) {
                         </MenuItem>
                       ))}
                     </Select>
-                    {
-                      selectedGeneratedPlanIndex > -1 ? 
-                        (
-                          <div>
-                            <div className='mt-5 mb-2'>Plan details:</div>
-                            {generatedTimetableOptions[selectedGeneratedPlanIndex].map((course) => (
-                            <div className='flex'>
-                              <div className='mr-4'>{course.courseCode}</div>
-                              <div>{course.indexNo}</div>
-                            </div>
-                            ))}
-                          </div>
-                        ) 
-                        : null
-                    }
                   </div>
                 ) 
                 : null}
               </div>
             }
             <RegisterButton isValid={isValid} handleRegisterCourses={handleRegisterCourses} />
+            <div className='mt-4 ml-2'>
+              <div>Timetable Plan Details:</div>
+              <PlanDetails selectedEvents={selectedEvents} />
+            </div>
           </aside>
         </div>
     </div>
