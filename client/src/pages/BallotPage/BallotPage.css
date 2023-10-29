@@ -9,7 +9,7 @@
 
 
 .dropdown-search-box {
-    position: relative;
+    /* position: relative; */
     width: 300px;
     margin-top: 20px;
     padding-left: 25px;
@@ -50,4 +50,18 @@
     justify-content: space-evenly;
     align-items: flex-start;
     padding-right: 25px;
+}
+
+.allocate-points-box {
+    /* position: relative; */
+    width: 200px;
+    margin-top: 20px;
+    padding-left: 25px;
+}
+
+.form-container {
+    display: flex;
+    /* justify-content: center;
+    align-content: center; */
+    flex-direction: row;
 }

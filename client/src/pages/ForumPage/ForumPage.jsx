@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./ForumPage.css";
-import DropdownModuleSearchBox from "../../components/DropdownModuleSearchBox";
+import DropdownModuleSearchBox from "../../components/CourseForm";
 import RadioForm from "../../components/Radioform";
 import MuiCheckBox from "../../components/MuiCheckBox";
 
