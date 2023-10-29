@@ -30,4 +30,10 @@
     color: white;
     padding: 1rem;
   }
+
+  /*removes number*/
+  
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
   
