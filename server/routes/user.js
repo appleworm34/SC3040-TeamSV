@@ -1,6 +1,6 @@
 import express from "express"
 
-import {deleteUser, deleteAllUsers, getUser, addRemoveCourse, addRemoveCourseTaken, getAllUsers, addDesiredIndex, removeDesiredIndex, getUserAddedModules, getUserPlans, updatePlans} from "../controllers/user.js"
+import {deleteUser, deleteAllUsers, getUser, registerCourse, addRemoveCourseTaken, getAllUsers, addDesiredIndex, removeDesiredIndex, getUserAddedModules, getUserPlans, updatePlans} from "../controllers/user.js"
 
 const router = express.Router();
 
@@ -12,13 +12,12 @@ router.get("/:id", getUser);
 router.post("/delete-all",deleteAllUsers);
 router.post("/delete-user/:id",deleteUser);
 
-router.patch("/add/:userId/:courseId/:index", addRemoveCourse)
+router.put("/add-courses/:id", registerCourse)
 
 router.patch("/add-taken/:userId/:courseId/:index", addRemoveCourseTaken)
 
 router.post("/add-desired",addDesiredIndex)
 router.post("/remove-desired",removeDesiredIndex)
-
 
 router.get("/:id/added_courses", getUserAddedModules);
 

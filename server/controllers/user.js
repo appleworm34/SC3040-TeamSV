@@ -50,25 +50,27 @@ export const getAllUsers = async (req, res) => {
   }
 }
 
-export const addRemoveCourse = async (req, res) => {
-  try {
-    const { userId, courseId, index } = req.params;
-    const user = await User.findById(userId);
-    const course = await Course.findById(courseId);
+// export const addRemoveCourse = async (req, res) => {
+//   try {
+//     const { userId, courseId, index } = req.params;
+//     const user = await User.findById(userId);
+//     const course = await Course.findById(courseId);
 
-    if (user.modulesAdded.includes(courseId)) {
-      user.modulesAdded = user.modulesAdded.filter((id) => id !== courseId);
-    } else {
-      user.modulesAdded.push(courseId);
-    }
+//     if (user.modulesAdded.includes(courseId)) {
+//       user.modulesAdded = user.modulesAdded.filter((id) => id !== courseId);
+//       user.modulesCurrentIndex = user.modulesCurrentIndex.filter((arr) => arr[0]!==courseId);
+//     } else {
+//       user.modulesAdded.push({courseId: courseId, courseCode: course.courseCode, index: index});
+//       user.modulesCurrentIndex.push({courseId: courseId, courseCode: course.courseCode, index: index});
+//     }
 
-    await user.save();
+//     await user.save();
 
-    res.status(200).json(course.code);
-  } catch (err) {
-    res.status(404).json({ message: err.message });
-  }
-}
+//     res.status(200).json(course.code);
+//   } catch (err) {
+//     res.status(404).json({ message: err.message });
+//   }
+// }
 
 export const addRemoveCourseTaken = async (req, res) => {
   try {
@@ -216,7 +218,7 @@ export const updatePlans = async (req, res) => {
   try {
     const { id } = req.params;
     const { newPlan } = req.body;
-    console.log(id)
+    // console.log(id)
     const user = await User.findById(id);
     console.log(user.plans)
     user.plans = newPlan;
@@ -224,6 +226,24 @@ export const updatePlans = async (req, res) => {
     await user.save();
 
     res.status(200).json(user.plans)
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+}
+
+export const registerCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { courses } = req.body;
+    // console.log(id)
+    const user = await User.findById(id);
+    // console.log(user.plans)
+    user.modulesAdded = courses;
+    user.modulesCurrentIndex = courses;
+
+    await user.save();
+
+    res.status(200).json(user.modulesAdded)
   } catch (err) {
     res.status(404).json({ message: err.message });
   }

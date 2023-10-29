@@ -11,6 +11,7 @@ import AddCourseModal from './AddCourseModal';
 import TimetableConstraintsForm from './TimetableConstraintsForm';
 import { useSelector } from 'react-redux';
 import PlanSelector from './PlanSelector';
+import RegisterButton from './RegisterButton';
 
 const localizer = momentLocalizer(moment);
 const minTime = moment().set({ hour: 8, minute: 0, second: 0 });
@@ -117,6 +118,7 @@ function Timetable({ courseList, setCourseList }) {
   let formattedCourseList = formatCourseList()
   // generateTimetable(courseList)
 
+  const [initLoad, setInitLoad] = useState(true);
   const [eventLists, setEventLists] = useState(formattedCourseList);
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [currentHoveredEvents, setCurrentHoveredEvents] = useState([]);  
@@ -129,7 +131,7 @@ function Timetable({ courseList, setCourseList }) {
   const [selectedEarliestStartTime, setSelectedEarliestStartTime] = useState("");
   const [selectedLatestEndTime, setSelectedLatestEndTime] = useState("");
   const [showGenerateOptions, setShowGenerateOptions] = useState(false);
-  const [plans, setPlans] = useState([[], [], [], [], []]);
+  const [plans, setPlans] = useState([[], [], [], [], [], []]);
   const [active, setActive] = useState([]); 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -137,7 +139,8 @@ function Timetable({ courseList, setCourseList }) {
     severity: "info",
   });
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [failedReasons, setFailedReasons] = useState([])
+  const [failedReasons, setFailedReasons] = useState([]);
+  const [isValid, setisValid] = useState(false);
 
   const {_id} = useSelector((state) => state.user) || "";
 
@@ -289,7 +292,7 @@ function Timetable({ courseList, setCourseList }) {
       const data = await response.json();
     };
 
-    if (selectedEvents.length > 0 && planIndex< 5) {
+    if (selectedEvents.length > 0 && planIndex < 5 && planIndex >= 0) {
       const newPlan = [...selectedEvents];
       let updatedPlans = plans;
       updatedPlans[planIndex] = newPlan;
@@ -297,6 +300,12 @@ function Timetable({ courseList, setCourseList }) {
       updatePlans(updatedPlans);
       handleOpenSnackbar(`Plan ${planIndex+1} saved.`, "success");
       // console.log(updatedPlans)
+    } else if (selectedEvents.length > 0 && planIndex === 5) {
+      const newPlan = [...selectedEvents];
+      let updatedPlans = plans;
+      updatedPlans[planIndex] = newPlan;
+      setPlans(updatedPlans);
+      updatePlans(updatedPlans);
     }
   };
 
@@ -330,8 +339,11 @@ function Timetable({ courseList, setCourseList }) {
   // Function to handle plan selection from the dropdown
   const handlePlanSelect = (planIndex) => {
     if (planIndex === -1) {
-      setSelectedEvents([]);
-      handleOpenSnackbar('No Plan selected.', "info");
+      setSelectedEvents([...plans[5]]);
+      handleOpenSnackbar('Registered Plan loaded.', "success");
+      const uniqueIndexNo = new Set(plans[5].map((lesson) => lesson.indexNo));
+      const uniqueIndexNoArray = Array.from(uniqueIndexNo);
+      setActive(uniqueIndexNoArray);
     }
     if (planIndex >= 0 && planIndex < plans.length) {
       if (plans[planIndex].length > 0) {
@@ -379,6 +391,73 @@ function Timetable({ courseList, setCourseList }) {
     setDialogOpen(false);
   };
 
+  const checkLessonsValid = (lessons) => {
+    if (lessons.length === 0) return false;
+
+    for (let i = 0; i < lessons.length; i++) {
+      for (let j = i + 1; j < lessons.length; j++) {
+        const lessonA = lessons[i];
+        const lessonB = lessons[j];
+  
+        // Convert lesson start and end times to date objects
+        const startA = new Date(lessonA.start);
+        const endA = new Date(lessonA.end);
+        const startB = new Date(lessonB.start);
+        const endB = new Date(lessonB.end);
+
+        // Check for overlap
+        if (startA.getDay() == startB.getDay()) {
+          if (startA <= endB && startB <= endA) {
+            return false; // Lessons overlap
+          }
+        } 
+      }
+    }
+  
+    return true; // No overlapping lessons
+  }
+  
+  const handleRegisterCourses = () => {
+    const registerCourses = async (courses) => {
+      const response = await fetch(
+        `http://localhost:3001/user/add-courses/${_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ courses })
+        }
+      );
+      const data = await response.json();
+    };
+
+    const coursesToRegister = selectedEvents;
+    console.log(coursesToRegister)
+
+    const uniqueCourses = {};
+
+    // Iterate through the data array
+    coursesToRegister.forEach(item => {
+      const { courseId, courseCode, indexNo } = item;
+      
+      // Check if the courseId is not already in the uniqueCourses object
+      if (!uniqueCourses[courseId]) {
+        uniqueCourses[courseId] = [courseCode, indexNo];
+      }
+    });
+
+    // Convert the uniqueCourses object to an array of objects
+    const uniqueCoursesArray = Object.entries(uniqueCourses).map(([courseId, [courseCode, indexNo]]) => ({
+      courseId: courseId,
+      courseCode: courseCode,
+      index: indexNo,
+    }));
+
+    registerCourses(uniqueCoursesArray);
+    saveCurrentPlan(5);
+  }
+
   useEffect(() => {
     function convertToDates(arr) {
       return arr.map((item) => {
@@ -395,10 +474,17 @@ function Timetable({ courseList, setCourseList }) {
     getUserPlans().then((data) => {
       const updatedData = data.map((arr) => convertToDates(arr));
       // console.log(updatedData);
-      setPlans(updatedData)
+      setPlans(updatedData);
+      setInitLoad(false);
     })
+    
   }, []);
-  
+
+  useEffect(() => {
+    if(!initLoad)
+      handlePlanSelect(-1);
+  }, [initLoad]);
+
   useEffect(() => {    
     if(selectedGeneratedPlanIndex !== -1)
       formatGeneratedTimeTable(generatedTimetableOptions[selectedGeneratedPlanIndex]);
@@ -412,15 +498,17 @@ function Timetable({ courseList, setCourseList }) {
 
   useEffect(() => {
     // console.log(plans[selectedPlanIndex])
-     // To update the courseList according to courses in plan
-     if (selectedPlanIndex !== -1 && plans[selectedPlanIndex].length > 0)
-     {
-      // console.log("hi")
+    // To update the courseList according to courses in plan
+    if (selectedPlanIndex !== -1 && plans[selectedPlanIndex].length > 0)
+    {
+      // console.log(selectedEvents)
       const tempPlan = plans[selectedPlanIndex];
+      setisValid(checkLessonsValid(tempPlan));
+      // console.log(isValid)
       const uniqueCourseIds = new Set();
-  
+
       tempPlan.forEach((item) => uniqueCourseIds.add(item.courseId));
-  
+
       const uniqueCourseIdArray = [...uniqueCourseIds];
       // console.log(uniqueCourseIdArray)
       if (uniqueCourseIdArray.length === 0) return;
@@ -435,7 +523,7 @@ function Timetable({ courseList, setCourseList }) {
         const data = await response.json();
         return data;
       };
-  
+
       const fetchCourseInfo = async () => {
         const courseInfoArray = [];
         for (const courseId of uniqueCourseIdArray) {
@@ -458,6 +546,11 @@ function Timetable({ courseList, setCourseList }) {
       });
     }
   }, [selectedPlanIndex])
+
+  useEffect(() => {
+    setisValid(checkLessonsValid(selectedEvents));
+    // console.log(selectedEvents)
+  }, [selectedEvents]);
 
   return (
     <div className="flex">
@@ -598,6 +691,7 @@ function Timetable({ courseList, setCourseList }) {
                 : null}
               </div>
             }
+            <RegisterButton isValid={isValid} handleRegisterCourses={handleRegisterCourses} />
           </aside>
         </div>
     </div>

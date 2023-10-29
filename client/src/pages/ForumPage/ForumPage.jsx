@@ -5,7 +5,7 @@ import RadioForm from "../../components/Radioform";
 import MuiCheckBox from "../../components/MuiCheckBox";
 import MuiTable from "../../components/MuiTable";
 import BasicButtons from "../../components/MuiButton";
-import {useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 // For swapping of modules
 function ForumPage() {
@@ -21,6 +21,7 @@ function ForumPage() {
         const courseCodes =  user.modulesCurrentIndex.map(course => course.courseCode)
         // const moduleAssignedList = user.modulesAssigned
         // const courseCodes = moduleAssignedList.map(course => course.courseCode);
+        console.log(user)
         return courseCodes
     }
 

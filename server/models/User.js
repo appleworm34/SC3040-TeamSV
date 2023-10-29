@@ -38,8 +38,8 @@ const UserSchema = new mongoose.Schema(
     },
     plans : {
       type: Array,
-      required: true
-
+      required: true,
+      // default: [[], [], [], [], []]
     }
   }, {timestamps: true}
 )
