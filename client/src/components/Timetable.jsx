@@ -9,9 +9,10 @@ import generateTimetable from './TimetableGenerator';
 import { Select, MenuItem, Button, Divider, Alert, Snackbar, Dialog } from '@mui/material';
 import AddCourseModal from './AddCourseModal';
 import TimetableConstraintsForm from './TimetableConstraintsForm';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PlanSelector from './PlanSelector';
 import RegisterButton from './RegisterButton';
+import { setLogin } from '../state/index';
 
 const localizer = momentLocalizer(moment);
 const minTime = moment().set({ hour: 8, minute: 0, second: 0 });
@@ -141,8 +142,9 @@ function Timetable({ courseList, setCourseList }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [failedReasons, setFailedReasons] = useState([]);
   const [isValid, setisValid] = useState(false);
-
+  
   const {_id} = useSelector((state) => state.user) || "";
+  const token = useSelector((state) => state.token) || "";
 
   const getUserPlans = async () => {
     const response = await fetch(

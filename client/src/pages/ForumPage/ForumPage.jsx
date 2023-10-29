@@ -5,7 +5,8 @@ import RadioForm from "../../components/Radioform";
 import MuiCheckBox from "../../components/MuiCheckBox";
 import MuiTable from "../../components/MuiTable";
 import BasicButtons from "../../components/MuiButton";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setLogin } from "../../state/index";
 
 // For swapping of modules
 function ForumPage() {
@@ -16,12 +17,14 @@ function ForumPage() {
     const [IndexAvailable,setIndexAvail] = useState([])
     const [AddVisibility,setAddVisibility]=useState(false)
     let user = useSelector((state) => state.user)
-    
+    const token = useSelector((state) => state.token) || "";
+    const dispatch = useDispatch();
+
     const getModsAssigned = () =>{
         const courseCodes =  user.modulesCurrentIndex.map(course => course.courseCode)
         // const moduleAssignedList = user.modulesAssigned
         // const courseCodes = moduleAssignedList.map(course => course.courseCode);
-        console.log(user)
+        // console.log(user)    
         return courseCodes
     }
 
@@ -74,6 +77,27 @@ function ForumPage() {
         console.log("in useeffect")
     },[user])
     
+    // Update the user state when opening forum page
+    useEffect(() => {
+        const getUser = async () => {
+          const response = await fetch(
+            `http://localhost:3001/user/${user._id}`,
+            {
+              method: 'GET',
+            }
+          );
+          const data = await response.json();
+    
+          dispatch(
+            setLogin({
+              user: data,
+              token: token,
+            })
+          );
+        };
+    
+        getUser();
+      }, []);
 
     const onRadioChange = async (value) => {
         setModToSwap(value);
