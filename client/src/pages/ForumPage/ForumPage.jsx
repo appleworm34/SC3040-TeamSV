@@ -7,6 +7,7 @@ import MuiTable from "../../components/MuiTable";
 import BasicButtons from "../../components/MuiButton";
 import { useSelector, useDispatch } from "react-redux";
 import { setLogin } from "../../state/index";
+import { useNavigate } from "react-router-dom";
 
 // For swapping of modules
 function ForumPage() {
@@ -19,6 +20,7 @@ function ForumPage() {
     let user = useSelector((state) => state.user)
     const token = useSelector((state) => state.token) || "";
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const getModsAssigned = () =>{
         const courseCodes =  user.modulesCurrentIndex.map(course => course.courseCode)
@@ -197,9 +199,11 @@ function ForumPage() {
               console.log('Response data:', responseData);
               if (responseData.swap){
                     alert("Dear Student, MOONS has found a matching swap and performed the swap on your behalf!")
+                    navigate("/");
                 }
                 else{
                     alert("Dear Student, MOONS did not find a matching swap and will continue to look out for them.")
+                    navigate("/");
                 }
                 await setUp()
               // Handle the response data as needed

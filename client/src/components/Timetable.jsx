@@ -146,6 +146,7 @@ function Timetable({ courseList, setCourseList }) {
   
   const {_id} = useSelector((state) => state.user) || "";
   const token = useSelector((state) => state.token) || "";
+  const dispatch = useDispatch();
 
   const getUserPlans = async () => {
     const response = await fetch(
@@ -462,6 +463,137 @@ function Timetable({ courseList, setCourseList }) {
     handleOpenSnackbar(`Plan successfully registered.`, "success");
   }
 
+  const checkIfLessonsMatch = (registeredPlan) => {
+    const updatedPlan = registeredPlan;
+    // console.log(updatedPlan)
+    const getUserAddedModules = async () => {
+      const response = await fetch(
+        `http://localhost:3001/user/${_id}/added_courses`,
+        {
+          method: "GET"
+        }
+      )
+  
+      const data = await response.json()
+      return data
+    }
+
+    const getCoursesIndex = async (cid) => {
+      const response = await fetch(
+        `http://localhost:3001/course/${cid}`,
+        {
+          method: "GET"
+        }
+      )
+  
+      const data = await response.json()
+      return data
+    }
+
+    const fetchDataForCourse = async (cid) => {
+      const data = await getCoursesIndex(cid);
+      return data;
+    };
+
+    const updatePlans = async (newPlan) => {
+      const response = await fetch(
+        `http://localhost:3001/user/${_id}/update_plans`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ newPlan })
+        }
+      );
+      const data = await response.json();
+    };
+
+    const uniqueCourses = {};
+
+    // Iterate through the data array
+    registeredPlan.forEach(item => {
+      const { courseId, courseCode, indexNo } = item;
+      
+      // Check if the courseId is not already in the uniqueCourses object
+      if (!uniqueCourses[courseId]) {
+        uniqueCourses[courseId] = [courseCode, indexNo];
+      }
+    });
+
+    // Convert the uniqueCourses object to an array of objects
+    const uniqueCoursesArray = Object.entries(uniqueCourses).map(([courseId, [courseCode, indexNo]]) => ({
+      courseId: courseId,
+      courseCode: courseCode,
+      index: indexNo,
+    }));
+    console.log(uniqueCoursesArray)
+    
+    getUserAddedModules().then((data) => {
+      const actualRegisteredCourseInfo = data;
+      const actualRegisteredCourseInfoMap = new Map();
+
+      actualRegisteredCourseInfo.forEach((course) => {
+        actualRegisteredCourseInfoMap.set(course.courseId, course);
+      });
+
+      // Initialize an array to store courseId for mismatches
+      const mismatchedCourseIds = [];
+      const actualIndex = [];
+
+      // Loop through uniqueCoursesArray and check for differences
+      uniqueCoursesArray.forEach((course) => {
+        const actualCourse = actualRegisteredCourseInfoMap.get(course.courseId);
+        if (actualCourse && actualCourse.index !== course.index) {
+          mismatchedCourseIds.push(course.courseId);
+          actualIndex.push(actualCourse.index);
+        }
+      });
+
+      // The 'mismatchedCourseIds' array now contains courseId for mismatched elements
+      console.log("Mismatched Course IDs:", mismatchedCourseIds);
+      console.log(actualIndex)
+      if (mismatchedCourseIds.length > 0){
+        // console.log(updatedPlan)
+        let filteredUpdatedPlans = updatedPlan.filter(plan => !mismatchedCourseIds.includes(plan.courseId));
+        console.log(filteredUpdatedPlans)
+        
+        const courseDataPromises = mismatchedCourseIds.map(fetchDataForCourse);
+        
+        Promise.all(courseDataPromises)
+          .then((courseData) => {
+            console.log(courseData); // Array of data for mismatched course IDs
+            for(const e in courseData) {
+              const courseWithDate = addStartDateAndEndDateToLessons(courseData[e]);
+              // console.log(courseWithDate)
+              const formattedLessons = formatIndexList(courseWithDate)
+              const filteredLessons = []
+
+              Object.keys(formattedLessons).forEach((courseCode) => {
+                // Iterate over the array of lessons for the current property
+                formattedLessons[courseCode].forEach((lessonArray) => {
+                  // Filter the lessons in the nested array and push them into the filteredLessons array
+                  filteredLessons.push(...lessonArray.filter((lesson) => actualIndex.includes(lesson.indexNo)));
+                });
+              });
+              
+              console.log(filteredLessons)
+              const updatedPlanWithAppendedLessons = [...filteredUpdatedPlans, ...filteredLessons];
+              console.log(updatedPlanWithAppendedLessons)
+              let correctPlans = plans
+              correctPlans[5] = updatedPlanWithAppendedLessons
+              console.log(correctPlans)
+              setPlans(correctPlans)
+              updatePlans(correctPlans)
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    })
+  }
+
   useEffect(() => {
     function convertToDates(arr) {
       return arr.map((item) => {
@@ -475,18 +607,59 @@ function Timetable({ courseList, setCourseList }) {
         return item;
       });
     }
+
+    const updatePlans = async (newPlan) => {
+      const response = await fetch(
+        `http://localhost:3001/user/${_id}/update_plans`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ newPlan })
+        }
+      );
+      const data = await response.json();
+    };
+
+    const updateUserState = async () => {
+      // console.log("updating user state")
+      const response = await fetch(
+        `http://localhost:3001/user/${_id}`,
+        {
+          method: 'GET',
+        }
+      );
+      const data = await response.json();
+
+      dispatch(
+        setLogin({
+          user: data,
+          token: token,
+        })
+      );
+    };
+
+    updateUserState();
+
     getUserPlans().then((data) => {
       const updatedData = data.map((arr) => convertToDates(arr));
       // console.log(updatedData);
-      setPlans(updatedData);
+      if (updatedData.length === 0) 
+        updatePlans([[],[],[],[],[],[]]);
+      else
+        setPlans(updatedData);
+
       setInitLoad(false);
     })
-    
+
   }, []);
 
   useEffect(() => {
-    if(!initLoad)
+    if(!initLoad) {
       handlePlanSelect(-1);
+      checkIfLessonsMatch(plans[5]);
+    }
   }, [initLoad]);
 
   useEffect(() => {    

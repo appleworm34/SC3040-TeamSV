@@ -176,11 +176,19 @@ export const swapIndex = async (userId,courseCode,desiredIndex) => {
     console.log("module")
     console.log(module)
   })
+  user.modulesAdded.map((module)=>{
+    if (module.courseCode==courseCode){
+      module.index=desiredIndex
+    }
+    console.log("module")
+    console.log(module)
+  })
   try{
     console.log("user")
     // console.log(desiredIndex)
     // console.log(user)
     user.markModified("modulesCurrentIndex");
+    user.markModified("modulesAdded");
     await user.save();
     
     // console.log(test)
