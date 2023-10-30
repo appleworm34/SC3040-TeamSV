@@ -6,6 +6,7 @@ import {
     ListItemText,
     Button,
     ButtonGroup,
+    Chip,
     Typography,
 } from "@mui/material";
 
@@ -17,25 +18,26 @@ function BiddingTable({
     pointList,
     setPointList,
     creditScore,
+    creditAllocationValidity,
+    setCreditAllocationValidity,
 }) {
     const [dummyPointList, setDummyPointList] = useState([]);
-    const [creditAllocationValidity, setCreditAllocationValidity] =
-        useState(false);
+    const [remaining_credits, setRemainingCredits] = useState(creditScore);
 
     function getPoints(courseCode) {
-        setPointList(dummyPointList);
-        const courseIndexInPointList = pointList.findIndex(
+      if (dummyPointList.length===0) return 0;
+        const courseIndexInPointList = dummyPointList.findIndex(
             (element) => element.courseCode === courseCode
         );
-        return courseIndexInPointList === -1
+        return (courseIndexInPointList === -1
             ? 0
-            : pointList[courseIndexInPointList].points;
+            : parseInt(dummyPointList[courseIndexInPointList].points, 10));
     }
 
     //edit here to get the 2 data values
     const handleSubmit = (event) => {
         console.log("Handle Submit called");
-        setPointList(dummyPointList);
+        
         const newResultsList = bdeList.map((element) => ({
             //TODO: Change options
             courseCode: element.courseCode,
@@ -44,6 +46,8 @@ function BiddingTable({
             status: "Awaiting resultsList",
         }));
         setResultsList(newResultsList);
+        setPointList(dummyPointList);
+        console.log("Handle Submit ended");
     };
 
     // Delete course code from resultsList, pointList, bdeList
@@ -60,6 +64,7 @@ function BiddingTable({
             (element) => element.courseCode !== deletedCourseCode
         );
         setPointList(newPointList);
+
         setDummyPointList(pointList);
 
         const newBdeList = bdeList.filter(
@@ -67,6 +72,17 @@ function BiddingTable({
             (element) => element.courseCode != deletedCourseCode
         );
         setBdeList(newBdeList);
+
+        let cur_allocated_credits = 0;
+        console.log(`start credits ${cur_allocated_credits}`)
+        dummyPointList.forEach((element) => {
+            cur_allocated_credits += parseInt(element.points,10);
+        });
+        console.log(`end credits ${cur_allocated_credits}`)
+        setRemainingCredits(creditScore - cur_allocated_credits);
+        setCreditAllocationValidity(cur_allocated_credits <= creditScore);
+
+
     };
 
     // Tracks credits allocated to each bde course code
@@ -82,46 +98,52 @@ function BiddingTable({
         } else {
             newPointList.push({
                 courseCode: editedCourseCode,
-                points: event.target.value,
+                points: parseInt(event.target.value, 10),
             });
         }
-
-        newPointList.editedCourseCode = event.target.value;
+        setDummyPointList(newPointList);
 
         let cur_allocated_credits = 0;
+        console.log(`start credits ${cur_allocated_credits}`)
         dummyPointList.forEach((element) => {
-            cur_allocated_credits += element.points;
+            cur_allocated_credits += parseInt(element.points,10);
         });
-
+        console.log(`end credits ${cur_allocated_credits}`)
+        setRemainingCredits(creditScore - cur_allocated_credits);
         setCreditAllocationValidity(cur_allocated_credits <= creditScore);
-        setDummyPointList(newPointList);
+        
     };
 
     //Updates whenever theres changes
     useEffect(() => {
-        console.log("dummyPointList");
+        console.log("UE dummyPointList");
         console.log(dummyPointList);
     }, [dummyPointList]);
 
     useEffect(() => {
-        console.log("pointList");
+      console.log("UE remaining_credits");
+      console.log(remaining_credits);
+  }, [remaining_credits]);
+
+    useEffect(() => {
+        console.log("UE pointList");
         console.log(pointList);
     }, [pointList]);
 
     useEffect(() => {
-        console.log("resultsList");
+        console.log("UE resultsList");
         console.log(resultsList);
     }, [resultsList]);
     // When there is new BDEs added, set point to default 0, unless there is already points prior
 
     useEffect(() => {
-        console.log("bdeList");
+        console.log("UE bdeList");
         console.log(bdeList);
         const newPointList = bdeList.map((element) => ({
             courseCode: element.courseCode,
             points: getPoints(element.courseCode),
         }));
-        setPointList(newPointList);
+        setDummyPointList(newPointList);
     }, [bdeList]);
 
     useEffect(() => {
@@ -138,8 +160,6 @@ function BiddingTable({
                         <ListItemText>
                             <Typography>
                                 {elem.courseCode} {elem.courseName}{" "}
-                                {creditScore}{" "}
-                                {creditAllocationValidity.toString()}
                             </Typography>
                         </ListItemText>
                         <input
@@ -173,6 +193,25 @@ function BiddingTable({
                     </ListItem>
                 ))}
             </List>
+            <div className="flex justify-evenly">
+                {bdeList.length > 0 && (
+                    <Chip
+                        label={
+                            creditAllocationValidity
+                                ? "Click submit to confirm ur bids..."
+                                : "Not enough credits for allocation, do double check..."
+                        }
+                        variant="outlined"
+                        color={creditAllocationValidity ? "success" : "error"}
+                    />
+                )}
+
+                <Chip
+                    label={`Remaining credits: ${remaining_credits}`}
+                    variant="outlined"
+                    color={creditAllocationValidity ? "success" : "error"}
+                />
+            </div>
         </div>
     );
 }

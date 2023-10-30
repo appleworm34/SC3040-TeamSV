@@ -8,24 +8,22 @@ import { Typography } from "@mui/material";
 
 function BallotPage() {
     let user = useSelector((state) => state.user);
-    // const testData = {
-    //     "name":user.name,
-    //     "year":user.year,
-    //     "modulesTaken":(length(user.modulesTaken)*3).toString(),
-    //     "credit_score": 100
-    // }
+    const testData = [{
+        "name":user.name,
+        "year":user.year,
+        "modulesTaken":((user.modulesTaken.length)*3).toString(),
+        "credit_score": 100 //user.credit,
+    }]
 
-    const testData = [
-        {
-            name: "testname",
-            year: "testyear",
-            modulesTaken: "33",
-            credit_score: "100",
-        },
-    ];
+    // const testData = [
+    //     {
+    //         name: "testname",
+    //         year: "testyear",
+    //         modulesTaken: "33",
+    //         credit_score: "100",
+    //     },
+    // ];
 
-    const [bdeModules, setBdeModules] = useState([]);
-    const [dates, setDates] = useState([]);
     const eventData = [
         {
             eventName: "Round 1 bidding",

@@ -1,11 +1,11 @@
 import React from "react";
 import { useState } from "react";
-import { Typography, Button, Divider } from "@mui/material";
+import { Typography, Button, Divider, Chip } from "@mui/material";
 import BasicTable from "./MuiTable";
 import AddCourseModal from "./AddCourseModal";
 import BiddingTable from "./BiddingTable";
 
-function BiddingDashboard({creditScore}) {
+function BiddingDashboard({ creditScore }) {
     const [bdeList, setBdeList] = useState([
         // {
         //     courseCode: "SC1001",
@@ -44,6 +44,8 @@ function BiddingDashboard({creditScore}) {
         //     points: 2,
         // },
     ]);
+    const [creditAllocationValidity, setCreditAllocationValidity] =
+        useState(true);
 
     const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);
 
@@ -89,7 +91,7 @@ function BiddingDashboard({creditScore}) {
                         textAlign="center"
                         bgcolor={"lightgrey"}
                     >
-                        FORM FOR THE MODULE BIDDING: TO BE ADDED
+                        Bidding Online System
                     </Typography>
                 </div>
                 {/* <CourseForm/> */}
@@ -101,6 +103,7 @@ function BiddingDashboard({creditScore}) {
                     setCourseList={setBdeList}
                     searchingBde={false} //TODO: Need to change when theres BDE available
                 />
+
                 <Divider />
                 <BiddingTable
                     bdeList={bdeList}
@@ -110,7 +113,10 @@ function BiddingDashboard({creditScore}) {
                     pointList={pointList}
                     setPointList={setPointList}
                     creditScore={creditScore}
+                    creditAllocationValidity={creditAllocationValidity}
+                    setCreditAllocationValidity={setCreditAllocationValidity}
                 />
+
             </div>
         </div>
     );
