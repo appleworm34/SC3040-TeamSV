@@ -82,7 +82,20 @@
     border-radius: 5px;
     background-color: #f7f7f7;
     padding-left: 100px;
+    overflow: auto;
 }
+.checkbox-container {
+    max-height: 300px; /* Set a maximum height for the container */
+    overflow-y: auto; /* Enable vertical scrolling when content exceeds the container height */
+    border: 1px solid #ccc; /* Optional: Add a border for styling */
+  }
+  
+  /* Optionally, you can style the label text to make it more readable */
+  .checkbox-container .MuiFormControlLabel-label {
+    white-space: nowrap; /* Prevent label text from wrapping */
+    overflow: hidden; /* Hide any overflow */
+    text-overflow: ellipsis; /* Add an ellipsis for long labels */
+  }
 
 /* Style the form label for the group of checkboxes */
 .checkbox_index.FormLabel {
