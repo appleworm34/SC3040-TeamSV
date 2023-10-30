@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Paper, Typography, Button, Box } from '@mui/material';
+import { Modal, Paper, Typography, Button, Box, fabClasses } from '@mui/material';
 import { useState } from 'react';
 import CourseList from './CourseList';
 import { ArrowBack } from '@mui/icons-material';
@@ -9,6 +9,7 @@ const AddCourseModal = ({ isOpen, handleClose, children, courseList, setCourseLi
   const [showCourseInfo, setShowCourseInfo] = useState(false);
   const [courseInfo, setCourseInfo] = useState({});
   const user = useSelector((state) => state.user);
+  const [searchingBde, setSearchingBde] = useState(false);
 
   // const patchModulesAdded = async () => {
   //   const response = await fetch(
@@ -106,6 +107,7 @@ const AddCourseModal = ({ isOpen, handleClose, children, courseList, setCourseLi
                 setShowCourseInfo={setShowCourseInfo}
                 setCourseList={setCourseList}
                 setCourseInfo={setCourseInfo}
+                searchingBde={searchingBde}
               />
             </div>
           )}

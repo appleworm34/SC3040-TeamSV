@@ -1,11 +1,11 @@
 import React from "react";
 import "./BallotPage.css";
 import CourseForm from "../../components/CourseForm";
-
+import AddCourseModal from "../../components/AddCourseModal";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import MuiTable from "../../components/MuiTable";
-import { Typography } from "@mui/material";
+import BasicTable from "../../components/MuiTable";
+import { Button, Divider, Typography } from "@mui/material";
 
 function BallotPage() {
     let user = useSelector((state) => state.user);
@@ -14,7 +14,10 @@ function BallotPage() {
 
     const closePopup = () => {
         setAddCourseModalOpen(false);
-      };
+    };
+    const openPopup = () => {
+        setAddCourseModalOpen(true);
+    };
 
     // const testData = {
     //     "name":user.name,
@@ -64,7 +67,7 @@ function BallotPage() {
                                 Student Information
                             </Typography>
                         </div>
-                        <MuiTable
+                        <BasicTable
                             headers={[
                                 "name",
                                 "year",
@@ -85,7 +88,7 @@ function BallotPage() {
                                 Bidding dates:
                             </Typography>
                         </div>
-                        <MuiTable
+                        <BasicTable
                             headers={["eventName", "startDate", "endDate"]}
                             rows={eventData}
                         />
@@ -96,6 +99,7 @@ function BallotPage() {
             {/* Right hand side */}
             <div className="flex-auto w-128">
                 <div className="flex flex-col">
+                    {/* results tab */}
                     <div className="bg-white-200 p-16 h-full w-full">
                         <div className="p-4">
                             <Typography
@@ -107,11 +111,14 @@ function BallotPage() {
                                 Results
                             </Typography>
                         </div>
-                        <MuiTable
+                        <BasicTable
                             headers={["eventName", "startDate", "endDate"]}
                             rows={eventData}
                         />
                     </div>
+
+
+                    {/* Module Bidding Form */}
                     <div className="bg-white-200 p-16 h-full w-full">
                         <div className="p-4">
                             <Typography
@@ -123,7 +130,17 @@ function BallotPage() {
                                 FORM FOR THE MODULE BIDDING: TO BE ADDED
                             </Typography>
                         </div>
-                        <CourseForm/>
+                        {/* <CourseForm/> */}
+                        <Button onClick={openPopup}>Add Courses</Button>
+                        <AddCourseModal
+                            isOpen={isAddCourseModalOpen}
+                            handleClose={closePopup}
+                            courseList={courseList}
+                            setCourseList={setCourseList}
+                        />
+                        <Divider/>
+
+
                     </div>
                 </div>
             </div>

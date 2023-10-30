@@ -2,7 +2,7 @@ import { Box, Typography, TextField, CircularProgress, Button } from "@mui/mater
 import CourseInfo from "./CourseInfo.jsx";
 import { useEffect, useState } from "react";
 
-const CourseList = ({ setShowCourseInfo, setCourseList, setCourseInfo }) => {
+const CourseList = ({ setShowCourseInfo, setCourseList, setCourseInfo, searchingBde }) => {
   const [courses, setCourses] = useState([])
   const [search, setSearch] = useState("") // Add search state
   const [isLoading, setIsLoading] = useState(false)
@@ -19,16 +19,52 @@ const CourseList = ({ setShowCourseInfo, setCourseList, setCourseInfo }) => {
       return data
     }
 
-  useEffect(() => {
-    setIsLoading(true)
-    getAllCourses().then((data) => {
-      setCourses(data)
-      setIsLoading(false)
-    })
-    .catch((error) => {
-      console.error(error)
-    })
-  }, [])
+    const getBdeCourses = async () => {
+      const response = await fetch(
+        `http://localhost:3001/course/bde`,
+        {
+          method: "GET"
+        }
+      )
+  
+      const data = await response.json()
+      return data
+    }
+
+
+
+    if (searchingBde) {
+      // loading bde course list
+      useEffect(() => {
+        setIsLoading(true)
+        getBdeCourses().then((data) => {
+          setCourses(data)
+          
+          setIsLoading(false)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+      }, [])
+
+    } else {
+      // loading normal course list
+      useEffect(() => {
+        setIsLoading(true)
+        getAllCourses().then((data) => {
+          setCourses(data)
+          
+          setIsLoading(false)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+      }, [])
+    }
+
+
+
+  
 
   const courseComponent = courses.map((courses) => (
     <CourseInfo
@@ -38,7 +74,9 @@ const CourseList = ({ setShowCourseInfo, setCourseList, setCourseInfo }) => {
       courseName = {courses.courseName}
       setShowCourseInfo = {setShowCourseInfo}
       setCourseInfo={setCourseInfo}
+      
     />
+    
   ))
     
 

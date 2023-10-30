@@ -52,3 +52,15 @@ export const submitCourse = async (req, res) => {
     res.status(409).json({ message: err.message });
   }
 }
+
+export const getAllBdes = async (req, res) => {
+  try {
+    const courses = await Course.find();
+    courses.filter(
+      (course) => course.isBDE===true
+    )
+    res.status(200).json(courses)
+  } catch (err) {
+    res.status(404).json({ message: err.message })
+  }
+}
