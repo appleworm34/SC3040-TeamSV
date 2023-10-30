@@ -143,6 +143,7 @@ function Timetable({ courseList, setCourseList }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [failedReasons, setFailedReasons] = useState([]);
   const [isValid, setisValid] = useState(false);
+
   
   const {_id} = useSelector((state) => state.user) || "";
   const token = useSelector((state) => state.token) || "";
@@ -797,6 +798,7 @@ function Timetable({ courseList, setCourseList }) {
                   handleClose={closePopup} 
                   courseList={courseList}
                   setCourseList={setCourseList}
+                  searchingBde={false}
                 />
                 <div className="ml-2 mt-1">
                   <div>Added Courses:</div>

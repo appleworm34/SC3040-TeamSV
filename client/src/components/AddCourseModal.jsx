@@ -5,11 +5,10 @@ import CourseList from './CourseList';
 import { ArrowBack } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 
-const AddCourseModal = ({ isOpen, handleClose, children, courseList, setCourseList }) => {
+const AddCourseModal = ({ isOpen, handleClose, children, courseList, setCourseList, searchingBde }) => {
   const [showCourseInfo, setShowCourseInfo] = useState(false);
   const [courseInfo, setCourseInfo] = useState({});
   const user = useSelector((state) => state.user);
-  const [searchingBde, setSearchingBde] = useState(false);
 
   // const patchModulesAdded = async () => {
   //   const response = await fetch(

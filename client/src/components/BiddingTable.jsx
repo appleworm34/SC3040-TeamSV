@@ -16,8 +16,15 @@ function BiddingTable({
     setResultsList,
     pointList,
     setPointList,
+    creditScore,
 }) {
+    const [dummyPointList, setDummyPointList] = useState([]);
+    const [creditAllocationValidity, setCreditAllocationValidity] =
+        useState(false);
+    let cur_allocated_credits = 0;
+
     function getPoints(courseCode) {
+      setPointList(dummyPointList);
         const courseIndexInPointList = pointList.findIndex(
             (element) => element.courseCode === courseCode
         );
@@ -28,8 +35,8 @@ function BiddingTable({
 
     //edit here to get the 2 data values
     const handleSubmit = (event) => {
-        console.log(pointList);
-        event.preventDefault();
+        console.log("Handle Submit called");
+        setPointList(dummyPointList);
         const newResultsList = bdeList.map((element) => ({
             //TODO: Change options
             courseCode: element.courseCode,
@@ -42,6 +49,8 @@ function BiddingTable({
 
     // Delete course code from resultsList, pointList, bdeList
     const handleDelete = (deletedCourseCode) => {
+        console.log("Handle Delete called");
+
         const newResultsList = resultsList.filter(
             //TODO: Change options
             (element) => element.courseCode != deletedCourseCode
@@ -52,6 +61,7 @@ function BiddingTable({
             (element) => element.courseCode !== deletedCourseCode
         );
         setPointList(newPointList);
+        setDummyPointList(pointList);
 
         const newBdeList = bdeList.filter(
             //TODO: Change options
@@ -63,7 +73,8 @@ function BiddingTable({
     // Tracks credits allocated to each bde course code
     const handlePointChange = (event, editedCourseCode) => {
         console.log(editedCourseCode);
-        const newPointList = [...pointList];
+
+        const newPointList = [...dummyPointList];
         const editedCourseIndex = newPointList.findIndex(
             (element) => element.courseCode === editedCourseCode
         );
@@ -77,19 +88,37 @@ function BiddingTable({
         }
 
         newPointList.editedCourseCode = event.target.value;
-        setPointList(newPointList);
+        setDummyPointList(newPointList);
+
+        cur_allocated_credits = 0;
+        dummyPointList.forEach((element) => {
+            cur_allocated_credits += element.points;
+        });
+
+        if (cur_allocated_credits <= creditScore) {
+            setCreditAllocationValidity(true);
+        } else {
+            setCreditAllocationValidity(false);
+        }
     };
 
     //Updates whenever theres changes
     useEffect(() => {
+        console.log("dummyPointList");
+        console.log(dummyPointList);
+    }, [dummyPointList]);
+
+    useEffect(() => {
         console.log("pointList");
         console.log(pointList);
     }, [pointList]);
+
     useEffect(() => {
         console.log("resultsList");
         console.log(resultsList);
     }, [resultsList]);
     // When there is new BDEs added, set point to default 0, unless there is already points prior
+
     useEffect(() => {
         console.log("bdeList");
         console.log(bdeList);
@@ -100,6 +129,11 @@ function BiddingTable({
         setPointList(newPointList);
     }, [bdeList]);
 
+    useEffect(() => {
+        console.log("creditAllocationValidity");
+        console.log(creditAllocationValidity);
+    }, [creditAllocationValidity]);
+
     return (
         <div>
             <List>
@@ -108,7 +142,9 @@ function BiddingTable({
                     <ListItem className="flex pt-4">
                         <ListItemText>
                             <Typography>
-                                {elem.courseCode} {elem.courseName}
+                                {elem.courseCode} {elem.courseName}{" "}
+                                {creditScore}{" "}
+                                {creditAllocationValidity.toString()}
                             </Typography>
                         </ListItemText>
                         <input

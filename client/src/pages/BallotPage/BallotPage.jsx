@@ -82,7 +82,7 @@ function BallotPage() {
 
             {/* Right hand side */}
             <div className="flex-auto w-128">
-                <BiddingDashboard/>
+                <BiddingDashboard creditScore={parseInt(testData[0].credit_score, 10)}/>
             </div>
         </div>
     );

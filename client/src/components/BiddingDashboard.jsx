@@ -5,44 +5,44 @@ import BasicTable from "./MuiTable";
 import AddCourseModal from "./AddCourseModal";
 import BiddingTable from "./BiddingTable";
 
-function BiddingDashboard() {
+function BiddingDashboard({creditScore}) {
     const [bdeList, setBdeList] = useState([
-        {
-            courseCode: "SC1001",
-            courseName: "BDE Mod",
-            creditsAllocated: "2",
-            status: "Awaiting resultsList",
-        },
-        {
-            courseCode: "SC1002",
-            courseName: "Another BDE Mod",
-            creditsAllocated: "2",
-            status: "Awaiting resultsList",
-        },
+        // {
+        //     courseCode: "SC1001",
+        //     courseName: "BDE Mod",
+        //     creditsAllocated: "2",
+        //     status: "Awaiting resultsList",
+        // },
+        // {
+        //     courseCode: "SC1002",
+        //     courseName: "Another BDE Mod",
+        //     creditsAllocated: "2",
+        //     status: "Awaiting resultsList",
+        // },
     ]);
     const [resultsList, setResultsList] = useState([
-        {
-            courseCode: "SC1001",
-            courseName: "BDE Mod",
-            creditsAllocated: "2",
-            status: "Awaiting resultsList",
-        },
-        {
-            courseCode: "SC1002",
-            courseName: "Another BDE Mod",
-            creditsAllocated: "2",
-            status: "Awaiting resultsList",
-        },
+        // {
+        //     courseCode: "SC1001",
+        //     courseName: "BDE Mod",
+        //     creditsAllocated: "2",
+        //     status: "Awaiting resultsList",
+        // },
+        // {
+        //     courseCode: "SC1002",
+        //     courseName: "Another BDE Mod",
+        //     creditsAllocated: "2",
+        //     status: "Awaiting resultsList",
+        // },
     ]);
     const [pointList, setPointList] = useState([
-        {
-            courseCode: "SC1001",
-            points: 2,
-        },
-        {
-            courseCode: "SC1002",
-            points: 2,
-        },
+        // {
+        //     courseCode: "SC1001",
+        //     points: 2,
+        // },
+        // {
+        //     courseCode: "SC1002",
+        //     points: 2,
+        // },
     ]);
 
     const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);
@@ -98,7 +98,8 @@ function BiddingDashboard() {
                     isOpen={isAddCourseModalOpen}
                     handleClose={closePopup}
                     courseList={bdeList}
-                    setCouseList={setBdeList}
+                    setCourseList={setBdeList}
+                    searchingBde={false} //TODO: Need to change when theres BDE available
                 />
                 <Divider />
                 <BiddingTable
@@ -108,6 +109,7 @@ function BiddingDashboard() {
                     setResultsList={setResultsList}
                     pointList={pointList}
                     setPointList={setPointList}
+                    creditScore={creditScore}
                 />
             </div>
         </div>
