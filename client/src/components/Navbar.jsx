@@ -98,6 +98,7 @@ function Navbar() {
                                     onClick={() => {
                                         dispatch(setLogout());
                                         setValue(1);
+                                        navigate("/");
                                     }}
                                     sx={{
                                         textDecoration: "none",
@@ -137,7 +138,7 @@ function Navbar() {
                                     }}
                                     label="Forum"
                                 />
-                                <Tab
+                                {/* <Tab
                                     key="swap"
                                     LinkComponent={Link}
                                     to="/swap"
@@ -150,7 +151,7 @@ function Navbar() {
                                         color: "black",
                                     }}
                                     label="swap"
-                                />
+                                /> */}
                                 <Tab
                                     key="ballot"
                                     LinkComponent={Link}
