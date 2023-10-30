@@ -1,14 +1,50 @@
-import React from 'react'
-import { useState } from 'react';
-import { Typography, Button, Divider } from '@mui/material'
-import BasicTable from './MuiTable'
-import AddCourseModal from "./AddCourseModal"
-import BiddingTable from './BiddingTable';
-
+import React from "react";
+import { useState } from "react";
+import { Typography, Button, Divider } from "@mui/material";
+import BasicTable from "./MuiTable";
+import AddCourseModal from "./AddCourseModal";
+import BiddingTable from "./BiddingTable";
 
 function BiddingDashboard() {
-    const [bdeList, setBdeList] = useState([]);
-    const [resultsList, setResultsList] = useState([]);
+    const [bdeList, setBdeList] = useState([
+        {
+            courseCode: "SC1001",
+            courseName: "BDE Mod",
+            creditsAllocated: "2",
+            status: "Awaiting resultsList",
+        },
+        {
+            courseCode: "SC1002",
+            courseName: "Another BDE Mod",
+            creditsAllocated: "2",
+            status: "Awaiting resultsList",
+        },
+    ]);
+    const [resultsList, setResultsList] = useState([
+        {
+            courseCode: "SC1001",
+            courseName: "BDE Mod",
+            creditsAllocated: "2",
+            status: "Awaiting resultsList",
+        },
+        {
+            courseCode: "SC1002",
+            courseName: "Another BDE Mod",
+            creditsAllocated: "2",
+            status: "Awaiting resultsList",
+        },
+    ]);
+    const [pointList, setPointList] = useState([
+        {
+            courseCode: "SC1001",
+            points: 2,
+        },
+        {
+            courseCode: "SC1002",
+            points: 2,
+        },
+    ]);
+
     const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);
 
     // For AddCourseModal
@@ -19,73 +55,63 @@ function BiddingDashboard() {
         setAddCourseModalOpen(true);
     };
 
-
-  return (
-    <div className="flex flex-col">
-                    {/* results tab */}
-                    <div className="bg-white-200 p-16 h-full w-full">
-                        <div className="p-4">
-                            <Typography
-                                variant="h4"
-                                component="div"
-                                textAlign="center"
-                                bgcolor={"lightgrey"}
-                            >
-                                Results
-                            </Typography>
-                        </div>
-                        <BasicTable
-                            headers={["courseCode", "courseName", "creditsAllocated", "status"]}
-                            rows={resultsList}
-                        />
-                    </div>
-
-
-                    {/* Module Bidding Form */}
-                    <div className="bg-white-200 p-16 h-full w-full">
-                        <div className="p-4">
-                            <Typography
-                                variant="h4"
-                                component="div"
-                                textAlign="center"
-                                bgcolor={"lightgrey"}
-                            >
-                                FORM FOR THE MODULE BIDDING: TO BE ADDED
-                            </Typography>
-                        </div>
-                        {/* <CourseForm/> */}
-                        <Button onClick={openPopup}>Add Courses</Button>
-                        <AddCourseModal
-                            isOpen={isAddCourseModalOpen}
-                            handleClose={closePopup}
-                            courseList={bdeList}
-                            setCouseList={setBdeList}
-                        />
-                        <Divider/>
-                        <BiddingTable
-                            bdeList={[
-                                {
-                                    courseCode: "SC1001",
-                                    courseName: "BDE Mod",
-                                    creditsAllocated: "20",
-                                    status: "Awaiting resultsList",
-                                },
-                                {
-                                    courseCode: "SC1002",
-                                    courseName: "Another BDE Mod",
-                                    creditsAllocated: "23",
-                                    status: "Awaiting resultsList",
-                                },
-                            ]}
-                            setBdeList={setBdeList}
-                            resultsList={resultsList}
-                            setResultsList={setResultsList}
-                        />
-
-                    </div>
+    return (
+        <div className="flex flex-col">
+            {/* results tab */}
+            <div className="bg-white-200 p-16 h-full w-full">
+                <div className="p-4">
+                    <Typography
+                        variant="h4"
+                        component="div"
+                        textAlign="center"
+                        bgcolor={"lightgrey"}
+                    >
+                        Results
+                    </Typography>
                 </div>
-  )
+                <BasicTable
+                    headers={[
+                        "courseCode",
+                        "courseName",
+                        "creditsAllocated",
+                        "status",
+                    ]}
+                    rows={resultsList}
+                />
+            </div>
+
+            {/* Module Bidding Form */}
+            <div className="bg-white-200 p-16 h-full w-full">
+                <div className="p-4">
+                    <Typography
+                        variant="h4"
+                        component="div"
+                        textAlign="center"
+                        bgcolor={"lightgrey"}
+                    >
+                        FORM FOR THE MODULE BIDDING: TO BE ADDED
+                    </Typography>
+                </div>
+                {/* <CourseForm/> */}
+                <Button onClick={openPopup}>Add Courses</Button>
+                <AddCourseModal
+                    isOpen={isAddCourseModalOpen}
+                    handleClose={closePopup}
+                    courseList={bdeList}
+                    setCouseList={setBdeList}
+                />
+                <Divider />
+                <BiddingTable
+                    bdeList={bdeList}
+                    setBdeList={setBdeList}
+                    resultsList={resultsList}
+                    setResultsList={setResultsList}
+                    pointList={pointList}
+                    setPointList={setPointList}
+                />
+            </div>
+        </div>
+    );
 }
 
-export default BiddingDashboard
-
+export default BiddingDashboard;

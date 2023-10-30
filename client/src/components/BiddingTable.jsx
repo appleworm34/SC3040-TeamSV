@@ -9,14 +9,21 @@ import {
     Typography,
 } from "@mui/material";
 
-function BiddingTable({ bdeList, setBdeList, resultsList, setResultsList }) {
-    const [pointList, setPointList] = useState([]);
-
+function BiddingTable({
+    bdeList,
+    setBdeList,
+    resultsList,
+    setResultsList,
+    pointList,
+    setPointList,
+}) {
     function getPoints(courseCode) {
         const courseIndexInPointList = pointList.findIndex(
             (element) => element.courseCode === courseCode
         );
-        return courseIndexInPointList===-1 ? 0 : pointList[courseIndexInPointList].points;
+        return courseIndexInPointList === -1
+            ? 0
+            : pointList[courseIndexInPointList].points;
     }
 
     //edit here to get the 2 data values
@@ -40,13 +47,12 @@ function BiddingTable({ bdeList, setBdeList, resultsList, setResultsList }) {
             (element) => element.courseCode != deletedCourseCode
         );
         setResultsList(newResultsList);
-        const deletedCourseIndex = pointList.findIndex(
-            (element) => element.courseCode === deletedCourseCode
-        );
+
         const newPointList = pointList.filter(
             (element) => element.courseCode !== deletedCourseCode
         );
         setPointList(newPointList);
+
         const newBdeList = bdeList.filter(
             //TODO: Change options
             (element) => element.courseCode != deletedCourseCode
@@ -76,13 +82,22 @@ function BiddingTable({ bdeList, setBdeList, resultsList, setResultsList }) {
 
     //Updates whenever theres changes
     useEffect(() => {
+        console.log("pointList");
         console.log(pointList);
     }, [pointList]);
     useEffect(() => {
+        console.log("resultsList");
         console.log(resultsList);
     }, [resultsList]);
+    // When there is new BDEs added, set point to default 0, unless there is already points prior
     useEffect(() => {
+        console.log("bdeList");
         console.log(bdeList);
+        const newPointList = bdeList.map((element) => ({
+            courseCode: element.courseCode,
+            points: getPoints(element.courseCode),
+        }));
+        setPointList(newPointList);
     }, [bdeList]);
 
     return (
@@ -100,7 +115,7 @@ function BiddingTable({ bdeList, setBdeList, resultsList, setResultsList }) {
                             className="w-48 pr-4"
                             type="number"
                             placeholder="Allocate Points..."
-                            defaultValue={0}
+                            defaultValue={getPoints(elem.courseCode)}
                             onChange={(e) =>
                                 handlePointChange(e, elem.courseCode)
                             }
