@@ -459,8 +459,7 @@ function Timetable({ courseList, setCourseList }) {
       index: indexNo,
     }));
     console.log(uniqueCoursesArray)
-    registerCourses(uniqueCoursesArray);
-    saveCurrentPlan(5);
+    registerCourses(uniqueCoursesArray).then(() => saveCurrentPlan(5));
     handleOpenSnackbar(`Plan successfully registered.`, "success");
   }
 
