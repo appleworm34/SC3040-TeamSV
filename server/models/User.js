@@ -40,7 +40,12 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       required: true,
       // default: [[], [], [], [], []]
-    }
+    },
+    credit : {
+      type: Number,
+      default: 100
+    },
+
   }, {timestamps: true}
 )
 

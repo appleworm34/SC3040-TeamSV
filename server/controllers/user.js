@@ -228,7 +228,8 @@ export const updatePlans = async (req, res) => {
     const { newPlan } = req.body;
     // console.log(id)
     const user = await User.findById(id);
-    console.log(user.plans)
+    // console.log(user.plans)
+    // console.log(newPlan)
     user.plans = newPlan;
 
     await user.save();
@@ -249,9 +250,40 @@ export const registerCourse = async (req, res) => {
     user.modulesAdded = courses;
     user.modulesCurrentIndex = courses;
 
+    user.markModified("modulesCurrentIndex");
+    user.markModified("modulesAdded");
+
     await user.save();
 
     res.status(200).json(user.modulesAdded)
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+}
+
+export const getUserCredit = async (req, res) => {
+  try {
+    const { id } = req.params
+    const user = await User.findById(id)
+    
+    res.status(200).json(user.credit)
+  } catch (e) {
+    res.status(404).json({message: e.message})
+  }
+}
+
+export const updateCredit = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newCredit } = req.body;
+    // console.log(id)
+    const user = await User.findById(id);
+    console.log(user.credit)
+    user.credit = newCredit;
+    
+    await user.save();
+
+    res.status(200).json(user.credit)
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
