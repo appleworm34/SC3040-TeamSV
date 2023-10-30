@@ -1,24 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./BallotPage.css";
-import CourseForm from "../../components/CourseForm";
-import AddCourseModal from "../../components/AddCourseModal";
+import BiddingDashboard from "../../components/BiddingDashboard";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import BasicTable from "../../components/MuiTable";
-import { Button, Divider, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 
 function BallotPage() {
     let user = useSelector((state) => state.user);
-    const [courseList, setCourseList] = useState([]);
-    const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);
-
-    const closePopup = () => {
-        setAddCourseModalOpen(false);
-    };
-    const openPopup = () => {
-        setAddCourseModalOpen(true);
-    };
-
     // const testData = {
     //     "name":user.name,
     //     "year":user.year,
@@ -35,21 +24,16 @@ function BallotPage() {
         },
     ];
 
-    const [DesiredModules, setDesiredModules] = useState([]);
-    const [Dates, setDates] = useState([]);
-
+    const [bdeModules, setBdeModules] = useState([]);
+    const [dates, setDates] = useState([]);
     const eventData = [
         {
             eventName: "Round 1 bidding",
             startDate: "2023-11-01",
             endDate: "2023-11-03",
         },
-        {
-            eventName: "Round 2 bidding",
-            startDate: "2023-11-05",
-            endDate: "2023-11-07",
-        },
     ];
+    
 
     return (
         <div className="pt-32 flex flex-row justify-around h-screen w-screen">
@@ -98,51 +82,7 @@ function BallotPage() {
 
             {/* Right hand side */}
             <div className="flex-auto w-128">
-                <div className="flex flex-col">
-                    {/* results tab */}
-                    <div className="bg-white-200 p-16 h-full w-full">
-                        <div className="p-4">
-                            <Typography
-                                variant="h4"
-                                component="div"
-                                textAlign="center"
-                                bgcolor={"lightgrey"}
-                            >
-                                Results
-                            </Typography>
-                        </div>
-                        <BasicTable
-                            headers={["eventName", "startDate", "endDate"]}
-                            rows={eventData}
-                        />
-                    </div>
-
-
-                    {/* Module Bidding Form */}
-                    <div className="bg-white-200 p-16 h-full w-full">
-                        <div className="p-4">
-                            <Typography
-                                variant="h4"
-                                component="div"
-                                textAlign="center"
-                                bgcolor={"lightgrey"}
-                            >
-                                FORM FOR THE MODULE BIDDING: TO BE ADDED
-                            </Typography>
-                        </div>
-                        {/* <CourseForm/> */}
-                        <Button onClick={openPopup}>Add Courses</Button>
-                        <AddCourseModal
-                            isOpen={isAddCourseModalOpen}
-                            handleClose={closePopup}
-                            courseList={courseList}
-                            setCourseList={setCourseList}
-                        />
-                        <Divider/>
-
-
-                    </div>
-                </div>
+                <BiddingDashboard/>
             </div>
         </div>
     );
