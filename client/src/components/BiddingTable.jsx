@@ -21,10 +21,9 @@ function BiddingTable({
     const [dummyPointList, setDummyPointList] = useState([]);
     const [creditAllocationValidity, setCreditAllocationValidity] =
         useState(false);
-    let cur_allocated_credits = 0;
 
     function getPoints(courseCode) {
-      setPointList(dummyPointList);
+        setPointList(dummyPointList);
         const courseIndexInPointList = pointList.findIndex(
             (element) => element.courseCode === courseCode
         );
@@ -88,18 +87,14 @@ function BiddingTable({
         }
 
         newPointList.editedCourseCode = event.target.value;
-        setDummyPointList(newPointList);
 
-        cur_allocated_credits = 0;
+        let cur_allocated_credits = 0;
         dummyPointList.forEach((element) => {
             cur_allocated_credits += element.points;
         });
 
-        if (cur_allocated_credits <= creditScore) {
-            setCreditAllocationValidity(true);
-        } else {
-            setCreditAllocationValidity(false);
-        }
+        setCreditAllocationValidity(cur_allocated_credits <= creditScore);
+        setDummyPointList(newPointList);
     };
 
     //Updates whenever theres changes
@@ -162,6 +157,7 @@ function BiddingTable({
                                 aria-label="submit"
                                 edge="end"
                                 onClick={handleSubmit}
+                                disabled={!creditAllocationValidity}
                             >
                                 Submit
                             </Button>
