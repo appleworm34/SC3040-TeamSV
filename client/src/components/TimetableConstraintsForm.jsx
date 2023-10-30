@@ -46,6 +46,9 @@ function TimetableConstraintsForm({
           >
             <MenuItem value="0800">8:00 AM</MenuItem>
             <MenuItem value="0900">9:00 AM</MenuItem>
+            <MenuItem value="1000">10:00 AM</MenuItem>
+            <MenuItem value="1100">11:00 AM</MenuItem>
+            <MenuItem value="1200">12:00 PM</MenuItem>
           </Select>
         </FormControl>
       </ListItem>
@@ -58,8 +61,11 @@ function TimetableConstraintsForm({
             onChange={handleLatestEndTimeChange}
             label="Latest End Time"
           >
+            <MenuItem value="1500">3:00 PM</MenuItem>
+            <MenuItem value="1600">4:00 PM</MenuItem>
             <MenuItem value="1700">5:00 PM</MenuItem>
             <MenuItem value="1800">6:00 PM</MenuItem>
+            <MenuItem value="1800">7:00 PM</MenuItem>
           </Select>
         </FormControl>
       </ListItem>
