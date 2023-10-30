@@ -21,6 +21,8 @@ router.post("/remove-desired",removeDesiredIndex)
 
 router.get("/:id/added_courses", getUserAddedModules);
 
+// router.get("/:id/current_courses", getUserCurrentIndex);
+
 router.get("/:id/plans", getUserPlans);
 
 router.put("/:id/update_plans", updatePlans);
