@@ -228,8 +228,8 @@ export const updatePlans = async (req, res) => {
     const { newPlan } = req.body;
     // console.log(id)
     const user = await User.findById(id);
-    console.log(user.plans)
-    console.log(user.newPlan)
+    // console.log(user.plans)
+    // console.log(newPlan)
     user.plans = newPlan;
 
     await user.save();
