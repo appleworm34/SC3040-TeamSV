@@ -1,7 +1,6 @@
-
-import React from 'react'
-import './BallotPage.css'
-import CourseForm from '../../components/CourseForm';
+import React from "react";
+import "./BallotPage.css";
+import CourseForm from "../../components/CourseForm";
 
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -10,6 +9,13 @@ import { Typography } from "@mui/material";
 
 function BallotPage() {
     let user = useSelector((state) => state.user);
+    const [courseList, setCourseList] = useState([]);
+    const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);
+
+    const closePopup = () => {
+        setAddCourseModalOpen(false);
+      };
+
     // const testData = {
     //     "name":user.name,
     //     "year":user.year,
@@ -87,8 +93,6 @@ function BallotPage() {
                 </div>
             </div>
 
-
-
             {/* Right hand side */}
             <div className="flex-auto w-128">
                 <div className="flex flex-col">
@@ -119,21 +123,12 @@ function BallotPage() {
                                 FORM FOR THE MODULE BIDDING: TO BE ADDED
                             </Typography>
                         </div>
-                        <MuiTable
-                            headers={["eventName", "startDate", "endDate"]}
-                            rows={eventData}
-                        />
+                        <CourseForm/>
                     </div>
                 </div>
-
-            </section>
-      <CourseForm />
-    </div>
-  )
-=======
             </div>
         </div>
     );
-
+}
 
 export default BallotPage;
