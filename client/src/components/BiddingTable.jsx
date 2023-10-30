@@ -9,6 +9,7 @@ import {
     Chip,
     Typography,
 } from "@mui/material";
+import { set } from "mongoose";
 
 function BiddingTable({
     bdeList,
@@ -64,8 +65,7 @@ function BiddingTable({
             (element) => element.courseCode !== deletedCourseCode
         );
         setPointList(newPointList);
-
-        setDummyPointList(pointList);
+        setDummyPointList(newPointList);
 
         const newBdeList = bdeList.filter(
             //TODO: Change options
@@ -73,15 +73,7 @@ function BiddingTable({
         );
         setBdeList(newBdeList);
 
-        let cur_allocated_credits = 0;
-        console.log(`start credits ${cur_allocated_credits}`)
-        dummyPointList.forEach((element) => {
-            cur_allocated_credits += parseInt(element.points,10);
-        });
-        console.log(`end credits ${cur_allocated_credits}`)
-        setRemainingCredits(creditScore - cur_allocated_credits);
-        setCreditAllocationValidity(cur_allocated_credits <= creditScore);
-
+        
 
     };
 
@@ -118,6 +110,14 @@ function BiddingTable({
     useEffect(() => {
         console.log("UE dummyPointList");
         console.log(dummyPointList);
+        let cur_allocated_credits = 0;
+        console.log(`start credits ${cur_allocated_credits}`)
+        dummyPointList.forEach((element) => {
+            cur_allocated_credits += parseInt(element.points,10);
+        });
+        console.log(`end credits ${cur_allocated_credits}`)
+        setRemainingCredits(creditScore - cur_allocated_credits);
+        setCreditAllocationValidity(cur_allocated_credits <= creditScore);
     }, [dummyPointList]);
 
     useEffect(() => {
@@ -207,7 +207,7 @@ function BiddingTable({
                 )}
 
                 <Chip
-                    label={`Remaining credits: ${remaining_credits}`}
+                    label={`Remaining credits: ${remaining_credits<0? "NOT ENOUGH" : remaining_credits}`}
                     variant="outlined"
                     color={creditAllocationValidity ? "success" : "error"}
                 />
