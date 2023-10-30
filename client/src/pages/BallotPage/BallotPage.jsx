@@ -121,15 +121,11 @@ function BallotPage() {
                         />
                     </div>
                 </div>
-
-            </section>
-      <CourseForm />
-    </div>
-  )
-=======
+                <CourseForm />
             </div>
         </div>
-    );
+  )
+}
 
 
 export default BallotPage;
