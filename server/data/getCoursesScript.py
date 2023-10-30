@@ -138,7 +138,7 @@ for idx, course in enumerate(courseInfo):
 
 # print(f"Data saved to {file_name}")
 
-# ### add to DB
+### add to DB
 
 # client = pymongo.MongoClient("") #insert MONGO_URL from .env
 # file_path = "./courses/csc-2023-sem1-y1-courses.json"
