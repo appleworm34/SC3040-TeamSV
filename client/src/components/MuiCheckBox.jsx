@@ -27,24 +27,25 @@ function MuiCheckBox({ options, onCheckboxChange}) {
         <Box>
             <FormControl>
                 <FormLabel> Choose desired indexes: </FormLabel>
-
-                <FormGroup>
-                        {options.map((option, index) => (
-                        <FormControlLabel
-                        key={index}
-                            label={option}
-                            control={
-                                <Checkbox
-                                    checked={
-                                        selectedOptions.includes(option)
-                                    }
-                                    value={option}
-                                    onChange={handleCheckboxChange}
-                                />
-                            }
-                        />
-                        ))}
-                </FormGroup>
+                <div className="checkbox-container">
+                    <FormGroup>
+                            {options.map((option, index) => (
+                            <FormControlLabel
+                            key={index}
+                                label={option}
+                                control={
+                                    <Checkbox
+                                        checked={
+                                            selectedOptions.includes(option)
+                                        }
+                                        value={option}
+                                        onChange={handleCheckboxChange}
+                                    />
+                                }
+                            />
+                            ))}
+                    </FormGroup>
+                    </div>
             </FormControl>
             { selectedOptions.length>0 && <h1> The current selected indexes are {selectedOptions} </h1>}
             { selectedOptions.length===0 && <h1> No indexes are selected... </h1>}

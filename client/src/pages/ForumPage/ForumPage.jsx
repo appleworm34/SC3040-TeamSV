@@ -236,12 +236,12 @@ function ForumPage() {
                     onRadioChange={onRadioChange}
                     className="radioform_mods"
                 />
-
+                
                 <MuiCheckBox
                     options={IndexAvailable?IndexAvailable:["10101", "10102", "10103"]} // TODO: link to API call to available indexes to module swap
                     onCheckboxChange={onCheckboxChange}
-                    className="checkbox_index"
                 />
+                
                 <div>
                 <BasicButtons
                     choice="contained"
