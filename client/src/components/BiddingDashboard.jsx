@@ -80,16 +80,16 @@ function BiddingDashboard({ creditScore }) {
                     ]}
                     rows={resultsList}
                 />
-            </div>
-
-            {/* Module Bidding Form */}
-            <div className="bg-white-200 p-16 h-full w-full">
-                <div className="flex justify-center">
+                <div className="flex justify-center pt-12">
                     <Button onClick={handleOpenEditCourseDialog}> 
                         Click to edit course
                     </Button>
                 </div>
-                <Divider />
+                <Divider/>
+            </div>
+
+            {/* Module Bidding Form */}
+            <div className="bg-white-200 h-full w-full">
                 <BiddingTable
                     bdeList={bdeList}
                     setBdeList={setBdeList}
