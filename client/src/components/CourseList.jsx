@@ -17,50 +17,50 @@ const CourseList = ({ setShowCourseInfo, setCourseList, setCourseInfo, searching
   
       const data = await response.json()
       return data
-    }
+  }
 
-    const getBdeCourses = async () => {
-      const response = await fetch(
-        `http://localhost:3001/course/bde`,
-        {
-          method: "GET"
-        }
-      )
-  
-      const data = await response.json()
-      return data
-    }
+  const getBdeCourses = async () => {
+    const response = await fetch(
+      `http://localhost:3001/course/bde`,
+      {
+        method: "GET"
+      }
+    )
+
+    const data = await response.json()
+    return data
+  }
 
 
 
-    if (searchingBde) {
-      // loading bde course list
-      useEffect(() => {
-        setIsLoading(true)
-        getBdeCourses().then((data) => {
-          setCourses(data)
-          
-          setIsLoading(false)
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-      }, [])
+  if (searchingBde) {
+    // loading bde course list
+    useEffect(() => {
+      setIsLoading(true)
+      getBdeCourses().then((data) => {
+        setCourses(data)
+        
+        setIsLoading(false)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+    }, [])
 
-    } else {
-      // loading normal course list
-      useEffect(() => {
-        setIsLoading(true)
-        getAllCourses().then((data) => {
-          setCourses(data)
-          
-          setIsLoading(false)
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-      }, [])
-    }
+  } else {
+    // loading normal course list
+    useEffect(() => {
+      setIsLoading(true)
+      getAllCourses().then((data) => {
+        setCourses(data)
+        
+        setIsLoading(false)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+    }, [])
+  }
 
 
 
