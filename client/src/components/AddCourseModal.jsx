@@ -96,7 +96,7 @@ const AddCourseModal = ({ isOpen, handleClose, children, courseList, setCourseLi
                 {courseInfo.courseCode}
               </Typography>
               <Typography variant="h6" gutterBottom>
-                {courseInfo.courseName}
+                {courseInfo.courseName} ({courseInfo.courseNumOfAU})
               </Typography>
               <Typography>{courseInfo.desc}</Typography>
             </Box>
