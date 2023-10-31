@@ -2,8 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Typography, Button, Divider, Chip } from "@mui/material";
 import BasicTable from "./MuiTable";
-import AddCourseModal from "./AddCourseModal";
-import BiddingTable from "./BiddingTable";
+        import BiddingTable from "./BiddingTable";
 
 function BiddingDashboard({ creditScore }) {
     const [bdeList, setBdeList] = useState([
@@ -47,18 +46,19 @@ function BiddingDashboard({ creditScore }) {
     const [creditAllocationValidity, setCreditAllocationValidity] =
         useState(true);
 
-    const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);
+    const [isEditCourseDialogOpen, setIsEditCourseDialogOpen] = useState(false);
 
-    // For AddCourseModal
-    const closePopup = () => {
-        setAddCourseModalOpen(false);
-    };
-    const openPopup = () => {
-        setAddCourseModalOpen(true);
-    };
 
+    const handleOpenEditCourseDialog = () => {
+        setIsEditCourseDialogOpen(true);
+    };
+    const handleCloseEditCourseDialog = () => {
+        setIsEditCourseDialogOpen(false);
+    };
     return (
         <div className="flex flex-col">
+
+            
             {/* results tab */}
             <div className="bg-white-200 p-16 h-full w-full">
                 <div className="p-4">
@@ -84,26 +84,11 @@ function BiddingDashboard({ creditScore }) {
 
             {/* Module Bidding Form */}
             <div className="bg-white-200 p-16 h-full w-full">
-                <div className="p-4">
-                    <Typography
-                        variant="h4"
-                        component="div"
-                        textAlign="center"
-                        bgcolor={"lightgrey"}
-                    >
-                        Bidding Online System
-                    </Typography>
+                <div className="flex justify-center">
+                    <Button onClick={handleOpenEditCourseDialog}> 
+                        Click to edit course
+                    </Button>
                 </div>
-                {/* <CourseForm/> */}
-                <Button onClick={openPopup}>Add Courses</Button>
-                <AddCourseModal
-                    isOpen={isAddCourseModalOpen}
-                    handleClose={closePopup}
-                    courseList={bdeList}
-                    setCourseList={setBdeList}
-                    searchingBde={false} //TODO: Need to change when theres BDE available
-                />
-
                 <Divider />
                 <BiddingTable
                     bdeList={bdeList}
@@ -115,6 +100,9 @@ function BiddingDashboard({ creditScore }) {
                     creditScore={creditScore}
                     creditAllocationValidity={creditAllocationValidity}
                     setCreditAllocationValidity={setCreditAllocationValidity}
+                    handleCloseEditCourseDialog={handleCloseEditCourseDialog}
+                    isEditCourseDialogOpen={isEditCourseDialogOpen}
+
                 />
 
             </div>

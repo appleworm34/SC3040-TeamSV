@@ -8,8 +8,10 @@ import {
     ButtonGroup,
     Chip,
     Typography,
+    Dialog,
 } from "@mui/material";
 import { set } from "mongoose";
+import AddCourseModal from "./AddCourseModal";
 
 function BiddingTable({
     bdeList,
@@ -21,24 +23,35 @@ function BiddingTable({
     creditScore,
     creditAllocationValidity,
     setCreditAllocationValidity,
+    handleCloseEditCourseDialog,
+    isEditCourseDialogOpen,
 }) {
     const [dummyPointList, setDummyPointList] = useState([]);
     const [remaining_credits, setRemainingCredits] = useState(creditScore);
 
     function getPoints(courseCode) {
-      if (dummyPointList.length===0) return 0;
+        if (dummyPointList.length === 0) return 0;
         const courseIndexInPointList = dummyPointList.findIndex(
             (element) => element.courseCode === courseCode
         );
-        return (courseIndexInPointList === -1
+        return courseIndexInPointList === -1
             ? 0
-            : parseInt(dummyPointList[courseIndexInPointList].points, 10));
+            : parseInt(dummyPointList[courseIndexInPointList].points, 10);
     }
+    const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);
+
+    // For AddCourseModal
+    const closePopup = () => {
+        setAddCourseModalOpen(false);
+    };
+    const openPopup = () => {
+        setAddCourseModalOpen(true);
+    };
 
     //edit here to get the 2 data values
     const handleSubmit = (event) => {
         console.log("Handle Submit called");
-        
+
         const newResultsList = bdeList.map((element) => ({
             //TODO: Change options
             courseCode: element.courseCode,
@@ -72,9 +85,6 @@ function BiddingTable({
             (element) => element.courseCode != deletedCourseCode
         );
         setBdeList(newBdeList);
-
-        
-
     };
 
     // Tracks credits allocated to each bde course code
@@ -96,14 +106,13 @@ function BiddingTable({
         setDummyPointList(newPointList);
 
         let cur_allocated_credits = 0;
-        console.log(`start credits ${cur_allocated_credits}`)
+        console.log(`start credits ${cur_allocated_credits}`);
         dummyPointList.forEach((element) => {
-            cur_allocated_credits += parseInt(element.points,10);
+            cur_allocated_credits += parseInt(element.points, 10);
         });
-        console.log(`end credits ${cur_allocated_credits}`)
+        console.log(`end credits ${cur_allocated_credits}`);
         setRemainingCredits(creditScore - cur_allocated_credits);
         setCreditAllocationValidity(cur_allocated_credits <= creditScore);
-        
     };
 
     //Updates whenever theres changes
@@ -111,19 +120,19 @@ function BiddingTable({
         console.log("UE dummyPointList");
         console.log(dummyPointList);
         let cur_allocated_credits = 0;
-        console.log(`start credits ${cur_allocated_credits}`)
+        console.log(`start credits ${cur_allocated_credits}`);
         dummyPointList.forEach((element) => {
-            cur_allocated_credits += parseInt(element.points,10);
+            cur_allocated_credits += parseInt(element.points, 10);
         });
-        console.log(`end credits ${cur_allocated_credits}`)
+        console.log(`end credits ${cur_allocated_credits}`);
         setRemainingCredits(creditScore - cur_allocated_credits);
         setCreditAllocationValidity(cur_allocated_credits <= creditScore);
     }, [dummyPointList]);
 
     useEffect(() => {
-      console.log("UE remaining_credits");
-      console.log(remaining_credits);
-  }, [remaining_credits]);
+        console.log("UE remaining_credits");
+        console.log(remaining_credits);
+    }, [remaining_credits]);
 
     useEffect(() => {
         console.log("UE pointList");
@@ -153,65 +162,100 @@ function BiddingTable({
 
     return (
         <div>
-            <List>
-                {bdeList.map((elem) => (
-                    //TODO: Change options
-                    <ListItem className="flex pt-4">
-                        <ListItemText>
-                            <Typography>
-                                {elem.courseCode} {elem.courseName}{" "}
-                            </Typography>
-                        </ListItemText>
-                        <input
-                            className="w-48 pr-4"
-                            type="number"
-                            placeholder="Allocate Points..."
-                            defaultValue={getPoints(elem.courseCode)}
-                            onChange={(e) =>
-                                handlePointChange(e, elem.courseCode)
+            <Dialog
+            fullWidth
+            maxWidth={"lg"}
+            onClose={handleCloseEditCourseDialog}
+            open={isEditCourseDialogOpen}
+            >
+                <div className="p-4 w-128">
+                    <Typography
+                        variant="h4"
+                        component="div"
+                        textAlign="center"
+                        bgcolor={"lightgrey"}
+                    >
+                        Bidding Online System
+                    </Typography>
+                </div>
+                {/* <CourseForm/> */}
+                <Button onClick={openPopup}>Add Courses</Button>
+                <AddCourseModal
+                    isOpen={isAddCourseModalOpen}
+                    handleClose={closePopup}
+                    courseList={bdeList}
+                    setCourseList={setBdeList}
+                    searchingBde={false} //TODO: Need to change when theres BDE available
+                />
+
+                <List>
+                    {bdeList.map((elem) => (
+                        //TODO: Change options
+                        <ListItem className="flex pt-4">
+                            <ListItemText>
+                                <Typography>
+                                    {elem.courseCode} {elem.courseName}{" "}
+                                </Typography>
+                            </ListItemText>
+                            <input
+                                className="w-48 pr-4"
+                                type="number"
+                                placeholder="Allocate Points..."
+                                defaultValue={getPoints(elem.courseCode)}
+                                onChange={(e) =>
+                                    handlePointChange(e, elem.courseCode)
+                                }
+                            />
+                            <ButtonGroup>
+                                <Button
+                                    text="text"
+                                    aria-label="submit"
+                                    edge="end"
+                                    onClick={handleSubmit}
+                                    disabled={!creditAllocationValidity}
+                                >
+                                    Submit
+                                </Button>
+                                <Button
+                                    text="text"
+                                    aria-label="submit"
+                                    edge="end"
+                                    onClick={() =>
+                                        handleDelete(elem.courseCode)
+                                    }
+                                >
+                                    Delete
+                                </Button>
+                            </ButtonGroup>
+                        </ListItem>
+                    ))}
+                </List>
+                <div className="flex justify-evenly">
+                    {bdeList.length > 0 && (
+                        <Chip
+                            label={
+                                creditAllocationValidity
+                                    ? "Click submit to confirm ur bids..."
+                                    : "Not enough credits for allocation, do double check..."
+                            }
+                            variant="outlined"
+                            color={
+                                creditAllocationValidity ? "success" : "error"
                             }
                         />
-                        <ButtonGroup>
-                            <Button
-                                text="text"
-                                aria-label="submit"
-                                edge="end"
-                                onClick={handleSubmit}
-                                disabled={!creditAllocationValidity}
-                            >
-                                Submit
-                            </Button>
-                            <Button
-                                text="text"
-                                aria-label="submit"
-                                edge="end"
-                                onClick={() => handleDelete(elem.courseCode)}
-                            >
-                                Delete
-                            </Button>
-                        </ButtonGroup>
-                    </ListItem>
-                ))}
-            </List>
-            <div className="flex justify-evenly">
-                {bdeList.length > 0 && (
+                    )}
+
                     <Chip
-                        label={
-                            creditAllocationValidity
-                                ? "Click submit to confirm ur bids..."
-                                : "Not enough credits for allocation, do double check..."
-                        }
+                        label={`Remaining credits: ${
+                            remaining_credits < 0
+                                ? "NOT ENOUGH"
+                                : remaining_credits
+                        }`}
                         variant="outlined"
                         color={creditAllocationValidity ? "success" : "error"}
                     />
-                )}
-
-                <Chip
-                    label={`Remaining credits: ${remaining_credits<0? "NOT ENOUGH" : remaining_credits}`}
-                    variant="outlined"
-                    color={creditAllocationValidity ? "success" : "error"}
-                />
-            </div>
+                </div>
+            </Dialog>
         </div>
     );
 }
