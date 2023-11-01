@@ -760,7 +760,7 @@ function Timetable({ courseList, setCourseList }) {
             />
             <Snackbar
               open={snackbar.open}
-              autoHideDuration={1000}
+              autoHideDuration={3000}
               anchorOrigin={{ vertical: "top", horizontal: "center" }}
               onClose={handleCloseSnackbar}
             >

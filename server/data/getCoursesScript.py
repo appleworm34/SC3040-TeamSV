@@ -5,10 +5,11 @@ import pymongo
 from pymongo import MongoClient, InsertOne
 
 url = 'https://wish.wis.ntu.edu.sg/webexe/owa/AUS_SCHEDULE.main_display1'
-isBDE = False
+isBDE = True
 
 acadsem = '2023;1' # Acad Yr 2023, Sem 1
-r_course_yr = 'CSC;;1;F' # Computer Science, Year 1
+# r_course_yr = 'CSC;;1;F' # Computer Science, Year 1
+r_course_yr = 'GLOAD;SSM;X;F'
 
 params = {
   'acadsem': acadsem,
@@ -111,11 +112,18 @@ soup1 = BeautifulSoup(collections2.text, features='html.parser')
 
 # print(soup1)
 
-target_td = soup1.find_all('td', {'colspan': '3', 'width': '650'})
+target_td = soup1.find_all('td', {'colspan': '4', 'width': '650'})
 target_td = [t.text.strip() for t in target_td]
+# print(target_td)
+
 correct_desc = []
 
-remove = [8, 10, 17, 18, 26, 28, 33]
+# prereq_td = soup1.find_all('font', {'size': '2', 'color': '#FF00FF'})
+# prereq_td = []
+
+# remove = [8, 10, 17, 18, 26, 28, 33]
+remove = []
+
 for idx, desc in enumerate(target_td):
   if idx not in remove:
     correct_desc.append(desc)
@@ -131,7 +139,7 @@ for idx, course in enumerate(courseInfo):
 
 ### create json file to store details of modules
 
-# file_name = "csc-2023-sem1-y1-courses.json"
+# file_name = "sports-bde-2023-sem1-y1-courses.json"
 
 # with open(file_name, "w") as json_file:
 #   json.dump(courseInfo, json_file)
@@ -141,7 +149,7 @@ for idx, course in enumerate(courseInfo):
 ### add to DB
 
 # client = pymongo.MongoClient("") #insert MONGO_URL from .env
-# file_path = "./courses/csc-2023-sem1-y1-courses.json"
+# file_path = "server/data/courses/sports-bde-2023-sem1-y1-courses.json"
 # db = client.test
 # collection = db.courses
 # requesting = []
