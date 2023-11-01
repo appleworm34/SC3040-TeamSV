@@ -185,7 +185,7 @@ function BiddingTable({
                     handleClose={closePopup}
                     courseList={bdeList}
                     setCourseList={setBdeList}
-                    searchingBde={false} //TODO: Need to change when theres BDE available
+                    searchingBde={true} //TODO: Need to change when theres BDE available
                 />
 
                 <List>

@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Typography, Button, Divider, Chip } from "@mui/material";
 import BasicTable from "./MuiTable";
-        import BiddingTable from "./BiddingTable";
+import BiddingTable from "./BiddingTable";
 
 function BiddingDashboard({ creditScore }) {
     const [bdeList, setBdeList] = useState([
