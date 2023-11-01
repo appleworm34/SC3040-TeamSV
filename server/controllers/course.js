@@ -23,9 +23,9 @@ export const getCourseIndex = async (req,res) => {
   }
 }
 
-export const getAllCourses = async (req, res) => {
+export const getAllNonBDECourses = async (req, res) => {
   try {
-    const courses = await Course.find();
+    const courses = await Course.find({ isBDE: false });
     res.status(200).json(courses)
   } catch (err) {
     res.status(404).json({ message: err.message })
@@ -55,10 +55,11 @@ export const submitCourse = async (req, res) => {
 
 export const getAllBdes = async (req, res) => {
   try {
-    const courses = await Course.find();
-    courses.filter(
-      (course) => course.isBDE===true
-    )
+    const courses = await Course.find({ isBDE: true });
+    // courses.filter(
+    //   (course) => course.isBDE===false
+    // )
+    // console.log(courses)
     res.status(200).json(courses)
   } catch (err) {
     res.status(404).json({ message: err.message })

@@ -39,7 +39,7 @@ const CourseList = ({ setShowCourseInfo, setCourseList, setCourseInfo, searching
       setIsLoading(true)
       getBdeCourses().then((data) => {
         setCourses(data)
-        
+        console.log(data)
         setIsLoading(false)
       })
       .catch((error) => {
