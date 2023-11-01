@@ -61,6 +61,7 @@ function BiddingTable({
         }));
         setResultsList(newResultsList);
         setPointList(dummyPointList);
+        handleCloseEditCourseDialog();
         console.log("Handle Submit ended");
     };
 
